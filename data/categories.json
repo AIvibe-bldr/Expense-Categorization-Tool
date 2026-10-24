@@ -1,0 +1,6946 @@
+[
+  {
+    "id": "e4a9decd-01ae-5a6c-8fc8-094fa8dd1147",
+    "parent_id": "f744a357-2999-5103-a64b-3313444600fb",
+    "name": "問屋　アクティ",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A2",
+    "order": 2,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "8fd7a330-1b11-585d-a720-07cc573779c4",
+    "parent_id": "f744a357-2999-5103-a64b-3313444600fb",
+    "name": "問屋　森久保",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A3",
+    "order": 3,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "a8cc6553-3c3c-5567-ac51-b2ebbefc7a96",
+    "parent_id": "f744a357-2999-5103-a64b-3313444600fb",
+    "name": "問屋　日本全薬",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A4",
+    "order": 4,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "a3bc7065-9938-525f-82ac-2b614fd79616",
+    "parent_id": "f744a357-2999-5103-a64b-3313444600fb",
+    "name": "問屋　シグニ",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A5",
+    "order": 5,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "8dea7936-e61a-5aa7-911f-bf819483f3b3",
+    "parent_id": "f744a357-2999-5103-a64b-3313444600fb",
+    "name": "問屋　アドバリュー",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A6",
+    "order": 6,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "caede1af-9c98-5aa1-9973-93e78829e10c",
+    "parent_id": "f744a357-2999-5103-a64b-3313444600fb",
+    "name": "問屋　共立製薬(マイクロチップ)",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A7",
+    "order": 7,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "4278eaa3-793d-5b18-9c68-fd514c907395",
+    "parent_id": "f744a357-2999-5103-a64b-3313444600fb",
+    "name": "問屋　共立製薬(フード)",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A8",
+    "order": 8,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "9a383533-9ab7-55db-9016-138af8c920d8",
+    "parent_id": "f744a357-2999-5103-a64b-3313444600fb",
+    "name": "問屋　岩渕薬品",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A9",
+    "order": 9,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "c0714a73-1b00-52b1-979a-680c875df367",
+    "parent_id": "f744a357-2999-5103-a64b-3313444600fb",
+    "name": "問屋　MPアグロ",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A10",
+    "order": 10,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "7bbcf8c6-3e46-5439-a5c0-cd836f750129",
+    "parent_id": "f744a357-2999-5103-a64b-3313444600fb",
+    "name": "問屋　JBPプロショップ",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A11",
+    "order": 11,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "24da6be6-1885-5a2f-87e5-6cdd5e003c7b",
+    "parent_id": "f744a357-2999-5103-a64b-3313444600fb",
+    "name": "外部検査　IDEXX",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A12",
+    "order": 12,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "91945ab8-64b4-5bdd-b0a0-be3b432bab55",
+    "parent_id": "f744a357-2999-5103-a64b-3313444600fb",
+    "name": "医療廃棄物　アイエスイナモト",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A13",
+    "order": 13,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "08c62c7e-c99d-5f92-94d0-333cbff88b76",
+    "parent_id": "f744a357-2999-5103-a64b-3313444600fb",
+    "name": "海外薬品",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A14",
+    "order": 14,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "cedf112d-dc62-50ef-b920-33ff5380dc90",
+    "parent_id": "f76fe0ec-1f16-573d-8d1e-72f5d92187fc",
+    "name": "家賃",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A19",
+    "order": 19,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "464b19d8-098c-544e-9760-4f002a5e6748",
+    "parent_id": "f76fe0ec-1f16-573d-8d1e-72f5d92187fc",
+    "name": "テナント料(柏院)",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A20",
+    "order": 20,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "2359591b-e561-5179-ba21-305cbc54ea1c",
+    "parent_id": "f76fe0ec-1f16-573d-8d1e-72f5d92187fc",
+    "name": "テナント料(野田院)",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A21",
+    "order": 21,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "7a4ae3ba-7187-597c-98b7-5ba6b772f417",
+    "parent_id": "f76fe0ec-1f16-573d-8d1e-72f5d92187fc",
+    "name": "新日本信用保証",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A22",
+    "order": 22,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "84810a3f-42c8-50fd-95a0-3aba88f56a71",
+    "parent_id": "a9075332-a17d-50b1-af4d-e86f84c52ff4",
+    "name": "全労災",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A27",
+    "order": 27,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "6cec91fa-33fd-5304-b565-a4a93d98c69e",
+    "parent_id": "a9075332-a17d-50b1-af4d-e86f84c52ff4",
+    "name": "損害保険ジャパン",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A28",
+    "order": 28,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "2ff7888c-0e86-547b-bc5a-6a7ed57540be",
+    "parent_id": "a9075332-a17d-50b1-af4d-e86f84c52ff4",
+    "name": "アニコム売積保険",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A29",
+    "order": 29,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "a75c786f-223a-534f-84ba-9e4289b42c1e",
+    "parent_id": "a9075332-a17d-50b1-af4d-e86f84c52ff4",
+    "name": "マニュライフ生命保険",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A30",
+    "order": 30,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "6c64b372-3323-59cc-9e1a-db24e208aa3c",
+    "parent_id": "d539265a-53c1-5132-9cbe-d90600265ab5",
+    "name": "柏商工会議所",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A35",
+    "order": 35,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "2499c745-b1f3-5e7c-bb41-eed04eae967f",
+    "parent_id": "6dbdb152-5e8f-5a36-b7e7-3c4047a0800e",
+    "name": "千葉銀決済端末レンタル料",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A39",
+    "order": 39,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "6df2f33c-8767-5c81-8702-a33a5dcb010a",
+    "parent_id": "6dbdb152-5e8f-5a36-b7e7-3c4047a0800e",
+    "name": "ストアーズ決済",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A40",
+    "order": 40,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "7bc6a2d1-b617-5c67-9067-a04ebc23f64c",
+    "parent_id": "6dbdb152-5e8f-5a36-b7e7-3c4047a0800e",
+    "name": "paypay決済",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A41",
+    "order": 41,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "ef4f524e-e237-5fbb-9714-d560f5295319",
+    "parent_id": "4f02318d-13ec-599d-be13-e19ec8a1d97c",
+    "name": "電気",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A46",
+    "order": 46,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "44ffa888-b242-54e8-9227-423e00fc15d8",
+    "parent_id": "4f02318d-13ec-599d-be13-e19ec8a1d97c",
+    "name": "ガス",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A47",
+    "order": 47,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "42d102c5-b3c2-51a5-9ceb-7165aa64a6d1",
+    "parent_id": "4f02318d-13ec-599d-be13-e19ec8a1d97c",
+    "name": "水道",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A48",
+    "order": 48,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "601f5c7c-905d-5961-af84-92ef8016bfbf",
+    "parent_id": "12305923-beaa-5be1-9f97-a7fc598c5174",
+    "name": "通信費_携帯",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A53",
+    "order": 53,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "66a6a502-6669-558f-ae6a-f9f09f7c9737",
+    "parent_id": "12305923-beaa-5be1-9f97-a7fc598c5174",
+    "name": "通信費_povo",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A54",
+    "order": 54,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "e7a325b0-c372-58fb-a48a-2724e75a57cb",
+    "parent_id": "12305923-beaa-5be1-9f97-a7fc598c5174",
+    "name": "通信費_楽天モバイル",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A55",
+    "order": 55,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "73501e25-6e3c-528d-8add-8802d5a742ec",
+    "parent_id": "12305923-beaa-5be1-9f97-a7fc598c5174",
+    "name": "通信費_GMOアクセス",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A56",
+    "order": 56,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "20646091-8f1c-5829-a2eb-c5d06c136801",
+    "parent_id": "12305923-beaa-5be1-9f97-a7fc598c5174",
+    "name": "通信費_ニューロ光",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A57",
+    "order": 57,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "e3a67fd7-2dd9-5f86-ab52-e4b2224b2f9a",
+    "parent_id": "12305923-beaa-5be1-9f97-a7fc598c5174",
+    "name": "通信費_Apple",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A58",
+    "order": 58,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "836465a0-de3a-528b-bf49-c30ddcf8eaf5",
+    "parent_id": "12305923-beaa-5be1-9f97-a7fc598c5174",
+    "name": "通信費_Google",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A59",
+    "order": 59,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "1b344ba1-4cbe-5464-9ac2-3fe45f6da8f5",
+    "parent_id": "9b84dec1-2f99-5fb0-a42b-01451973c24c",
+    "name": "交通費_ETC",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A64",
+    "order": 64,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "336f7f88-95f6-5ef0-a243-2615269ab81f",
+    "parent_id": "9b84dec1-2f99-5fb0-a42b-01451973c24c",
+    "name": "交通費_駐車場",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A65",
+    "order": 65,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "37b09f1a-bdeb-5c46-9c9c-b2c6a5683c4a",
+    "parent_id": "9b84dec1-2f99-5fb0-a42b-01451973c24c",
+    "name": "ガソリン",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A66",
+    "order": 66,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "d7eb9a61-341e-5a37-8d7d-9a70b9d61a06",
+    "parent_id": "9b84dec1-2f99-5fb0-a42b-01451973c24c",
+    "name": "車その他",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A67",
+    "order": 67,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "2442650c-19db-5b70-8608-6092b1d7197c",
+    "parent_id": "9b84dec1-2f99-5fb0-a42b-01451973c24c",
+    "name": "車JAFF",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A68",
+    "order": 68,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "553929c8-c836-5fb7-b1da-33e13ca757a0",
+    "parent_id": "2bd567fc-fca0-579a-a49f-3f7bea2a0eab",
+    "name": "Suica",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A73",
+    "order": 73,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "e894b69b-37d7-51a5-9c3a-fffbd7edc802",
+    "parent_id": "2bd567fc-fca0-579a-a49f-3f7bea2a0eab",
+    "name": "タクシー",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A74",
+    "order": 74,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "10ad7b48-26b0-5cde-9d17-551050072145",
+    "parent_id": "2bd567fc-fca0-579a-a49f-3f7bea2a0eab",
+    "name": "新幹線",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A75",
+    "order": 75,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "d40f76db-823e-5195-86bd-87d45d210aac",
+    "parent_id": "2bd567fc-fca0-579a-a49f-3f7bea2a0eab",
+    "name": "レンタカー",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A76",
+    "order": 76,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "c341d550-6762-5d81-bd3e-7a95e8c0eae9",
+    "parent_id": "2bd567fc-fca0-579a-a49f-3f7bea2a0eab",
+    "name": "飛行機",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A77",
+    "order": 77,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "f614e4a8-44a7-56b3-82a9-a3ee09120c7a",
+    "parent_id": "2bd567fc-fca0-579a-a49f-3f7bea2a0eab",
+    "name": "宿泊費",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A78",
+    "order": 78,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "5ec71d0e-60df-5078-9951-794d5871062d",
+    "parent_id": "2bd567fc-fca0-579a-a49f-3f7bea2a0eab",
+    "name": "船",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A79",
+    "order": 79,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "34aed2b7-cb75-5485-b263-1acb866b8c3d",
+    "parent_id": "610aee39-def4-53e5-a33d-5f2734d47b10",
+    "name": "国民健康保険",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A84",
+    "order": 84,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "5a740d07-c725-5994-96cb-6b1cae6b3fd2",
+    "parent_id": "610aee39-def4-53e5-a33d-5f2734d47b10",
+    "name": "年金",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A85",
+    "order": 85,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "abe285ae-f456-57aa-bc5f-cfa8ea4d6981",
+    "parent_id": "610aee39-def4-53e5-a33d-5f2734d47b10",
+    "name": "市県民税",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A86",
+    "order": 86,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "6105574a-2b0c-5ae4-9f7f-9f7e629afbb3",
+    "parent_id": "610aee39-def4-53e5-a33d-5f2734d47b10",
+    "name": "所得税",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A87",
+    "order": 87,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "68985af0-7d5a-5182-9697-d175a1b8e3c4",
+    "parent_id": "610aee39-def4-53e5-a33d-5f2734d47b10",
+    "name": "予定納税",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A88",
+    "order": 88,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "d3576b14-8607-5d49-a289-98aa733b295c",
+    "parent_id": "610aee39-def4-53e5-a33d-5f2734d47b10",
+    "name": "消費税",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A89",
+    "order": 89,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "77069001-5307-5ce6-a937-42d9daacf3a5",
+    "parent_id": "610aee39-def4-53e5-a33d-5f2734d47b10",
+    "name": "自動車税",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A90",
+    "order": 90,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "6f2040e1-e000-5dab-8308-f79778e92985",
+    "parent_id": "2bbf4902-c92e-5c63-972b-cc5c8b80f0bc",
+    "name": "外食",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A95",
+    "order": 95,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "c42f1d68-48fa-5540-bdb3-9dbee8beffa2",
+    "parent_id": "2bbf4902-c92e-5c63-972b-cc5c8b80f0bc",
+    "name": "スーパー",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A96",
+    "order": 96,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "dff4f510-c686-5fad-99ce-a306d50e85c1",
+    "parent_id": "2bbf4902-c92e-5c63-972b-cc5c8b80f0bc",
+    "name": "ホームセンター",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A97",
+    "order": 97,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "38c19a11-54aa-5dab-9789-bfc333f2b6db",
+    "parent_id": "2bbf4902-c92e-5c63-972b-cc5c8b80f0bc",
+    "name": "コンビニ",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A98",
+    "order": 98,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "02232e46-e892-54dd-8d12-e68d534ff8cd",
+    "parent_id": "2bbf4902-c92e-5c63-972b-cc5c8b80f0bc",
+    "name": "ドラッグストア",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A99",
+    "order": 99,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "34debeee-fb45-5df4-b2d2-c152783ac6df",
+    "parent_id": "2bbf4902-c92e-5c63-972b-cc5c8b80f0bc",
+    "name": "ショッピングモール",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A100",
+    "order": 100,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "ae20339f-bbb9-5d15-83e0-0fdeee612e46",
+    "parent_id": "2bbf4902-c92e-5c63-972b-cc5c8b80f0bc",
+    "name": "ニトリ",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A101",
+    "order": 101,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "5f777d57-f049-5363-a376-bea854e425be",
+    "parent_id": "2bbf4902-c92e-5c63-972b-cc5c8b80f0bc",
+    "name": "電気店",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A102",
+    "order": 102,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "808d4d0a-857f-59af-ba1c-aab2c4cc463c",
+    "parent_id": "c93171a2-9c92-5b39-b672-527ef467edef",
+    "name": "外注 12薬局",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A107",
+    "order": 107,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "8f4a65ee-43a0-51c5-aefd-5ceb452494f5",
+    "parent_id": "c93171a2-9c92-5b39-b672-527ef467edef",
+    "name": "外注 セレクトタイプ",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A108",
+    "order": 108,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "ca37b57a-34ae-51c4-8a1c-69ffe9b02968",
+    "parent_id": "c93171a2-9c92-5b39-b672-527ef467edef",
+    "name": "モノタロウ",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A109",
+    "order": 109,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "d11c32e9-64e5-5ba1-903c-6c77fc5b992d",
+    "parent_id": "c93171a2-9c92-5b39-b672-527ef467edef",
+    "name": "ラクスル",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A110",
+    "order": 110,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "49389562-0d63-5d99-b306-95829bf7ac63",
+    "parent_id": "c93171a2-9c92-5b39-b672-527ef467edef",
+    "name": "プレミアムウォーター",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A111",
+    "order": 111,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "0f53bf6e-6030-577e-8189-51f0c8853b66",
+    "parent_id": "c93171a2-9c92-5b39-b672-527ef467edef",
+    "name": "ペットシッター",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A112",
+    "order": 112,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "d171c981-5e9b-5552-adab-32dfa72aab94",
+    "parent_id": "c93171a2-9c92-5b39-b672-527ef467edef",
+    "name": "小林様　顧客紹介料",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A113",
+    "order": 113,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "1b6be7fe-1864-59f0-92a8-86595e492fdb",
+    "parent_id": "c93171a2-9c92-5b39-b672-527ef467edef",
+    "name": "税理士",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A114",
+    "order": 114,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "6c663f5f-460b-50b5-a228-264af45daef2",
+    "parent_id": "1cff0fb4-cedd-5026-ba55-b1d439a87c18",
+    "name": "医療費",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A119",
+    "order": 119,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "12ea009f-3617-55d2-a334-beef3f8c2720",
+    "parent_id": "ee5a843e-6393-5a5d-8d9f-45845586c6d7",
+    "name": "ユニクロ",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A123",
+    "order": 123,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "05533ebe-5cf8-5b07-9c0a-fd52bd5634df",
+    "parent_id": "ee5a843e-6393-5a5d-8d9f-45845586c6d7",
+    "name": "ユニフォーム",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A124",
+    "order": 124,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "a4f0ac23-7f4b-5cac-b51f-31169e2c88ec",
+    "parent_id": "c62eae8d-5e3c-5776-93a7-aea2962f0793",
+    "name": "投資",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A129",
+    "order": 129,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "1357d5ad-3070-5806-a3e1-eadebe3b556f",
+    "parent_id": "26823280-5ded-50c7-aaf9-e89f8e5bcf3a",
+    "name": "郵便",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A133",
+    "order": 133,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "2544db70-e666-548c-b632-22afb121c19b",
+    "parent_id": "31a85b58-516d-5b53-acb8-36fc7f06988f",
+    "name": "Amazon",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A137",
+    "order": 137,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "c89e4992-a867-565b-924d-a438a09c4c74",
+    "parent_id": "31a85b58-516d-5b53-acb8-36fc7f06988f",
+    "name": "Amazonサービス",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A138",
+    "order": 138,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "40d19766-1189-56c1-ab16-918a5b75bcd6",
+    "parent_id": "31a85b58-516d-5b53-acb8-36fc7f06988f",
+    "name": "アメリカAmazon",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A139",
+    "order": 139,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "fe085d55-2fa7-5a8d-b5f0-61b825e64910",
+    "parent_id": "31a85b58-516d-5b53-acb8-36fc7f06988f",
+    "name": "ダイレクト出版",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A140",
+    "order": 140,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "5e6f83da-696d-51cb-aa5c-ea4216800fb0",
+    "parent_id": "31a85b58-516d-5b53-acb8-36fc7f06988f",
+    "name": "エドワード",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A141",
+    "order": 141,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "7207ef19-8f7f-59b8-b20a-c994d028985a",
+    "parent_id": "31a85b58-516d-5b53-acb8-36fc7f06988f",
+    "name": "獣医学書",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A142",
+    "order": 142,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "ca73c561-2233-50cc-a6e2-af50ade6b5e3",
+    "parent_id": "31a85b58-516d-5b53-acb8-36fc7f06988f",
+    "name": "本",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A143",
+    "order": 143,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "7e47c834-b717-568d-8467-334226fe773f",
+    "parent_id": "31a85b58-516d-5b53-acb8-36fc7f06988f",
+    "name": "ツタヤ",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A144",
+    "order": 144,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "0a3e0745-de2a-5b46-9920-cc2bfdc8e376",
+    "parent_id": "31a85b58-516d-5b53-acb8-36fc7f06988f",
+    "name": "文房具",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A145",
+    "order": 145,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "1b5c6e7b-2090-5464-83b0-6dfae6d81a85",
+    "parent_id": "624e6a29-0189-5914-b376-5b90d7dd8a77",
+    "name": "リサイクルショップ",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A150",
+    "order": 150,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "bd3fd7da-3f30-534c-bc68-3dcca5ab6999",
+    "parent_id": "624e6a29-0189-5914-b376-5b90d7dd8a77",
+    "name": "メルカリ",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A151",
+    "order": 151,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "45cb556c-2789-536a-b341-ab07e53d5c1c",
+    "parent_id": "624e6a29-0189-5914-b376-5b90d7dd8a77",
+    "name": "百均",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A152",
+    "order": 152,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "3445794a-66b0-5897-aeb6-8a3b8b74911e",
+    "parent_id": "b43af3cb-5b3c-5718-8fdc-e503bee560d2",
+    "name": "ファイトフィット　キックボクシング",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A157",
+    "order": 157,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "d0598a35-e409-597d-933e-6122d61f3cfe",
+    "parent_id": "b43af3cb-5b3c-5718-8fdc-e503bee560d2",
+    "name": "くもん　ボールペン字",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A158",
+    "order": 158,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "016730a9-5e82-5da0-864b-654c549fba4c",
+    "parent_id": "8d47b02a-0f66-5f92-ae4d-50b4798826b8",
+    "name": "ゲーム",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A163",
+    "order": 163,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "4ce6b90b-4a1d-5562-8fd9-6e3d7f4561f4",
+    "parent_id": "8d47b02a-0f66-5f92-ae4d-50b4798826b8",
+    "name": "アソビュー",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A164",
+    "order": 164,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "7c8612e4-5ffd-5d71-8956-134cae742f9a",
+    "parent_id": "8d47b02a-0f66-5f92-ae4d-50b4798826b8",
+    "name": "ベルトラ",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A165",
+    "order": 165,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "bbab8069-7993-5cf1-bebf-02248fe74094",
+    "parent_id": "8d47b02a-0f66-5f92-ae4d-50b4798826b8",
+    "name": "agoda",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A166",
+    "order": 166,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "749982fc-1bb2-59ce-979e-8249611f754c",
+    "parent_id": "8d47b02a-0f66-5f92-ae4d-50b4798826b8",
+    "name": "温泉",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A167",
+    "order": 167,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "379a9971-f5c8-526b-b7ff-a6c685be7c70",
+    "parent_id": "d8603e0f-0d5f-555e-a307-ca6da9d6fc02",
+    "name": "美容院",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A172",
+    "order": 172,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "6cb72f85-d6a4-5278-bdf6-eaa09f5e22ef",
+    "parent_id": "d8603e0f-0d5f-555e-a307-ca6da9d6fc02",
+    "name": "まつげサロン",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A173",
+    "order": 173,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "8352a57f-69c8-515f-be3f-db41b0910e98",
+    "parent_id": "d8603e0f-0d5f-555e-a307-ca6da9d6fc02",
+    "name": "脱毛",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A174",
+    "order": 174,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "cabdf2a1-70e7-5b68-9342-fcb57eb53ca4",
+    "parent_id": "d8603e0f-0d5f-555e-a307-ca6da9d6fc02",
+    "name": "エステ",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A175",
+    "order": 175,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "1f5847f9-095a-5214-91f7-2d0f5a2d6a84",
+    "parent_id": "d8603e0f-0d5f-555e-a307-ca6da9d6fc02",
+    "name": "サプリメント",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A176",
+    "order": 176,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "49a2b096-7301-5b35-b569-f95bf3460283",
+    "parent_id": "d8603e0f-0d5f-555e-a307-ca6da9d6fc02",
+    "name": "ホワイトエッセンス",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A177",
+    "order": 177,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "551d9cb9-ce9b-52e1-be10-44d9df665ea2",
+    "parent_id": "889a9b15-eed7-5b8e-b09e-0a8129c34afc",
+    "name": "寄付　国境なき医師団",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A182",
+    "order": 182,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "dd8fc979-c77e-576c-a6e1-c2e0862c7e15",
+    "parent_id": "889a9b15-eed7-5b8e-b09e-0a8129c34afc",
+    "name": "ふるさと納税",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A183",
+    "order": 183,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "548cc159-7afb-5dc0-9686-a34fcb05384f",
+    "parent_id": "889a9b15-eed7-5b8e-b09e-0a8129c34afc",
+    "name": "贈答品",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A184",
+    "order": 184,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "a910bf2b-89cd-58bb-8a69-d8b113feab15",
+    "parent_id": "889a9b15-eed7-5b8e-b09e-0a8129c34afc",
+    "name": "クラウドファンディング",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A185",
+    "order": 185,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "43cac6c2-b47f-59bf-b9c9-344682972d49",
+    "parent_id": "b3e767b8-f5c4-55d7-9d07-820de0ec868a",
+    "name": "土浦",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A190",
+    "order": 190,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "753657d9-354f-507b-9346-569c1f5b0412",
+    "parent_id": "5bc3a804-a57c-58e9-be93-439800389a86",
+    "name": "AutoDS",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A194",
+    "order": 194,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "6c20376c-05d1-560f-847b-ba2205ad676e",
+    "parent_id": "5bc3a804-a57c-58e9-be93-439800389a86",
+    "name": "EBAY",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A195",
+    "order": 195,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "356abae6-cd79-50a8-9616-febacb627bed",
+    "parent_id": "5bc3a804-a57c-58e9-be93-439800389a86",
+    "name": "shopify",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A196",
+    "order": 196,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "1ee8fcde-65f6-5bc5-b13d-468dbf117972",
+    "parent_id": "b2e998eb-e406-5f15-957d-c77a5f5a60a6",
+    "name": "Midjourney",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A201",
+    "order": 201,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "2e93c200-0e9e-5138-ad8d-f05b662ac403",
+    "parent_id": "b2e998eb-e406-5f15-957d-c77a5f5a60a6",
+    "name": "VREW",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A202",
+    "order": 202,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "06e7e052-9d8b-58a5-99cd-80bfb3075739",
+    "parent_id": "b2e998eb-e406-5f15-957d-c77a5f5a60a6",
+    "name": "SHIFT AI",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A203",
+    "order": 203,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "be7ceab5-f226-58eb-a76b-2743a34f5e9f",
+    "parent_id": "b2e998eb-e406-5f15-957d-c77a5f5a60a6",
+    "name": "LUMA AI",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A204",
+    "order": 204,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "8bef458d-ee12-5cc5-9a3d-f7456b72f380",
+    "parent_id": "b2e998eb-e406-5f15-957d-c77a5f5a60a6",
+    "name": "Adobe",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A205",
+    "order": 205,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "56f42ef4-be33-52ab-a0ac-41c038cb9827",
+    "parent_id": "b2e998eb-e406-5f15-957d-c77a5f5a60a6",
+    "name": "Canva",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A206",
+    "order": 206,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.7999816888943144,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "0badca80-bb5d-52a7-9dcf-3541aee3133f",
+    "parent_id": "03b3c608-d90c-504a-aa22-fc3ce99777ae",
+    "name": "DocuSign　電子印鑑",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A211",
+    "order": 211,
+    "selectable": true,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "c6316cb1-7fd6-53ea-a1fa-73a4d1e368a0",
+    "parent_id": "680ac7f6-4601-53b9-b04a-e7f20f205cf3",
+    "name": "その他",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A213",
+    "order": 213,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "f744a357-2999-5103-a64b-3313444600fb",
+    "parent_id": null,
+    "name": "問屋",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A15",
+    "order": 15,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "f76fe0ec-1f16-573d-8d1e-72f5d92187fc",
+    "parent_id": null,
+    "name": "家賃",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A23",
+    "order": 23,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "a9075332-a17d-50b1-af4d-e86f84c52ff4",
+    "parent_id": null,
+    "name": "保険",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A31",
+    "order": 31,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "6dbdb152-5e8f-5a36-b7e7-3c4047a0800e",
+    "parent_id": null,
+    "name": "決済ツール手数料",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A42",
+    "order": 42,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "4f02318d-13ec-599d-be13-e19ec8a1d97c",
+    "parent_id": null,
+    "name": "水道光熱費",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A49",
+    "order": 49,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "12305923-beaa-5be1-9f97-a7fc598c5174",
+    "parent_id": null,
+    "name": "通信費",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A60",
+    "order": 60,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "9b84dec1-2f99-5fb0-a42b-01451973c24c",
+    "parent_id": null,
+    "name": "交通費",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A69",
+    "order": 69,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "2bd567fc-fca0-579a-a49f-3f7bea2a0eab",
+    "parent_id": null,
+    "name": "交通費",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A80",
+    "order": 80,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "610aee39-def4-53e5-a33d-5f2734d47b10",
+    "parent_id": null,
+    "name": "税金",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A91",
+    "order": 91,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "2bbf4902-c92e-5c63-972b-cc5c8b80f0bc",
+    "parent_id": null,
+    "name": "日用品＋ドラッグ＋動物のフード",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A103",
+    "order": 103,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "c93171a2-9c92-5b39-b672-527ef467edef",
+    "parent_id": null,
+    "name": "外部委託費",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A115",
+    "order": 115,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "ee5a843e-6393-5a5d-8d9f-45845586c6d7",
+    "parent_id": null,
+    "name": "作業着",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A125",
+    "order": 125,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "31a85b58-516d-5b53-acb8-36fc7f06988f",
+    "parent_id": null,
+    "name": "参考書",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A146",
+    "order": 146,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "624e6a29-0189-5914-b376-5b90d7dd8a77",
+    "parent_id": null,
+    "name": "事務用品",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A153",
+    "order": 153,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "b43af3cb-5b3c-5718-8fdc-e503bee560d2",
+    "parent_id": null,
+    "name": "習い事",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A159",
+    "order": 159,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "8d47b02a-0f66-5f92-ae4d-50b4798826b8",
+    "parent_id": null,
+    "name": "趣味・娯楽",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A168",
+    "order": 168,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "d8603e0f-0d5f-555e-a307-ca6da9d6fc02",
+    "parent_id": null,
+    "name": "美容",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A178",
+    "order": 178,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "889a9b15-eed7-5b8e-b09e-0a8129c34afc",
+    "parent_id": null,
+    "name": "寄付",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A186",
+    "order": 186,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "5bc3a804-a57c-58e9-be93-439800389a86",
+    "parent_id": null,
+    "name": "通販サイト",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A197",
+    "order": 197,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "b2e998eb-e406-5f15-957d-c77a5f5a60a6",
+    "parent_id": null,
+    "name": "AIツール",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A207",
+    "order": 207,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "d539265a-53c1-5132-9cbe-d90600265ab5",
+    "parent_id": null,
+    "name": "柏商工会議所",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A35",
+    "order": 35,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "8",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "1cff0fb4-cedd-5026-ba55-b1d439a87c18",
+    "parent_id": null,
+    "name": "医療費",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A119",
+    "order": 119,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "c62eae8d-5e3c-5776-93a7-aea2962f0793",
+    "parent_id": null,
+    "name": "投資",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A129",
+    "order": 129,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "4",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "26823280-5ded-50c7-aaf9-e89f8e5bcf3a",
+    "parent_id": null,
+    "name": "郵便",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A133",
+    "order": 133,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "b3e767b8-f5c4-55d7-9d07-820de0ec868a",
+    "parent_id": null,
+    "name": "土浦",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A190",
+    "order": 190,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "9",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "03b3c608-d90c-504a-aa22-fc3ce99777ae",
+    "parent_id": null,
+    "name": "DocuSign　電子印鑑",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A211",
+    "order": 211,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "6",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "680ac7f6-4601-53b9-b04a-e7f20f205cf3",
+    "parent_id": null,
+    "name": "その他",
+    "year": 2025,
+    "source_sheet": "2025年度　経費",
+    "source_cell": "A213",
+    "order": 213,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "f7398a67-02f5-5d70-83ee-e78717617cb6",
+    "parent_id": "ee3c784d-b472-549c-b74e-83c43302d94d",
+    "name": "家賃",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C6",
+    "order": 6,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "ffe6141f-307e-5002-8b61-2723c68552f5",
+    "parent_id": "ee3c784d-b472-549c-b74e-83c43302d94d",
+    "name": "テナント代(柏院)",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C7",
+    "order": 7,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "68ab7b36-77fd-5cf7-a294-d27e238a1560",
+    "parent_id": "ee3c784d-b472-549c-b74e-83c43302d94d",
+    "name": "テナント代(野田院)",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C8",
+    "order": 8,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "e6bd23a4-93d9-539c-a9b7-2095c46cdba5",
+    "parent_id": "dbcfe2af-2703-59fa-b2a7-68bb4a8f8ce8",
+    "name": "問屋(アクティ)",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C12",
+    "order": 12,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "11ae7efc-3985-577f-a68e-4c060f7d3d85",
+    "parent_id": "dbcfe2af-2703-59fa-b2a7-68bb4a8f8ce8",
+    "name": "問屋(森久保)",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C13",
+    "order": 13,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "1b5e5a33-f6a6-5749-8075-934bc46268ab",
+    "parent_id": "dbcfe2af-2703-59fa-b2a7-68bb4a8f8ce8",
+    "name": "問屋(日本全薬)",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C14",
+    "order": 14,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "7a94ca81-0820-5009-a312-57578ea38d29",
+    "parent_id": "dbcfe2af-2703-59fa-b2a7-68bb4a8f8ce8",
+    "name": "問屋(シグニ)",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C15",
+    "order": 15,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "df3c2ea6-7d7f-52c9-b11d-c35986640932",
+    "parent_id": "dbcfe2af-2703-59fa-b2a7-68bb4a8f8ce8",
+    "name": "問屋(岩渕)",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C16",
+    "order": 16,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "9c70dedc-ac25-5beb-9b06-6118b6026a42",
+    "parent_id": "dbcfe2af-2703-59fa-b2a7-68bb4a8f8ce8",
+    "name": "問屋(アドバリュー)",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C17",
+    "order": 17,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "f69a60a2-a1dd-5e53-9a01-2ae4a333bcd2",
+    "parent_id": "dbcfe2af-2703-59fa-b2a7-68bb4a8f8ce8",
+    "name": "問屋(プラセンタ)",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C18",
+    "order": 18,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "a36c89da-7a39-57bf-b8b2-154477dda449",
+    "parent_id": "dbcfe2af-2703-59fa-b2a7-68bb4a8f8ce8",
+    "name": "問屋(MPアグロ)",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C19",
+    "order": 19,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "1d7eed64-8f67-5132-8bb8-db486dd4e701",
+    "parent_id": "beedcc00-e8c9-569f-b409-268285c6cec0",
+    "name": "外注費　HP",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C24",
+    "order": 24,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "5845042e-3cd3-5c38-8db3-bdc63d17ed60",
+    "parent_id": "beedcc00-e8c9-569f-b409-268285c6cec0",
+    "name": "外注費　ブーリアン",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C25",
+    "order": 25,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "b7d9b185-4d4b-5f58-85b1-de0ae97f2b50",
+    "parent_id": "beedcc00-e8c9-569f-b409-268285c6cec0",
+    "name": "外注費　マネーフォワード",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C26",
+    "order": 26,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "b688d5a8-321b-5039-a707-5fce4a0cc4f9",
+    "parent_id": "beedcc00-e8c9-569f-b409-268285c6cec0",
+    "name": "外注費　ラクスル",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C27",
+    "order": 27,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "2a92e4bb-1216-5707-a508-46c8b83a4b6c",
+    "parent_id": "beedcc00-e8c9-569f-b409-268285c6cec0",
+    "name": "外注費　ココナラ",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C28",
+    "order": 28,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "74980eab-82d0-5213-9539-518dbcfed53b",
+    "parent_id": "beedcc00-e8c9-569f-b409-268285c6cec0",
+    "name": "外注費　医療廃棄物",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C29",
+    "order": 29,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "f2877a51-9161-5d89-bab8-e9c00df9e820",
+    "parent_id": "beedcc00-e8c9-569f-b409-268285c6cec0",
+    "name": "外注費　IDEXX",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C30",
+    "order": 30,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "e9393cda-fd4e-535e-914f-a3ce92204c1c",
+    "parent_id": "5640c7c7-111b-5d06-8cd7-cd103accdaa8",
+    "name": "paypay 手数料",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C34",
+    "order": 34,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "80683a9d-aab2-59e3-a4e6-fa1c1deaf7fa",
+    "parent_id": "5640c7c7-111b-5d06-8cd7-cd103accdaa8",
+    "name": "paypay 手数料 税",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C35",
+    "order": 35,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "533af661-e618-54e3-843d-8a8fe7487cfe",
+    "parent_id": "5640c7c7-111b-5d06-8cd7-cd103accdaa8",
+    "name": "stores 手数料",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C36",
+    "order": 36,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "56f778a2-36f8-57e0-ad7e-d1874316fe48",
+    "parent_id": "7ee4239d-bdbf-555a-8539-6c98550c5e2f",
+    "name": "全労災",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C40",
+    "order": 40,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "44334d86-e44d-52e3-827b-188e782c82a6",
+    "parent_id": "7ee4239d-bdbf-555a-8539-6c98550c5e2f",
+    "name": "アニコム　賠責保険",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C41",
+    "order": 41,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "94c52e0b-1f49-5669-bf60-2567a6de03e8",
+    "parent_id": "7ee4239d-bdbf-555a-8539-6c98550c5e2f",
+    "name": "マニュライフ生保",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C42",
+    "order": 42,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "446afb5c-57d0-5758-a890-eb091a11dd5a",
+    "parent_id": "ffb6dbed-d649-5a5b-8cf9-eb2907bf73eb",
+    "name": "ちばぎん　端末",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C46",
+    "order": 46,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "539df5a9-9806-5f4e-835c-26b6176fa3fc",
+    "parent_id": "ffb6dbed-d649-5a5b-8cf9-eb2907bf73eb",
+    "name": "税理士",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C47",
+    "order": 47,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "55c19a00-c840-5465-bdff-114b79d8323d",
+    "parent_id": "ffb6dbed-d649-5a5b-8cf9-eb2907bf73eb",
+    "name": "海外薬品",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C49",
+    "order": 49,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "1b5b62f6-0ab9-5213-9a89-8eec280fe544",
+    "parent_id": "ffb6dbed-d649-5a5b-8cf9-eb2907bf73eb",
+    "name": "電気",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C51",
+    "order": 51,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "b684fad3-0cb0-52e7-9467-30acac5aceb7",
+    "parent_id": "ffb6dbed-d649-5a5b-8cf9-eb2907bf73eb",
+    "name": "電気(野田)",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C52",
+    "order": 52,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "3e9841d2-203a-54fd-a513-4b5629f48e00",
+    "parent_id": "ffb6dbed-d649-5a5b-8cf9-eb2907bf73eb",
+    "name": "ガス",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C53",
+    "order": 53,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "2b221650-bf02-5a41-ae02-cc9e1fca5bec",
+    "parent_id": "ffb6dbed-d649-5a5b-8cf9-eb2907bf73eb",
+    "name": "ガス(野田)",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C54",
+    "order": 54,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "d4a18784-0f4d-5e21-bca1-30f54a94dfe0",
+    "parent_id": "ffb6dbed-d649-5a5b-8cf9-eb2907bf73eb",
+    "name": "水道",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C55",
+    "order": 55,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "ca9ff7c2-dba2-563c-97d8-0aa8260c2d25",
+    "parent_id": "ffb6dbed-d649-5a5b-8cf9-eb2907bf73eb",
+    "name": "水道(野田)",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C56",
+    "order": 56,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "6ad7436d-49f6-569c-a515-db24c0334649",
+    "parent_id": "ffb6dbed-d649-5a5b-8cf9-eb2907bf73eb",
+    "name": "プレミアムウォーター",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C58",
+    "order": 58,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "2027a23a-dddc-55cb-bf05-f0108cb072e6",
+    "parent_id": "3965acbd-d83a-5de6-aff1-8a7c28ddac3b",
+    "name": "通信費　携帯",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C62",
+    "order": 62,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "4c1fd398-1d80-5ee1-8755-77343f6c6bed",
+    "parent_id": "3965acbd-d83a-5de6-aff1-8a7c28ddac3b",
+    "name": "通信費　povo",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C63",
+    "order": 63,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "5adaec8b-c4ae-5cdc-a948-2fed8cf9afd0",
+    "parent_id": "3965acbd-d83a-5de6-aff1-8a7c28ddac3b",
+    "name": "通信費　楽天モバイル",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C64",
+    "order": 64,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "09423886-f359-5002-a8b3-5182ece4570c",
+    "parent_id": "3965acbd-d83a-5de6-aff1-8a7c28ddac3b",
+    "name": "通信費　GMOアクセス",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C65",
+    "order": 65,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "e3447ae7-4bd6-59d6-8725-4eb88c6198a3",
+    "parent_id": "3965acbd-d83a-5de6-aff1-8a7c28ddac3b",
+    "name": "通信費　NURO光",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C66",
+    "order": 66,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "3bf7e20c-a0c2-58e7-911b-34d8385eed92",
+    "parent_id": "3965acbd-d83a-5de6-aff1-8a7c28ddac3b",
+    "name": "通信費　apple",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C67",
+    "order": 67,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "7db7bebe-2abc-512f-b0ea-2e1ab64a74ea",
+    "parent_id": "3965acbd-d83a-5de6-aff1-8a7c28ddac3b",
+    "name": "通信費　google",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C68",
+    "order": 68,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "ba9d8db6-486f-5007-b641-b93fd8ad35c4",
+    "parent_id": "d9fd0eb2-5d94-5fd4-881f-271c751b1916",
+    "name": "交通費",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C72",
+    "order": 72,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "31bf0faf-ca83-572c-9c40-29ed0046c9db",
+    "parent_id": "d9fd0eb2-5d94-5fd4-881f-271c751b1916",
+    "name": "ETC",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C73",
+    "order": 73,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "cc97ebdd-1df1-5a82-ba9f-a3512619e07b",
+    "parent_id": "d9fd0eb2-5d94-5fd4-881f-271c751b1916",
+    "name": "駐車場",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C74",
+    "order": 74,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "b4c797a8-2b4b-5130-961d-7512dfe266d8",
+    "parent_id": "d9fd0eb2-5d94-5fd4-881f-271c751b1916",
+    "name": "ガソリン",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C75",
+    "order": 75,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "82096941-c441-5563-be24-749c971c9775",
+    "parent_id": "d9fd0eb2-5d94-5fd4-881f-271c751b1916",
+    "name": "車(その他)",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C76",
+    "order": 76,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "704d38bb-b95f-519e-b486-be73c30ed0d4",
+    "parent_id": "d9fd0eb2-5d94-5fd4-881f-271c751b1916",
+    "name": "suica",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C77",
+    "order": 77,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "21fd4e82-8d39-5c5b-af58-f4652ac2040f",
+    "parent_id": "d9fd0eb2-5d94-5fd4-881f-271c751b1916",
+    "name": "タクシー",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C78",
+    "order": 78,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "a15d84d7-7d8b-53e2-9d77-545b84c7798a",
+    "parent_id": "d9fd0eb2-5d94-5fd4-881f-271c751b1916",
+    "name": "新幹線",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C79",
+    "order": 79,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "35725394-ea84-5511-adae-44ccae4c5406",
+    "parent_id": "d9fd0eb2-5d94-5fd4-881f-271c751b1916",
+    "name": "レンタカー",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C80",
+    "order": 80,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "ac2f8538-73df-5a77-91ac-2b222de2445b",
+    "parent_id": "d9fd0eb2-5d94-5fd4-881f-271c751b1916",
+    "name": "飛行機",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C81",
+    "order": 81,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "af101351-a752-5d20-88cc-6c51f60af1a2",
+    "parent_id": "d9fd0eb2-5d94-5fd4-881f-271c751b1916",
+    "name": "宿泊費",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C82",
+    "order": 82,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "179dd1c0-75af-5f0d-b505-4037def32a06",
+    "parent_id": "d9fd0eb2-5d94-5fd4-881f-271c751b1916",
+    "name": "船",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C83",
+    "order": 83,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "e394a707-c948-5a34-9808-f1d624411a93",
+    "parent_id": "751375ec-e91d-5940-90a4-431426fb01c9",
+    "name": "国民健康保険",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C87",
+    "order": 87,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "0ee8740b-6995-5b5a-8bb5-3ad5e43849c4",
+    "parent_id": "f0ed6886-5bb7-5e11-8d4a-2804c0dff6a1",
+    "name": "年金",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C88",
+    "order": 88,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "b6b0aee2-c81d-500b-b698-350cb339b006",
+    "parent_id": "7af22891-5ed4-5126-bc3e-cf2ef2d41e3f",
+    "name": "市県民税",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C89",
+    "order": 89,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "ed91bc72-0519-5525-9502-c09307025e59",
+    "parent_id": "5e9b35ef-9c20-5c6e-8d68-15124762b307",
+    "name": "地方税",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C90",
+    "order": 90,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "7d0f263b-001a-5713-a3fb-aef6f2137ae2",
+    "parent_id": "08504231-a17e-5af7-b191-d32c52b1fbf8",
+    "name": "所得税",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C91",
+    "order": 91,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "8be27845-cd43-5f72-8328-66e1f5c6c1ef",
+    "parent_id": "032807f5-7f05-5c82-a182-d3399485eeb2",
+    "name": "所得税",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C92",
+    "order": 92,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "b828359f-049d-58d1-b2d5-6b9c5d4536ab",
+    "parent_id": "08b1292b-bc65-5886-990b-d111d6e2d602",
+    "name": "消費税",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C93",
+    "order": 93,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "9e02a9bc-65a3-5ce2-a4ed-55dbb8c78786",
+    "parent_id": "cd80e03b-467a-5d27-84bd-9f2c9fb8bf9f",
+    "name": "自動車税",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C94",
+    "order": 94,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "90aefcc1-eccc-5f5d-8458-1a127dc33c45",
+    "parent_id": "80713447-d404-50d9-9c3c-8d3614f5fd55",
+    "name": "柏　商工会議所",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C95",
+    "order": 95,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "700766cf-bf04-5de2-85d3-f60a282ee153",
+    "parent_id": "ea28b8a0-446b-5e85-8f27-557cdc0a7462",
+    "name": "外食",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C100",
+    "order": 100,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "be1cd039-588f-5217-8421-42017230c56f",
+    "parent_id": "ea28b8a0-446b-5e85-8f27-557cdc0a7462",
+    "name": "スーパー",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C101",
+    "order": 101,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "d76d2720-8097-5dd2-936d-93b06c52f27d",
+    "parent_id": "ea28b8a0-446b-5e85-8f27-557cdc0a7462",
+    "name": "ホームセンター",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C102",
+    "order": 102,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "3ca062c5-e9c4-5df1-9e06-ff3a83afcd3d",
+    "parent_id": "ea28b8a0-446b-5e85-8f27-557cdc0a7462",
+    "name": "コンビニ",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C103",
+    "order": 103,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "25f0612d-52fa-5cef-a9b4-48708b87faa0",
+    "parent_id": "f791e67e-d49d-5f2d-b6e8-877933fc0e31",
+    "name": "薬局",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C107",
+    "order": 107,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "26c09db7-6ff8-5ea3-8ab2-01268412f931",
+    "parent_id": "f791e67e-d49d-5f2d-b6e8-877933fc0e31",
+    "name": "ショッピングモール",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C108",
+    "order": 108,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "9fa44d2f-bb86-5a9e-958a-b577ba6551fc",
+    "parent_id": "f791e67e-d49d-5f2d-b6e8-877933fc0e31",
+    "name": "ニトリ",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C109",
+    "order": 109,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "8e9993b0-ca13-5110-b63e-52d17484bdbe",
+    "parent_id": "f791e67e-d49d-5f2d-b6e8-877933fc0e31",
+    "name": "電気店",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C110",
+    "order": 110,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "b9ad7735-5ef9-5b50-87b8-9f4896e656af",
+    "parent_id": "f791e67e-d49d-5f2d-b6e8-877933fc0e31",
+    "name": "モノタロウ",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C111",
+    "order": 111,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "df3d8381-aef8-5544-badc-f6717b1bf675",
+    "parent_id": "f791e67e-d49d-5f2d-b6e8-877933fc0e31",
+    "name": "アスクル",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C112",
+    "order": 112,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "8c8cefc9-ed30-590c-a1de-3a5673f70d0e",
+    "parent_id": "f791e67e-d49d-5f2d-b6e8-877933fc0e31",
+    "name": "ユニクロ",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C113",
+    "order": 113,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "9b63f2e4-fb0e-5d34-8c3d-c909cd1ff1bb",
+    "parent_id": "f791e67e-d49d-5f2d-b6e8-877933fc0e31",
+    "name": "ユニフォーム",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C114",
+    "order": 114,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "d3fa0c8f-5604-5d6a-ab97-27fdba7619f5",
+    "parent_id": "f791e67e-d49d-5f2d-b6e8-877933fc0e31",
+    "name": "ABCマート",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C115",
+    "order": 115,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "8704a602-3705-50c2-9e77-b2636cfb594e",
+    "parent_id": "f791e67e-d49d-5f2d-b6e8-877933fc0e31",
+    "name": "ゲーム",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C117",
+    "order": 117,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "1500b898-09d6-57db-a891-9a79fcd7bdfd",
+    "parent_id": "f791e67e-d49d-5f2d-b6e8-877933fc0e31",
+    "name": "投資",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C119",
+    "order": 119,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "3ec7611e-ebed-5f56-9beb-5f6a50d770eb",
+    "parent_id": "95de9059-9c2f-506d-9248-ddb714dee33b",
+    "name": "郵便",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C123",
+    "order": 123,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "0d3c82ee-3569-58da-9ad8-9e34786deecc",
+    "parent_id": "95de9059-9c2f-506d-9248-ddb714dee33b",
+    "name": "Amazon",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C124",
+    "order": 124,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "25ca6d7b-92cb-5fba-aaee-a6ee08d3b5f6",
+    "parent_id": "95de9059-9c2f-506d-9248-ddb714dee33b",
+    "name": "Amazon(米)",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C125",
+    "order": 125,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "e7de8294-f454-5de4-aa5d-447f819b02da",
+    "parent_id": "95de9059-9c2f-506d-9248-ddb714dee33b",
+    "name": "ダイレクト出版",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C126",
+    "order": 126,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "0f2c7578-b0db-5413-8e3c-a1195331b16e",
+    "parent_id": "95de9059-9c2f-506d-9248-ddb714dee33b",
+    "name": "EDUWARD(獣医学書)",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C127",
+    "order": 127,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "3625e809-91da-5d36-a85e-730f8163f190",
+    "parent_id": "95de9059-9c2f-506d-9248-ddb714dee33b",
+    "name": "本",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C128",
+    "order": 128,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "ad2f0f3e-175b-5b6e-9b08-ab51fe911c41",
+    "parent_id": "95de9059-9c2f-506d-9248-ddb714dee33b",
+    "name": "文房具",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C129",
+    "order": 129,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "e92dfec9-ab74-5f48-9304-a73e755168e0",
+    "parent_id": "95de9059-9c2f-506d-9248-ddb714dee33b",
+    "name": "リサイクルショップ",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C130",
+    "order": 130,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "43337a17-2422-590c-9621-a3bc803a27c5",
+    "parent_id": "95de9059-9c2f-506d-9248-ddb714dee33b",
+    "name": "100均",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C131",
+    "order": 131,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "929ce954-f897-5a5b-949d-f56cac74a116",
+    "parent_id": "95de9059-9c2f-506d-9248-ddb714dee33b",
+    "name": "TSUTAYA",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C132",
+    "order": 132,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "1193a070-ae2a-5e93-892d-bfbbe8f29bad",
+    "parent_id": "95de9059-9c2f-506d-9248-ddb714dee33b",
+    "name": "ファイトフィット",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C134",
+    "order": 134,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "2df3a75d-a337-5389-b96c-62f864b018e3",
+    "parent_id": "95de9059-9c2f-506d-9248-ddb714dee33b",
+    "name": "公文",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C135",
+    "order": 135,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "aa4fe0f9-7dac-59c5-bbe4-92b47997dcb6",
+    "parent_id": "ff3d2832-9386-5789-aa3e-e105de1e3123",
+    "name": "アソビュー",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C139",
+    "order": 139,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "21183e15-ce24-598f-afc3-92177fcc7c69",
+    "parent_id": "21ddb267-58c5-5729-af84-d5e00199735f",
+    "name": "ベルトラ",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C140",
+    "order": 140,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "38808967-87b5-5587-b727-5f6f33c1280a",
+    "parent_id": "68c867f9-307c-5456-80c5-20f77fd1d78c",
+    "name": "温泉",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C144",
+    "order": 144,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "01521383-10ff-512f-bd03-94a7d20ae78a",
+    "parent_id": "303c0062-bb43-549c-b0ca-fefad10e13b3",
+    "name": "美容　美容院",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C147",
+    "order": 147,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "5dd8139c-3ad1-565f-95b8-8912d92cc3a8",
+    "parent_id": "303c0062-bb43-549c-b0ca-fefad10e13b3",
+    "name": "美容　まつ毛サロン",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C148",
+    "order": 148,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "039c5d97-903c-5657-8a06-efc8bdf6060a",
+    "parent_id": "303c0062-bb43-549c-b0ca-fefad10e13b3",
+    "name": "美容　脱毛",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C149",
+    "order": 149,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "e3b92a5a-6756-56f8-8af2-45a9fe053cf0",
+    "parent_id": "303c0062-bb43-549c-b0ca-fefad10e13b3",
+    "name": "美容　エステ",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C151",
+    "order": 151,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "25eea569-2a7c-5ff5-97b3-1f302cf3cdbc",
+    "parent_id": "303c0062-bb43-549c-b0ca-fefad10e13b3",
+    "name": "サプリメント",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C152",
+    "order": 152,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "ea50ae58-187c-5096-821a-64ea41450001",
+    "parent_id": "303c0062-bb43-549c-b0ca-fefad10e13b3",
+    "name": "ホワイトエッセンス",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C153",
+    "order": 153,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "801d0853-2819-564a-9e58-7f8612dd6c53",
+    "parent_id": "7867785f-93c0-5236-b45e-acb7d48b65da",
+    "name": "贈答品",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C157",
+    "order": 157,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "668002b9-34ae-5e8d-8d4a-18a860c3415f",
+    "parent_id": "65b4e353-371d-5980-87e8-b8480145da56",
+    "name": "ECライフ",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C159",
+    "order": 159,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "51b6b99c-ba3f-53fe-97de-a31adc8d426f",
+    "parent_id": "adbb5b1e-7968-5808-9f7f-c5d1d7220627",
+    "name": "土浦",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C163",
+    "order": 163,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "b3c41416-0208-517b-8ce5-b94c01787e2c",
+    "parent_id": "82e90657-dbc1-50e0-ac34-f9cf78d9d998",
+    "name": "MGS",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C164",
+    "order": 164,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "f3bfa7a9-8e3b-52df-8f0d-f4fce9e85bf8",
+    "parent_id": "385e8f22-9495-5719-bf48-75f4abe30202",
+    "name": "DMM",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C165",
+    "order": 165,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "4dd0cb15-d13c-5c34-9a0b-3387fa228267",
+    "parent_id": "b944e91b-2ba0-56c1-96e3-c5d782b44bec",
+    "name": "その他",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C167",
+    "order": 167,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "ee3c784d-b472-549c-b74e-83c43302d94d",
+    "parent_id": null,
+    "name": "テナント",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C10",
+    "order": 10,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "dbcfe2af-2703-59fa-b2a7-68bb4a8f8ce8",
+    "parent_id": null,
+    "name": "問屋",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C21",
+    "order": 21,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "beedcc00-e8c9-569f-b409-268285c6cec0",
+    "parent_id": null,
+    "name": "外注費",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C32",
+    "order": 32,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "5640c7c7-111b-5d06-8cd7-cd103accdaa8",
+    "parent_id": null,
+    "name": "手数料",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C38",
+    "order": 38,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "7ee4239d-bdbf-555a-8539-6c98550c5e2f",
+    "parent_id": null,
+    "name": "保険",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C44",
+    "order": 44,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "ffb6dbed-d649-5a5b-8cf9-eb2907bf73eb",
+    "parent_id": null,
+    "name": "水道・光熱費",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C60",
+    "order": 60,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "3965acbd-d83a-5de6-aff1-8a7c28ddac3b",
+    "parent_id": null,
+    "name": "通信費",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C70",
+    "order": 70,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "d9fd0eb2-5d94-5fd4-881f-271c751b1916",
+    "parent_id": null,
+    "name": "交通費",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C85",
+    "order": 85,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "ea28b8a0-446b-5e85-8f27-557cdc0a7462",
+    "parent_id": null,
+    "name": "食費",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C105",
+    "order": 105,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "f791e67e-d49d-5f2d-b6e8-877933fc0e31",
+    "parent_id": null,
+    "name": "消耗品",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C121",
+    "order": 121,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "95de9059-9c2f-506d-9248-ddb714dee33b",
+    "parent_id": null,
+    "name": "新聞図書費",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C137",
+    "order": 137,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "303c0062-bb43-549c-b0ca-fefad10e13b3",
+    "parent_id": null,
+    "name": "美容",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C155",
+    "order": 155,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "56bcf5ff-05fc-5a94-96e4-c25a779b7c8c",
+    "parent_id": null,
+    "name": "その他",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C174",
+    "order": 174,
+    "selectable": false,
+    "color": {
+      "type": "theme",
+      "value": "7",
+      "tint": 0.5999938962981048,
+      "pattern": "solid"
+    }
+  },
+  {
+    "id": "751375ec-e91d-5940-90a4-431426fb01c9",
+    "parent_id": null,
+    "name": "国民健康保険",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C87",
+    "order": 87,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "f0ed6886-5bb7-5e11-8d4a-2804c0dff6a1",
+    "parent_id": null,
+    "name": "年金",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C88",
+    "order": 88,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "7af22891-5ed4-5126-bc3e-cf2ef2d41e3f",
+    "parent_id": null,
+    "name": "市県民税",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C89",
+    "order": 89,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "5e9b35ef-9c20-5c6e-8d68-15124762b307",
+    "parent_id": null,
+    "name": "地方税",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C90",
+    "order": 90,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "08504231-a17e-5af7-b191-d32c52b1fbf8",
+    "parent_id": null,
+    "name": "所得税",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C91",
+    "order": 91,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "032807f5-7f05-5c82-a182-d3399485eeb2",
+    "parent_id": null,
+    "name": "所得税",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C92",
+    "order": 92,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "08b1292b-bc65-5886-990b-d111d6e2d602",
+    "parent_id": null,
+    "name": "消費税",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C93",
+    "order": 93,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "cd80e03b-467a-5d27-84bd-9f2c9fb8bf9f",
+    "parent_id": null,
+    "name": "自動車税",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C94",
+    "order": 94,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "80713447-d404-50d9-9c3c-8d3614f5fd55",
+    "parent_id": null,
+    "name": "柏　商工会議所",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C95",
+    "order": 95,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "ff3d2832-9386-5789-aa3e-e105de1e3123",
+    "parent_id": null,
+    "name": "アソビュー",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C139",
+    "order": 139,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "21ddb267-58c5-5729-af84-d5e00199735f",
+    "parent_id": null,
+    "name": "ベルトラ",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C140",
+    "order": 140,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "68c867f9-307c-5456-80c5-20f77fd1d78c",
+    "parent_id": null,
+    "name": "温泉",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C144",
+    "order": 144,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "7867785f-93c0-5236-b45e-acb7d48b65da",
+    "parent_id": null,
+    "name": "贈答品",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C157",
+    "order": 157,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "65b4e353-371d-5980-87e8-b8480145da56",
+    "parent_id": null,
+    "name": "ECライフ",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C159",
+    "order": 159,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "adbb5b1e-7968-5808-9f7f-c5d1d7220627",
+    "parent_id": null,
+    "name": "土浦",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C163",
+    "order": 163,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "82e90657-dbc1-50e0-ac34-f9cf78d9d998",
+    "parent_id": null,
+    "name": "MGS",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C164",
+    "order": 164,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "385e8f22-9495-5719-bf48-75f4abe30202",
+    "parent_id": null,
+    "name": "DMM",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C165",
+    "order": 165,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "b944e91b-2ba0-56c1-96e3-c5d782b44bec",
+    "parent_id": null,
+    "name": "その他",
+    "year": 2024,
+    "source_sheet": "2024年度　経費",
+    "source_cell": "C167",
+    "order": 167,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "61d72794-f1a2-52ef-adfd-72c457bba97d",
+    "parent_id": "6a08e0e7-be5e-5214-9bcf-1f71f966ea88",
+    "name": "家賃",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C4",
+    "order": 4,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "41fa0be0-a505-550b-bd19-71123adc6b0b",
+    "parent_id": "3d5c4b0e-5cb7-5643-86bb-909f051d2f89",
+    "name": "テナント代(柏院)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C5",
+    "order": 5,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "ceba1279-58c5-55f2-be7d-93a451c5f66a",
+    "parent_id": "43843d05-9a7a-5b9e-a4ef-4de8a8204729",
+    "name": "テナント代(野田院)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C6",
+    "order": 6,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "b9dc3d64-30f1-5560-bced-e162951f3909",
+    "parent_id": "182c902c-e926-5c40-8218-14a7eb9c3c56",
+    "name": "問屋(プラセンタ)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C8",
+    "order": 8,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "c236be55-c9a2-517c-8d2e-d3b4d06a6b3b",
+    "parent_id": "12f76207-a0f5-58c5-b1a6-8640fe309152",
+    "name": "外注費　HP",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C10",
+    "order": 10,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "142c556e-0b22-54f6-8bf6-0c7fb2bd28cc",
+    "parent_id": "b3cc16c8-5e77-526e-9b03-1a52240ef7e1",
+    "name": "外注費　ブーリアン",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C11",
+    "order": 11,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "1815e813-d3c0-5eb9-9844-8e42db7a828a",
+    "parent_id": "04edb88a-4f15-52fa-aa67-6038835f1a26",
+    "name": "外注費　ラクスル",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C12",
+    "order": 12,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "62c76f8c-7917-5b7d-8ae6-f227f4c003e3",
+    "parent_id": "b8cdd8d3-6ae7-539a-bcd3-fa3126b6d9a7",
+    "name": "外注費　creema",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C13",
+    "order": 13,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "4c1dc792-af79-5e3e-9fb2-0a69d33483f8",
+    "parent_id": "ede55b65-4029-5e8e-b53a-6435e8bc562a",
+    "name": "外注費　マネーフォワード",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C14",
+    "order": 14,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "04cc46b0-4dea-56f5-93e2-cc7106a7df09",
+    "parent_id": "8dd9b00f-ebd5-5940-a73e-b8bee79a905f",
+    "name": "海外薬品",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C17",
+    "order": 17,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "c964de58-27ba-5f18-a6b0-cbf0decfec72",
+    "parent_id": "7074feae-2265-5bd9-984f-473959d47431",
+    "name": "電気",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C19",
+    "order": 19,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "efe401db-7ba2-5c1c-9a1e-72dcbfdc867d",
+    "parent_id": "a70c842a-f58a-5867-8bb6-885d78738a38",
+    "name": "電気(野田)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C20",
+    "order": 20,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "e9cb81f5-2f3d-544f-a2c4-edf44818214a",
+    "parent_id": "90dfc492-9a36-5580-aa4b-efb55ec302c0",
+    "name": "ガス",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C21",
+    "order": 21,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "7bcd3ea3-f8e2-5798-859c-4c8336effaed",
+    "parent_id": "c9354b36-e7eb-5416-93c4-eb78a04ebd8e",
+    "name": "ガス(野田)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C22",
+    "order": 22,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "cab70467-9327-55cb-b685-895827b56b4d",
+    "parent_id": "1ec35785-40c8-5d6c-a42b-e75879245e68",
+    "name": "通信費　携帯",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C23",
+    "order": 23,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "9b14c490-6c48-57ae-80b7-ab85c28a4b90",
+    "parent_id": "e948f4a4-24c0-5aba-b613-d07672b67350",
+    "name": "通信費　povo",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C24",
+    "order": 24,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "3b579a0f-726d-5699-8e7a-b86f33460863",
+    "parent_id": "ffa8e176-ecff-5320-a3f4-7e69bb0f08b8",
+    "name": "通信費　LAN",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C25",
+    "order": 25,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "92c81db4-f1ab-5b0b-b260-1283b275b933",
+    "parent_id": "194a0302-a4a7-5fca-b3b9-a04c38680be7",
+    "name": "通信費　apple",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C26",
+    "order": 26,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "9891fc40-687f-5f3e-b4fc-ce7ae95ac702",
+    "parent_id": "7bda1e1b-c47a-597c-b710-ca320e074f12",
+    "name": "水道",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C28",
+    "order": 28,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "f9cd8fbc-b539-5350-929c-85877090b05d",
+    "parent_id": "8a6cb1bf-fe12-5cdd-8e13-e8cebb5484a2",
+    "name": "交通費",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C29",
+    "order": 29,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "1d61c005-26c6-5cf8-b85f-61c2c821ccbf",
+    "parent_id": "59c10f6e-5fad-5674-af03-f04d9310b581",
+    "name": "ETC",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C30",
+    "order": 30,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "5fae5f68-27a7-5570-bc02-4bb23515aac9",
+    "parent_id": "95f6a01d-a4a6-5e9c-b991-ef65541f1faa",
+    "name": "駐車場",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C31",
+    "order": 31,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "03907f31-9fbf-541c-a920-c311e0a9a477",
+    "parent_id": "6a9628e5-118a-5161-a790-69eceb860994",
+    "name": "ガソリン",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C32",
+    "order": 32,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "6a574f80-226b-55f6-b2fd-300098189b73",
+    "parent_id": "cdea1156-aad7-52c7-9072-4df2adc2bed1",
+    "name": "車(その他)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C33",
+    "order": 33,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "f75a0766-0db0-5bc6-9ef7-22518c711e7f",
+    "parent_id": "22035af2-9c08-582d-a111-55226bfc2175",
+    "name": "suica",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C34",
+    "order": 34,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "150889c2-d26d-5881-8636-58536992ac7c",
+    "parent_id": "d9ae7d31-9304-5ed4-a534-cd875d955b7a",
+    "name": "タクシー",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C35",
+    "order": 35,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "174967da-bf4f-59ac-ba45-14a2eb7a1b41",
+    "parent_id": "edd662b9-4776-56f1-aa04-0fb42686056e",
+    "name": "新幹線",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C36",
+    "order": 36,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "66ad3ad9-791c-5217-9c37-2c7d7fb8bd65",
+    "parent_id": "20a698ec-ca3f-5859-8cfc-830d86458dee",
+    "name": "レンタカー",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C37",
+    "order": 37,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "b7ccace7-1c94-5488-9844-cf8936aa9aad",
+    "parent_id": "8dd528db-12f7-5e17-8b68-bccc7dc7cc35",
+    "name": "飛行機",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C38",
+    "order": 38,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "c2dfcd80-ae51-5e92-9ffe-40e37e4684ff",
+    "parent_id": "2dbf1763-9963-5f93-90c8-e25880e1c18c",
+    "name": "宿泊費",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C39",
+    "order": 39,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "03697d29-6a76-57c9-975e-bd861705eae5",
+    "parent_id": "fbcd5c52-ddd7-5e7e-84dc-080e88f9e69c",
+    "name": "船",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C40",
+    "order": 40,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "b1deaf66-2ccb-5d10-a571-192606d88351",
+    "parent_id": "0f3a7970-8191-5729-a04b-de71289e8007",
+    "name": "国民健康保険",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C42",
+    "order": 42,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "762c005c-d773-5dc5-89bd-453c2aac7f6b",
+    "parent_id": "fd9641ac-1bd8-5ad3-8e8c-c72418d06691",
+    "name": "年金",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C43",
+    "order": 43,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "2e0399bf-7779-5a85-8b31-81c2be8bfedb",
+    "parent_id": "10c48a9a-5aa9-5617-b704-1a11cd47fefb",
+    "name": "所得税",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C44",
+    "order": 44,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "6446f775-00c8-52ec-b571-7cafc1477382",
+    "parent_id": "d3bab88a-dc5c-52c3-bfab-6c2ce4b48c3b",
+    "name": "外食",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C48",
+    "order": 48,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "99da561e-febd-5232-b9b8-b23d12795fdb",
+    "parent_id": "4f4d7612-af9d-5306-853e-f493d12fc9b0",
+    "name": "スーパー",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C49",
+    "order": 49,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "9b17c91b-1ccd-5b63-a0e6-56cbf0d474e6",
+    "parent_id": "b865d0c4-ddc7-5dd5-9cb2-f09313819dc2",
+    "name": "ホームセンター",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C50",
+    "order": 50,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "2df3b197-958c-55ac-85ea-a73b9a8de985",
+    "parent_id": "f29a9399-e183-540f-ad0a-94e23de07082",
+    "name": "ショッピングモール",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C51",
+    "order": 51,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "d3750dbd-94ea-54b2-88af-201453a91fa7",
+    "parent_id": "629ecf38-7ba8-5a51-9dd7-b74abbbdf015",
+    "name": "ニトリ",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C52",
+    "order": 52,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "563ad693-b7fb-5b31-8fef-ec778c344b76",
+    "parent_id": "5555fa0c-6158-58ab-b57f-b496c5e9cb55",
+    "name": "電気店",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C53",
+    "order": 53,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "addd359e-eaae-5108-8c09-187c246e47f7",
+    "parent_id": "70ef9c6d-9136-5e28-ac25-1178837fc573",
+    "name": "モノタロウ",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C54",
+    "order": 54,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "fd434666-a62c-5c63-b23a-b4f316c00870",
+    "parent_id": "853acfe8-8b19-569c-9a8c-208ecacb11be",
+    "name": "アスクル",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C55",
+    "order": 55,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "488c7217-b871-5bee-b904-b7c17584f53e",
+    "parent_id": "4b3ab6eb-9e94-594f-904c-a714819288d1",
+    "name": "郵便",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C56",
+    "order": 56,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "06581f4a-2427-56a4-937f-539155fb3d1e",
+    "parent_id": "6c7990c6-8d41-54b8-bf08-657934d35732",
+    "name": "Amazon",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C57",
+    "order": 57,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "9a2aee4d-4c6d-5694-983f-86d8e85e7659",
+    "parent_id": "fa5dbfd7-4883-5e46-9968-6ee9c33f66cb",
+    "name": "Amazon(米)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C58",
+    "order": 58,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "766aff59-4c65-5774-b1c7-6456c855108e",
+    "parent_id": "804edf27-8054-562c-9625-b585e7bd3e1a",
+    "name": "ダイレクト出版",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C59",
+    "order": 59,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "88e7124d-a3e4-5b97-96b5-90bcafe27abb",
+    "parent_id": "95050c9c-c7ac-5c97-987f-d603ef369860",
+    "name": "EDUWARD(獣医学書)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C60",
+    "order": 60,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "83577a23-b8f2-5316-a314-5c6733f182d1",
+    "parent_id": "1be536f3-5833-5977-8c22-48e18037474c",
+    "name": "本",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C61",
+    "order": 61,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "b573fc4c-e8df-5eab-80f3-2c3b896139c7",
+    "parent_id": "62db9305-4447-59e8-95a2-2007c7eeab3a",
+    "name": "文房具",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C62",
+    "order": 62,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "fe92fd66-b6b3-558f-b0ee-be988c78b919",
+    "parent_id": "0368243e-1f6a-523e-ab79-9db8b8aa1b4d",
+    "name": "ユニクロ",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C63",
+    "order": 63,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "7e087a90-de66-568b-a59a-cba21b80795f",
+    "parent_id": "0a7ed0f0-5013-58d3-b9cb-0a6dfbb6f4b2",
+    "name": "ユニフォーム",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C64",
+    "order": 64,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "320a7dbd-b7aa-5b40-ad6a-23b938cdaa44",
+    "parent_id": "589ff2c0-1c44-5a3c-bba1-180b8eb197f7",
+    "name": "ABCマート",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C65",
+    "order": 65,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "e383a8f8-5daa-542c-af83-7173c35bb4dd",
+    "parent_id": "df2f3abe-f99e-5cf5-85c0-5364470934db",
+    "name": "薬局",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C66",
+    "order": 66,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "48b1e323-608d-51ce-a0be-392a7a10837c",
+    "parent_id": "5c5a990b-8c34-5fdb-9241-007ebd827334",
+    "name": "リサイクルショップ",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C67",
+    "order": 67,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "4c436dc8-3f4e-5dd7-a8b8-96545249585d",
+    "parent_id": "f77f4e06-90c1-540d-931a-bd6755ea7002",
+    "name": "100均",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C68",
+    "order": 68,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "155d1b8b-44c6-54ee-a8e2-240869c61a83",
+    "parent_id": "bce28fe0-4d38-5513-b8bd-5a35a823b483",
+    "name": "TSUTAYA",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C69",
+    "order": 69,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "97ec645b-679b-5351-9acd-5d01a91e88dd",
+    "parent_id": "526b327a-8ed3-5f4f-b951-d52b2bfc6b52",
+    "name": "コンビニ",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C70",
+    "order": 70,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "3c5cbb2c-0e07-5997-9abf-e6d7dfb2e26b",
+    "parent_id": "bbefa4ff-4c3b-5d28-9fe8-497f656b6c54",
+    "name": "AIAI",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C71",
+    "order": 71,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "4f109ad8-de7e-5a8c-8d28-55672e0a8f05",
+    "parent_id": "ce8a0fb5-c51e-5468-9afc-98db168f5df1",
+    "name": "ゲーム",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C73",
+    "order": 73,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "e0345f63-89fc-5784-b2ab-f3cc54ed6015",
+    "parent_id": "9d9dc6ba-7eb6-54f2-b1e1-589e92251ef6",
+    "name": "アソビュー",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C74",
+    "order": 74,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "439a25e8-1049-5cec-a165-8e155811a645",
+    "parent_id": "28e09027-77c9-52c0-9526-7f81633b85de",
+    "name": "ベルトラ",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C75",
+    "order": 75,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "0dbf15fe-31ec-5ce3-b00d-36aee549db70",
+    "parent_id": "c6f7b98b-5681-5695-9933-017e844d7552",
+    "name": "温泉",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C77",
+    "order": 77,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "46438be0-f50f-5417-a772-a4f37eea5012",
+    "parent_id": "a0baedea-bad8-5620-9f84-7d8202461e22",
+    "name": "MITテクノロジー",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C79",
+    "order": 79,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "b0c4034a-376f-5b14-9260-98c66d202a2f",
+    "parent_id": "bb6ca48e-e17f-5dc0-a9d7-aa0566ca5e2d",
+    "name": "google",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C80",
+    "order": 80,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "ba86f7a7-3a94-5a0b-963a-89616d93717b",
+    "parent_id": "be224c22-fc3c-5779-9cfb-5af3502825b8",
+    "name": "note(アプリ)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C81",
+    "order": 81,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "12e8025d-3cb0-5867-884a-0e586e7d2f83",
+    "parent_id": "7df665b9-1cfa-5ccc-91f5-191c28630b50",
+    "name": "美容　美容院",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C83",
+    "order": 83,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "2a217316-c406-512b-9ba6-29b51ee9d649",
+    "parent_id": "3b1181e6-fc1a-5406-a8bc-b45dcbe84738",
+    "name": "美容　まつ毛サロン",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C84",
+    "order": 84,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "54c79b56-e75e-5488-a95c-003fab89a178",
+    "parent_id": "cf6d3af7-aead-5c04-9759-3f5e442894db",
+    "name": "美容　脱毛",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C85",
+    "order": 85,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "ee2c0a6c-317f-5ee1-8785-95bf2ea67cc4",
+    "parent_id": "4a645501-e835-50ba-bb8c-17a071fe5f6e",
+    "name": "サプリメント",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C86",
+    "order": 86,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "13e7b5b8-4478-5cb5-8efb-494ac0c46901",
+    "parent_id": "245e287a-2302-572d-9ff1-1d545edbfbc6",
+    "name": "ホワイトエッセンス",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C87",
+    "order": 87,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "60f7ce58-036e-5599-b58b-271093541b53",
+    "parent_id": "9d086cda-43a8-501d-87ae-b12567e45c83",
+    "name": "贈答品",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C90",
+    "order": 90,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "d20ae313-b7ab-53f1-8fd6-5cd063497427",
+    "parent_id": "a6e9c60a-92e3-5395-9dad-2f8c75028fb2",
+    "name": "ECライフ",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C92",
+    "order": 92,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "585c3da4-0e28-596f-8b68-17cca7b53882",
+    "parent_id": "247b8e0d-6c55-5508-a705-39ec65e822df",
+    "name": "投資",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C94",
+    "order": 94,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "832da5b7-2932-502c-88f5-a0784bac2ba8",
+    "parent_id": "95c3316c-0e91-55b9-a6e6-65a589fc67f4",
+    "name": "AIAI",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C96",
+    "order": 96,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "ce855330-e061-5b7e-a0f5-8635a4bbf56d",
+    "parent_id": "ec731068-4156-5536-ba70-7924867d55ab",
+    "name": "土浦",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C98",
+    "order": 98,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "35fa8db2-1030-5811-8827-07b3f280b98a",
+    "parent_id": "d9eb6ac6-cecc-546a-9056-7de9661e29ea",
+    "name": "MGS",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C99",
+    "order": 99,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "4a9177d1-d355-51ec-b32e-2c2183d2b24b",
+    "parent_id": "faa88be3-3521-5368-9a72-d05df304a18d",
+    "name": "DMM",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C100",
+    "order": 100,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "f9a11a5d-43bb-56fa-a582-e67be0bc29f9",
+    "parent_id": "9c763ab2-7e66-5cf6-8a3e-d555f809e8d7",
+    "name": "その他",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C102",
+    "order": 102,
+    "selectable": true,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "6a08e0e7-be5e-5214-9bcf-1f71f966ea88",
+    "parent_id": null,
+    "name": "家賃",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C4",
+    "order": 4,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "3d5c4b0e-5cb7-5643-86bb-909f051d2f89",
+    "parent_id": null,
+    "name": "テナント代(柏院)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C5",
+    "order": 5,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "43843d05-9a7a-5b9e-a4ef-4de8a8204729",
+    "parent_id": null,
+    "name": "テナント代(野田院)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C6",
+    "order": 6,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "182c902c-e926-5c40-8218-14a7eb9c3c56",
+    "parent_id": null,
+    "name": "問屋(プラセンタ)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C8",
+    "order": 8,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "12f76207-a0f5-58c5-b1a6-8640fe309152",
+    "parent_id": null,
+    "name": "外注費　HP",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C10",
+    "order": 10,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "b3cc16c8-5e77-526e-9b03-1a52240ef7e1",
+    "parent_id": null,
+    "name": "外注費　ブーリアン",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C11",
+    "order": 11,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "04edb88a-4f15-52fa-aa67-6038835f1a26",
+    "parent_id": null,
+    "name": "外注費　ラクスル",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C12",
+    "order": 12,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "b8cdd8d3-6ae7-539a-bcd3-fa3126b6d9a7",
+    "parent_id": null,
+    "name": "外注費　creema",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C13",
+    "order": 13,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "ede55b65-4029-5e8e-b53a-6435e8bc562a",
+    "parent_id": null,
+    "name": "外注費　マネーフォワード",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C14",
+    "order": 14,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "8dd9b00f-ebd5-5940-a73e-b8bee79a905f",
+    "parent_id": null,
+    "name": "海外薬品",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C17",
+    "order": 17,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "7074feae-2265-5bd9-984f-473959d47431",
+    "parent_id": null,
+    "name": "電気",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C19",
+    "order": 19,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "a70c842a-f58a-5867-8bb6-885d78738a38",
+    "parent_id": null,
+    "name": "電気(野田)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C20",
+    "order": 20,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "90dfc492-9a36-5580-aa4b-efb55ec302c0",
+    "parent_id": null,
+    "name": "ガス",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C21",
+    "order": 21,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "c9354b36-e7eb-5416-93c4-eb78a04ebd8e",
+    "parent_id": null,
+    "name": "ガス(野田)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C22",
+    "order": 22,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "1ec35785-40c8-5d6c-a42b-e75879245e68",
+    "parent_id": null,
+    "name": "通信費　携帯",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C23",
+    "order": 23,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "e948f4a4-24c0-5aba-b613-d07672b67350",
+    "parent_id": null,
+    "name": "通信費　povo",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C24",
+    "order": 24,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "ffa8e176-ecff-5320-a3f4-7e69bb0f08b8",
+    "parent_id": null,
+    "name": "通信費　LAN",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C25",
+    "order": 25,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "194a0302-a4a7-5fca-b3b9-a04c38680be7",
+    "parent_id": null,
+    "name": "通信費　apple",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C26",
+    "order": 26,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "7bda1e1b-c47a-597c-b710-ca320e074f12",
+    "parent_id": null,
+    "name": "水道",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C28",
+    "order": 28,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "8a6cb1bf-fe12-5cdd-8e13-e8cebb5484a2",
+    "parent_id": null,
+    "name": "交通費",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C29",
+    "order": 29,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "59c10f6e-5fad-5674-af03-f04d9310b581",
+    "parent_id": null,
+    "name": "ETC",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C30",
+    "order": 30,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "95f6a01d-a4a6-5e9c-b991-ef65541f1faa",
+    "parent_id": null,
+    "name": "駐車場",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C31",
+    "order": 31,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "6a9628e5-118a-5161-a790-69eceb860994",
+    "parent_id": null,
+    "name": "ガソリン",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C32",
+    "order": 32,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "cdea1156-aad7-52c7-9072-4df2adc2bed1",
+    "parent_id": null,
+    "name": "車(その他)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C33",
+    "order": 33,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "22035af2-9c08-582d-a111-55226bfc2175",
+    "parent_id": null,
+    "name": "suica",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C34",
+    "order": 34,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "d9ae7d31-9304-5ed4-a534-cd875d955b7a",
+    "parent_id": null,
+    "name": "タクシー",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C35",
+    "order": 35,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "edd662b9-4776-56f1-aa04-0fb42686056e",
+    "parent_id": null,
+    "name": "新幹線",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C36",
+    "order": 36,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "20a698ec-ca3f-5859-8cfc-830d86458dee",
+    "parent_id": null,
+    "name": "レンタカー",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C37",
+    "order": 37,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "8dd528db-12f7-5e17-8b68-bccc7dc7cc35",
+    "parent_id": null,
+    "name": "飛行機",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C38",
+    "order": 38,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "2dbf1763-9963-5f93-90c8-e25880e1c18c",
+    "parent_id": null,
+    "name": "宿泊費",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C39",
+    "order": 39,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "fbcd5c52-ddd7-5e7e-84dc-080e88f9e69c",
+    "parent_id": null,
+    "name": "船",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C40",
+    "order": 40,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "0f3a7970-8191-5729-a04b-de71289e8007",
+    "parent_id": null,
+    "name": "国民健康保険",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C42",
+    "order": 42,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "fd9641ac-1bd8-5ad3-8e8c-c72418d06691",
+    "parent_id": null,
+    "name": "年金",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C43",
+    "order": 43,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "10c48a9a-5aa9-5617-b704-1a11cd47fefb",
+    "parent_id": null,
+    "name": "所得税",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C44",
+    "order": 44,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "d3bab88a-dc5c-52c3-bfab-6c2ce4b48c3b",
+    "parent_id": null,
+    "name": "外食",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C48",
+    "order": 48,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "4f4d7612-af9d-5306-853e-f493d12fc9b0",
+    "parent_id": null,
+    "name": "スーパー",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C49",
+    "order": 49,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "b865d0c4-ddc7-5dd5-9cb2-f09313819dc2",
+    "parent_id": null,
+    "name": "ホームセンター",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C50",
+    "order": 50,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "f29a9399-e183-540f-ad0a-94e23de07082",
+    "parent_id": null,
+    "name": "ショッピングモール",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C51",
+    "order": 51,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "629ecf38-7ba8-5a51-9dd7-b74abbbdf015",
+    "parent_id": null,
+    "name": "ニトリ",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C52",
+    "order": 52,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "5555fa0c-6158-58ab-b57f-b496c5e9cb55",
+    "parent_id": null,
+    "name": "電気店",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C53",
+    "order": 53,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "70ef9c6d-9136-5e28-ac25-1178837fc573",
+    "parent_id": null,
+    "name": "モノタロウ",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C54",
+    "order": 54,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "853acfe8-8b19-569c-9a8c-208ecacb11be",
+    "parent_id": null,
+    "name": "アスクル",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C55",
+    "order": 55,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "4b3ab6eb-9e94-594f-904c-a714819288d1",
+    "parent_id": null,
+    "name": "郵便",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C56",
+    "order": 56,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "6c7990c6-8d41-54b8-bf08-657934d35732",
+    "parent_id": null,
+    "name": "Amazon",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C57",
+    "order": 57,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "fa5dbfd7-4883-5e46-9968-6ee9c33f66cb",
+    "parent_id": null,
+    "name": "Amazon(米)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C58",
+    "order": 58,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "804edf27-8054-562c-9625-b585e7bd3e1a",
+    "parent_id": null,
+    "name": "ダイレクト出版",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C59",
+    "order": 59,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "95050c9c-c7ac-5c97-987f-d603ef369860",
+    "parent_id": null,
+    "name": "EDUWARD(獣医学書)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C60",
+    "order": 60,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "1be536f3-5833-5977-8c22-48e18037474c",
+    "parent_id": null,
+    "name": "本",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C61",
+    "order": 61,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "62db9305-4447-59e8-95a2-2007c7eeab3a",
+    "parent_id": null,
+    "name": "文房具",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C62",
+    "order": 62,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "0368243e-1f6a-523e-ab79-9db8b8aa1b4d",
+    "parent_id": null,
+    "name": "ユニクロ",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C63",
+    "order": 63,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "0a7ed0f0-5013-58d3-b9cb-0a6dfbb6f4b2",
+    "parent_id": null,
+    "name": "ユニフォーム",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C64",
+    "order": 64,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "589ff2c0-1c44-5a3c-bba1-180b8eb197f7",
+    "parent_id": null,
+    "name": "ABCマート",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C65",
+    "order": 65,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "df2f3abe-f99e-5cf5-85c0-5364470934db",
+    "parent_id": null,
+    "name": "薬局",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C66",
+    "order": 66,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "5c5a990b-8c34-5fdb-9241-007ebd827334",
+    "parent_id": null,
+    "name": "リサイクルショップ",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C67",
+    "order": 67,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "f77f4e06-90c1-540d-931a-bd6755ea7002",
+    "parent_id": null,
+    "name": "100均",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C68",
+    "order": 68,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "bce28fe0-4d38-5513-b8bd-5a35a823b483",
+    "parent_id": null,
+    "name": "TSUTAYA",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C69",
+    "order": 69,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "526b327a-8ed3-5f4f-b951-d52b2bfc6b52",
+    "parent_id": null,
+    "name": "コンビニ",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C70",
+    "order": 70,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "bbefa4ff-4c3b-5d28-9fe8-497f656b6c54",
+    "parent_id": null,
+    "name": "AIAI",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C71",
+    "order": 71,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "ce8a0fb5-c51e-5468-9afc-98db168f5df1",
+    "parent_id": null,
+    "name": "ゲーム",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C73",
+    "order": 73,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "9d9dc6ba-7eb6-54f2-b1e1-589e92251ef6",
+    "parent_id": null,
+    "name": "アソビュー",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C74",
+    "order": 74,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "28e09027-77c9-52c0-9526-7f81633b85de",
+    "parent_id": null,
+    "name": "ベルトラ",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C75",
+    "order": 75,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "c6f7b98b-5681-5695-9933-017e844d7552",
+    "parent_id": null,
+    "name": "温泉",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C77",
+    "order": 77,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "a0baedea-bad8-5620-9f84-7d8202461e22",
+    "parent_id": null,
+    "name": "MITテクノロジー",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C79",
+    "order": 79,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "bb6ca48e-e17f-5dc0-a9d7-aa0566ca5e2d",
+    "parent_id": null,
+    "name": "google",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C80",
+    "order": 80,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "be224c22-fc3c-5779-9cfb-5af3502825b8",
+    "parent_id": null,
+    "name": "note(アプリ)",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C81",
+    "order": 81,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "7df665b9-1cfa-5ccc-91f5-191c28630b50",
+    "parent_id": null,
+    "name": "美容　美容院",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C83",
+    "order": 83,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "3b1181e6-fc1a-5406-a8bc-b45dcbe84738",
+    "parent_id": null,
+    "name": "美容　まつ毛サロン",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C84",
+    "order": 84,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "cf6d3af7-aead-5c04-9759-3f5e442894db",
+    "parent_id": null,
+    "name": "美容　脱毛",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C85",
+    "order": 85,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "4a645501-e835-50ba-bb8c-17a071fe5f6e",
+    "parent_id": null,
+    "name": "サプリメント",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C86",
+    "order": 86,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "245e287a-2302-572d-9ff1-1d545edbfbc6",
+    "parent_id": null,
+    "name": "ホワイトエッセンス",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C87",
+    "order": 87,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "9d086cda-43a8-501d-87ae-b12567e45c83",
+    "parent_id": null,
+    "name": "贈答品",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C90",
+    "order": 90,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "a6e9c60a-92e3-5395-9dad-2f8c75028fb2",
+    "parent_id": null,
+    "name": "ECライフ",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C92",
+    "order": 92,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "247b8e0d-6c55-5508-a705-39ec65e822df",
+    "parent_id": null,
+    "name": "投資",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C94",
+    "order": 94,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "95c3316c-0e91-55b9-a6e6-65a589fc67f4",
+    "parent_id": null,
+    "name": "AIAI",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C96",
+    "order": 96,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "ec731068-4156-5536-ba70-7924867d55ab",
+    "parent_id": null,
+    "name": "土浦",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C98",
+    "order": 98,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "d9eb6ac6-cecc-546a-9056-7de9661e29ea",
+    "parent_id": null,
+    "name": "MGS",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C99",
+    "order": 99,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "faa88be3-3521-5368-9a72-d05df304a18d",
+    "parent_id": null,
+    "name": "DMM",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C100",
+    "order": 100,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  },
+  {
+    "id": "9c763ab2-7e66-5cf6-8a3e-d555f809e8d7",
+    "parent_id": null,
+    "name": "その他",
+    "year": 2023,
+    "source_sheet": "2023年度　経費",
+    "source_cell": "C102",
+    "order": 102,
+    "selectable": false,
+    "color": {
+      "type": "rgb",
+      "value": "00000000",
+      "tint": 0.0,
+      "pattern": null
+    }
+  }
+]
