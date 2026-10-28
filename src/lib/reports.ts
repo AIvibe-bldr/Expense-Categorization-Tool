@@ -1,5 +1,5 @@
 import { colorHex } from "./colors";
-import { effectiveCategories, purchaseAmount, sum, summary } from "./engine";
+import { effectiveCategories, purchaseAmount, sortGroups, sum, summary } from "./engine";
 import { type State, serviceNames } from "./types";
 export type Report = {
   title: string;
@@ -39,9 +39,7 @@ export function reports(s: State, year: number): Report[] {
           .map(purchaseAmount),
       ),
     );
-  for (const parent of categories
-    .filter((c) => !c.selectable)
-    .sort((a, b) => b.year - a.year || a.order - b.order)) {
+  for (const parent of sortGroups(categories)) {
     const children = categories
       .filter((c) => c.parent_id === parent.id)
       .sort((a, b) => a.order - b.order);

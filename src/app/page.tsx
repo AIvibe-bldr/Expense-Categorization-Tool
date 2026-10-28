@@ -1,6 +1,7 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, type ReactNode } from "react";
 import { colorHex } from "@/lib/colors";
+import { sortGroups } from "@/lib/category-order";
 import { createBrowserClient } from "@supabase/ssr";
 import {
   serviceNames,
@@ -1155,7 +1156,7 @@ export default function App() {
                   <div>
                     <h2>{month.slice(0, 4)}年 月別経費</h2>
                     <p>
-                      2025年の分類順・色を基本に、過去年度の分類を保持しています。
+                      分類・項目名を押すと編集できます。各分類の末尾から項目を追加できます。
                     </p>
                   </div>
                   <a
@@ -1169,6 +1170,11 @@ export default function App() {
                   categories={categories}
                   transactions={tx}
                   year={month.slice(0, 4)}
+                  busy={busy}
+                  onSave={(body) => act(() => post("categories", body))}
+                  onReorder={(id, direction) =>
+                    act(() => post("categories/reorder", { id, direction }))
+                  }
                 />
               </section>
             )}
@@ -1461,11 +1467,62 @@ function Monthly({
   categories,
   transactions,
   year,
+  busy,
+  onSave,
+  onReorder,
 }: {
   categories: Category[];
   transactions: PublicTx[];
   year: string;
+  busy: boolean;
+  onSave: (body: { id?: string; name: string; parent_id: string | null }) => Promise<void>;
+  onReorder: (id: string, direction: "up" | "down") => Promise<void>;
 }) {
+  const groups = sortGroups(categories);
+  const [editId, setEditId] = useState("");
+  const [editName, setEditName] = useState("");
+  const [editParent, setEditParent] = useState("");
+  const [addParent, setAddParent] = useState("");
+  const [newName, setNewName] = useState("");
+  const startEdit = (category: Category) => {
+    setAddParent("");
+    setEditId(category.id);
+    setEditName(category.name);
+    setEditParent(category.parent_id || "");
+  };
+  const editRow = (category: Category) =>
+    editId === category.id ? (
+      <tr key={`${category.id}-edit`} className="monthly-editor-row">
+        <td colSpan={14}>
+          <form className="monthly-editor" onSubmit={async (e) => {
+            e.preventDefault();
+            await onSave({ id: category.id, name: editName, parent_id: category.selectable ? editParent : null });
+            setEditId("");
+          }}>
+            <label>
+              {category.selectable ? "項目名" : "分類名"}
+              <input required maxLength={100} value={editName} onChange={(e) => setEditName(e.target.value)} />
+            </label>
+            {category.selectable ? (
+              <label>
+                所属する分類
+                <select required value={editParent} onChange={(e) => setEditParent(e.target.value)}>
+                  {groups.map((group) => <option key={group.id} value={group.id}>{group.name}</option>)}
+                </select>
+              </label>
+            ) : (
+              <div className="monthly-order">
+                <span>分類の場所</span>
+                <button type="button" className="secondary" disabled={busy || groups[0]?.id === category.id} onClick={() => onReorder(category.id, "up")}>↑ 上へ</button>
+                <button type="button" className="secondary" disabled={busy || groups.at(-1)?.id === category.id} onClick={() => onReorder(category.id, "down")}>↓ 下へ</button>
+              </div>
+            )}
+            <button disabled={busy || !editName.trim() || (category.selectable && !editParent)}>変更を保存</button>
+            <button type="button" className="secondary" onClick={() => setEditId("")}>キャンセル</button>
+          </form>
+        </td>
+      </tr>
+    ) : null;
   const amount = (t: PublicTx) =>
     !t.excluded && ["purchase", "refund", "fee"].includes(t.transaction_type)
       ? t.amount * (t.direction === "in" ? -1 : 1)
@@ -1484,7 +1541,7 @@ function Monthly({
     );
   const row = (
     key: string,
-    label: string,
+    label: ReactNode,
     values: number[],
     className = "",
   ) => (
@@ -1511,26 +1568,43 @@ function Monthly({
           </tr>
         </thead>
         <tbody>
-          {categories
-            .filter((c) => !c.selectable)
-            .sort((a, b) => b.year - a.year || a.order - b.order)
-            .flatMap((p) => {
-              const kids = categories.filter((c) => c.parent_id === p.id);
+          {groups.flatMap((p) => {
+              const kids = categories.filter((c) => c.parent_id === p.id).sort((a, b) => a.order - b.order);
               return [
                 <tr
                   className="group"
                   key={p.id}
                   style={{ background: "#" + colorHex(p.color) }}
                 >
-                  <th colSpan={14}>{p.name}</th>
+                  <th colSpan={14}><button type="button" className="monthly-name" onClick={() => startEdit(p)} aria-label={`${p.name}の分類を編集`}>{p.name} <span aria-hidden="true">✎</span></button></th>
                 </tr>,
-                ...kids.map((c) => row(c.id, c.name, months([c.id]))),
+                editRow(p),
+                ...kids.flatMap((c) => [
+                  row(c.id, <button type="button" className="monthly-name" onClick={() => startEdit(c)} aria-label={`${c.name}の項目を編集`}>{c.name} <span aria-hidden="true">✎</span></button>, months([c.id])),
+                  editRow(c),
+                ]),
                 row(
                   p.id + "total",
                   p.name + " 小計",
                   months(kids.map((c) => c.id)),
                   "subtotal",
                 ),
+                <tr key={`${p.id}-add`} className="monthly-add-row"><td colSpan={14}>
+                  {addParent === p.id ? (
+                    <form className="monthly-editor" onSubmit={async (e) => {
+                      e.preventDefault();
+                      await onSave({ name: newName, parent_id: p.id });
+                      setNewName("");
+                      setAddParent("");
+                    }}>
+                      <label>新しい項目名<input required maxLength={100} value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="例：テナント料（柏院）" /></label>
+                      <button disabled={busy || !newName.trim()}>項目を追加</button>
+                      <button type="button" className="secondary" onClick={() => setAddParent("")}>キャンセル</button>
+                    </form>
+                  ) : (
+                    <button type="button" className="link" onClick={() => { setEditId(""); setAddParent(p.id); setNewName(""); }}>＋ この分類に項目を追加</button>
+                  )}
+                </td></tr>,
               ];
             })}
           {row("unknown", "未分類", months([null]))}

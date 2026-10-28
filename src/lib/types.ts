@@ -35,6 +35,7 @@ export type Category = {
   source_sheet: string;
   source_cell: string;
   order: number;
+  display_order?: number;
   selectable: boolean;
   color: { type: string; value: string; tint: number; pattern: string | null };
 };
@@ -119,7 +120,7 @@ export type State = {
   version: number;
   transactions: Transaction[];
   custom_categories: Category[];
-  category_edits: Record<string, { name: string; parent_id: string | null }>;
+  category_edits: Record<string, { name: string; parent_id: string | null; display_order?: number }>;
   rules: Rule[];
   reconciliations: Reconciliation[];
   batches: Batch[];

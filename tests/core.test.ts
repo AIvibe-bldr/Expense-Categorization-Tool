@@ -11,6 +11,8 @@ import {
   effectiveCategories,
   addCategory,
   updateCategory,
+  moveCategory,
+  sortGroups,
   otherCategory,
   importCsv,
   summary,
@@ -762,6 +764,18 @@ test("custom category and items can be added, renamed, and moved without changin
   );
   assert.throws(() => updateCategory(s, item.id, "不正", null));
   assert.throws(() => addCategory(s, "合計", null));
+});
+test("moving a category changes monthly display order and survives renaming", () => {
+  const s = emptyState();
+  const a = addCategory(s, "一番目", null);
+  const b = addCategory(s, "二番目", null);
+  moveCategory(s, b.id, "up");
+  assert.equal(sortGroups(effectiveCategories(s))[0].id, b.id);
+  updateCategory(s, b.id, "改名後", null);
+  assert.equal(sortGroups(effectiveCategories(s))[0].name, "改名後");
+  const rows = reports(s, 2026).find((r) => r.title === "2026年 月別経費")!.rows;
+  assert.ok(rows.findIndex((r) => r[0] === b.id) < rows.findIndex((r) => r[0] === a.id));
+  assert.throws(() => moveCategory(s, b.id, "up"));
 });
 test("unclassified purchases fall into Other by month and remain pending for human review", () => {
   const s = emptyState();

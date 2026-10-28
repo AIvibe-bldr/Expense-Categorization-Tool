@@ -140,6 +140,28 @@ test("CSV import → classify → reuse → dashboard → mobile", async ({
     stateAfterEdit.categories.find((c: { id: string }) => c.id === item.id)
       .name,
   ).toBe("テナント料（野田院）");
+  await page.getByRole("button", { name: /月別経費表/ }).click();
+  await page.getByRole("button", { name: "家賃テストの分類を編集" }).click();
+  await page.getByRole("textbox", { name: "分類名" }).fill("家賃テスト改名");
+  await page.getByRole("button", { name: "変更を保存" }).click();
+  await expect(page.getByRole("button", { name: "家賃テスト改名の分類を編集" })).toBeVisible();
+  await page.getByRole("button", { name: "＋ この分類に項目を追加" }).first().click();
+  await page.getByRole("textbox", { name: "新しい項目名" }).fill("追加テナント料");
+  await page.getByRole("button", { name: "項目を追加", exact: true }).click();
+  await page.getByRole("button", { name: "追加テナント料の項目を編集" }).click();
+  await page.getByRole("textbox", { name: "項目名", exact: true }).fill("追加テナント料・改名");
+  const otherGroup = stateAfterEdit.categories.find(
+    (c: { id: string; selectable: boolean }) => !c.selectable && c.id !== group.id,
+  );
+  await page.getByRole("combobox", { name: "所属する分類" }).selectOption(otherGroup.id);
+  await page.getByRole("button", { name: "変更を保存" }).click();
+  const stateAfterInline = await (await request.get("/api/state?month=2026-10")).json();
+  const movedItem = stateAfterInline.categories.find((c: { name: string }) => c.name === "追加テナント料・改名");
+  expect(movedItem.parent_id).toBe(otherGroup.id);
+  await page.getByRole("button", { name: "家賃テスト改名の分類を編集" }).click();
+  await page.getByRole("button", { name: "↓ 下へ" }).click();
+  const stateAfterOrder = await (await request.get("/api/state?month=2026-10")).json();
+  expect(stateAfterOrder.categories.find((c: { id: string }) => c.id === group.id).display_order).toBe(1);
   await page.getByRole("button", { name: /概況/ }).click();
   await page.reload();
   await expect(

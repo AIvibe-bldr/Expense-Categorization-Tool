@@ -8,6 +8,7 @@ import {
   effectiveCategories,
   addCategory,
   updateCategory,
+  moveCategory,
   summary,
   importCsv,
   approveCategory,
@@ -246,6 +247,12 @@ async function handler(
           .parse(body);
         if (b.id) updateCategory(s, b.id, b.name, b.parent_id);
         else result = addCategory(s, b.name, b.parent_id);
+      } else if (path === "categories/reorder") {
+        const b = z.object({
+          id: z.uuid(),
+          direction: z.enum(["up", "down"]),
+        }).parse(body);
+        moveCategory(s, b.id, b.direction);
       } else if (path === "rules") {
         const b = z
           .object({

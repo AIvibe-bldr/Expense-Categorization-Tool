@@ -1,4 +1,6 @@
 import { randomUUID } from "node:crypto";
+import { sortGroups } from "./category-order";
+export { sortGroups } from "./category-order";
 import sourceCategories from "../../data/categories.json";
 import { normalize, parseCsv, type Mapping } from "./csv";
 import { hash } from "./crypto";
@@ -16,6 +18,22 @@ export function effectiveCategories(s: State): Category[] {
     ...category,
     ...(s.category_edits?.[category.id] || {}),
   }));
+}
+export function moveCategory(s: State, id: string, direction: "up" | "down") {
+  const groups = sortGroups(effectiveCategories(s));
+  const from = groups.findIndex((c) => c.id === id);
+  const to = from + (direction === "up" ? -1 : 1);
+  if (from < 0 || to < 0 || to >= groups.length)
+    throw Error("移動先の分類がありません");
+  [groups[from], groups[to]] = [groups[to], groups[from]];
+  for (const [index, group] of groups.entries())
+    (s.category_edits ||= {})[group.id] = {
+      ...s.category_edits?.[group.id],
+      name: group.name,
+      parent_id: null,
+      display_order: index,
+    };
+  audit(s, "move_category", id, { direction, from, to });
 }
 export function addCategory(s: State, name: string, parentId: string | null) {
   const all = effectiveCategories(s);
@@ -62,7 +80,9 @@ export function updateCategory(
       : parentId !== null
   )
     throw Error("項目は分類の下に、分類は最上位に配置してください");
-  (s.category_edits ||= {})[id] = { name: name.trim(), parent_id: parentId };
+  (s.category_edits ||= {})[id] = {
+    ...s.category_edits?.[id], name: name.trim(), parent_id: parentId,
+  };
   if (current.selectable && current.parent_id !== parentId)
     for (const t of s.transactions)
       if (t.category_id === id) t.parent_category_id = parentId;
