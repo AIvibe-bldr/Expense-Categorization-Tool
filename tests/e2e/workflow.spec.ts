@@ -36,7 +36,9 @@ test("CSV import → classify → reuse → dashboard → mobile", async ({
   await dialog
     .getByRole("combobox", { name: "用途分類", exact: true })
     .selectOption({ label });
-  await dialog.getByLabel("同じ利用先の用途分類を次回も適用する").check();
+  await expect(
+    dialog.getByLabel("同じ利用先の用途分類を次回も適用する"),
+  ).toBeChecked();
   await dialog.getByRole("button", { name: "分類を承認して保存" }).click();
   await expect(dialog).toBeHidden();
   const r = await request.get("/api/state?month=2026-10");

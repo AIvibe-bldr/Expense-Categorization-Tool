@@ -1143,7 +1143,7 @@ export default function App() {
                   {!data.state.rules.length && (
                     <Empty
                       title="まだルールはありません"
-                      text="明細の分類確認で「次回も適用」を選ぶと、ここに保存されます。"
+                      text="明細の分類確認では「次回も適用」が初期選択されています。ここで編集できます。"
                     />
                   )}
                 </section>
@@ -1298,7 +1298,7 @@ function Detail({
   const [cat, setCat] = useState(
       tx.category_id || tx.suggested_category_ids[0] || "",
     ),
-    [remember, setRemember] = useState(false),
+    [remember, setRemember] = useState(true),
     [merchant, setMerchant] = useState(tx.merchant_category || ""),
     [note, setNote] = useState(tx.purpose_note),
     [use, setUse] = useState(tx.business_use),
