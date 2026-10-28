@@ -5,7 +5,9 @@ import ExcelJS from "exceljs";
 import { identity, checkOrigin } from "@/lib/auth";
 import { load, save, getSecret } from "@/lib/store";
 import {
-  categories,
+  effectiveCategories,
+  addCategory,
+  updateCategory,
   summary,
   importCsv,
   approveCategory,
@@ -89,7 +91,7 @@ async function handler(
             ...s,
             transactions: s.transactions.map(({ raw_encrypted, ...t }) => t),
           },
-          categories,
+          categories: effectiveCategories(s),
           summary: summary(s, month),
           local: who.local,
           google: {
@@ -234,6 +236,16 @@ async function handler(
           b.purpose_note,
           b.business_use,
         );
+      } else if (path === "categories") {
+        const b = z
+          .object({
+            id: z.uuid().optional(),
+            name: z.string().trim().min(1).max(100),
+            parent_id: z.uuid().nullable(),
+          })
+          .parse(body);
+        if (b.id) updateCategory(s, b.id, b.name, b.parent_id);
+        else result = addCategory(s, b.name, b.parent_id);
       } else if (path === "rules") {
         const b = z
           .object({
@@ -251,7 +263,9 @@ async function handler(
         } else {
           if (
             !b.merchant ||
-            !categories.some((c) => c.id === b.category_id && c.selectable)
+            !effectiveCategories(s).some(
+              (c) => c.id === b.category_id && c.selectable,
+            )
           )
             throw Error("利用先と分類を指定してください");
           const id = b.id || randomUUID(),

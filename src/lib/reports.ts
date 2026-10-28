@@ -1,5 +1,5 @@
 import { colorHex } from "./colors";
-import { categories, purchaseAmount, sum, summary } from "./engine";
+import { effectiveCategories, purchaseAmount, sum, summary } from "./engine";
 import { type State, serviceNames } from "./types";
 export type Report = {
   title: string;
@@ -10,6 +10,7 @@ function safe(s: string) {
   return /^[=+@\-\t\r]/.test(s) ? "'" + s : s;
 }
 export function reports(s: State, year: number): Report[] {
+  const categories = effectiveCategories(s);
   const month = `${year}-${String(new Date().getUTCMonth() + 1).padStart(2, "0")}`,
     stats = summary(s, month);
   const monthly: Report = {
@@ -17,7 +18,7 @@ export function reports(s: State, year: number): Report[] {
     rows: [
       [
         "分類ID",
-        "分類 / 元年度",
+        "分類",
         ...Array.from({ length: 12 }, (_, i) => `${i + 1}月`),
         "年間合計",
       ],
@@ -45,7 +46,7 @@ export function reports(s: State, year: number): Report[] {
       .filter((c) => c.parent_id === parent.id)
       .sort((a, b) => a.order - b.order);
     monthly.colors![monthly.rows.length] = colorHex(parent.color);
-    monthly.rows.push([parent.id, `${parent.name} (${parent.year})`]);
+    monthly.rows.push([parent.id, parent.name]);
     const totals = Array(12).fill(0) as number[];
     for (const child of children) {
       const m = months(child.id);
@@ -55,7 +56,12 @@ export function reports(s: State, year: number): Report[] {
     monthly.rows.push(["", `${parent.name} 小計`, ...totals, sum(totals)]);
   }
   const unknown = months(null);
-  monthly.rows.push(["unclassified", "未分類", ...unknown, sum(unknown)]);
+  monthly.rows.push([
+    "unclassified",
+    "未振分け（旧データ）",
+    ...unknown,
+    sum(unknown),
+  ]);
   const total = stats.monthly.map((m) => m.amount);
   monthly.rows.push(["", "購入支出合計", ...total, sum(total)]);
   const ledger = (filter: (t: State["transactions"][number]) => boolean) => [

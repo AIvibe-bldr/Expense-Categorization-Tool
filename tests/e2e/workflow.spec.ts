@@ -89,6 +89,55 @@ test("CSV import → classify → reuse → dashboard → mobile", async ({
   const exportFile = await request.get("/api/export?year=2026");
   expect(exportFile.ok()).toBe(true);
   expect((await exportFile.body()).subarray(0, 2).toString()).toBe("PK");
+  await page.getByRole("button", { name: /分類管理/ }).click();
+  const addGroup = page
+    .getByRole("heading", { name: "分類を追加" })
+    .locator("..");
+  await addGroup
+    .getByRole("textbox", { name: "新しい分類名" })
+    .fill("家賃テスト");
+  await addGroup.getByRole("button", { name: "分類を追加" }).click();
+  const stateAfterGroup = await (
+    await request.get("/api/state?month=2026-10")
+  ).json();
+  const group = stateAfterGroup.categories.find(
+    (c: { name: string; selectable: boolean }) =>
+      c.name === "家賃テスト" && !c.selectable,
+  );
+  expect(group).toBeTruthy();
+  const addItem = page
+    .getByRole("heading", { name: "分類の中に項目を追加" })
+    .locator("..");
+  await addItem.getByRole("combobox", { name: "分類" }).selectOption(group.id);
+  await addItem
+    .getByRole("textbox", { name: "項目名" })
+    .fill("テナント料（柏院）");
+  await addItem.getByRole("button", { name: "項目を追加" }).click();
+  const stateAfterItem = await (
+    await request.get("/api/state?month=2026-10")
+  ).json();
+  const item = stateAfterItem.categories.find(
+    (c: { name: string; parent_id: string }) =>
+      c.name === "テナント料（柏院）" && c.parent_id === group.id,
+  );
+  expect(item).toBeTruthy();
+  const edit = page
+    .getByRole("heading", { name: "名前・所属分類を変更" })
+    .locator("..");
+  await edit
+    .getByRole("combobox", { name: "変更する分類・項目" })
+    .selectOption(item.id);
+  await edit
+    .getByRole("textbox", { name: "新しい名前" })
+    .fill("テナント料（野田院）");
+  await edit.getByRole("button", { name: "変更を保存" }).click();
+  const stateAfterEdit = await (
+    await request.get("/api/state?month=2026-10")
+  ).json();
+  expect(
+    stateAfterEdit.categories.find((c: { id: string }) => c.id === item.id)
+      .name,
+  ).toBe("テナント料（野田院）");
   await page.getByRole("button", { name: /概況/ }).click();
   await page.reload();
   await expect(

@@ -8,6 +8,10 @@ import { emptyState, type Transaction, type Service } from "../src/lib/types";
 import { parseCsv, normalize, yen, readCsv } from "../src/lib/csv";
 import {
   categories,
+  effectiveCategories,
+  addCategory,
+  updateCategory,
+  otherCategory,
   importCsv,
   summary,
   approveCategory,
@@ -128,7 +132,8 @@ test("unknown merchant remains pending, not guessed", () => {
     "card",
   );
   assert.equal(s.transactions[0].classification_status, "pending");
-  assert.equal(s.transactions[0].category_id, null);
+  assert.equal(s.transactions[0].category_id, otherCategory(s)?.id);
+  assert.equal(s.transactions[0].classification_status, "pending");
 });
 test("approved category rule is reused before suggestions", () => {
   const s = emptyState();
@@ -155,7 +160,7 @@ test("Amazon merchant class does not confirm purpose", () => {
   const s = emptyState();
   importCsv(s, csv(["2026-10-05,Amazon,100,購入,one"]), "rakuten_card", "card");
   assert.equal(s.transactions[0].merchant_category, "Amazon");
-  assert.equal(s.transactions[0].category_id, null);
+  assert.equal(s.transactions[0].category_id, otherCategory(s)?.id);
 });
 test("subtotal IDs cannot be assigned", () => {
   const s = emptyState();
@@ -725,4 +730,130 @@ test("restore preserves matched duplicate state and reconciliation evidence", ()
   assert.equal(summary(live, "2026-10").purchase, 30000);
   restoreMissing(live, backup);
   assert.equal(live.transactions.length, 2);
+});
+
+test("custom category and items can be added, renamed, and moved without changing IDs", () => {
+  const s = emptyState();
+  const rent = addCategory(s, "新しい家賃", null);
+  const other = addCategory(s, "別の費用", null);
+  const item = addCategory(s, "テナント料（柏院）", rent.id);
+  assert.equal(
+    effectiveCategories(s).find((c) => c.id === item.id)?.parent_id,
+    rent.id,
+  );
+  const t = make({ category_id: item.id, parent_category_id: rent.id });
+  s.transactions.push(t);
+  updateCategory(s, item.id, "テナント料（野田院）", other.id);
+  updateCategory(s, rent.id, "家賃", null);
+  assert.equal(
+    effectiveCategories(s).find((c) => c.id === item.id)?.name,
+    "テナント料（野田院）",
+  );
+  assert.equal(
+    effectiveCategories(s).find((c) => c.id === rent.id)?.name,
+    "家賃",
+  );
+  assert.equal(s.transactions[0].parent_category_id, other.id);
+  assert.equal(s.transactions[0].category_id, item.id);
+  assert.ok(
+    reports(s, 2026)
+      .find((r) => r.title === "2026年 月別経費")!
+      .rows.some((r) => r[0] === item.id && r[1] === "  テナント料（野田院）"),
+  );
+  assert.throws(() => updateCategory(s, item.id, "不正", null));
+  assert.throws(() => addCategory(s, "合計", null));
+});
+test("unclassified purchases fall into Other by month and remain pending for human review", () => {
+  const s = emptyState();
+  importCsv(
+    s,
+    csv(["2026-10-05,未知の店A,100,購入,a", "2026-11-05,未知の店B,200,購入,b"]),
+    "rakuten_card",
+    "card",
+  );
+  const other = otherCategory(s)!;
+  assert.equal(
+    s.transactions.filter(
+      (t) =>
+        t.category_id === other.id && t.classification_status === "pending",
+    ).length,
+    2,
+  );
+  assert.equal(summary(s, "2026-10").unclassified, 1);
+  assert.equal(summary(s, "2026-11").unclassified, 1);
+  const report = reports(s, 2026).find((r) => r.title === "2026年 月別経費")!;
+  const row = report.rows.find((r) => r[0] === other.id)!;
+  assert.equal(row[11], 100);
+  assert.equal(row[12], 200);
+  assert.equal(report.rows.at(-1)!.at(-1), 300);
+  const item = addCategory(s, "新規用途", other.parent_id);
+  approveCategory(
+    s,
+    s.transactions[0].transaction_id,
+    item.id,
+    true,
+    null,
+    "確認済み",
+  );
+  importCsv(
+    s,
+    csv(["2026-12-05,未知の店A,300,購入,c"]),
+    "rakuten_card",
+    "card",
+  );
+  assert.equal(s.transactions[2].category_id, item.id);
+  assert.equal(s.transactions[2].classification_status, "confirmed");
+});
+test("renamed historical item retains its ID and approved merchant rule", () => {
+  const s = emptyState();
+  const item = categories.find(
+    (c) => c.name === "家賃" && c.selectable && c.year === 2025,
+  )!;
+  importCsv(s, csv(["2026-10-05,借家,100,購入,a"]), "rakuten_card", "card");
+  approveCategory(s, s.transactions[0].transaction_id, item.id, true, null, "");
+  updateCategory(s, item.id, "家賃（旧契約）", item.parent_id);
+  importCsv(s, csv(["2026-11-05,借家,200,購入,b"]), "rakuten_card", "card");
+  assert.equal(s.transactions[1].category_id, item.id);
+  assert.equal(
+    effectiveCategories(s).find((c) => c.id === item.id)?.name,
+    "家賃（旧契約）",
+  );
+});
+test("restore carries custom categories needed by restored transactions", () => {
+  const backup = emptyState();
+  const group = addCategory(backup, "追加分類", null),
+    item = addCategory(backup, "追加項目", group.id);
+  backup.transactions = [
+    make({ category_id: item.id, parent_category_id: group.id }),
+  ];
+  const live = emptyState();
+  restoreMissing(live, backup);
+  assert.equal(
+    effectiveCategories(live).find((c) => c.id === item.id)?.name,
+    "追加項目",
+  );
+  assert.equal(live.transactions[0].category_id, item.id);
+});
+test("monthly report does not show source year", () => {
+  const monthly = reports(emptyState(), 2026).find(
+    (r) => r.title === "2026年 月別経費",
+  )!;
+  assert.equal(monthly.rows[0][1], "分類");
+  assert.ok(monthly.rows.some((r) => r[1] === "家賃"));
+  assert.ok(!monthly.rows.some((r) => String(r[1]).includes("家賃 (2025)")));
+});
+
+test("renaming Other keeps the stable fallback for new unknown merchants", () => {
+  const s = emptyState();
+  const other = otherCategory(s)!;
+  updateCategory(s, other.id, "その他（要確認）", other.parent_id);
+  importCsv(
+    s,
+    csv(["2026-10-05,初めての店,150,購入,first"]),
+    "rakuten_card",
+    "card",
+  );
+  assert.equal(s.transactions[0].category_id, other.id);
+  assert.equal(s.transactions[0].classification_status, "pending");
+  assert.equal(summary(s, "2026-10").final, false);
 });

@@ -46,7 +46,7 @@ const nav = [
   ["review", "未分類確認", "◇"],
   ["reconciliation", "重複・照合", "⇄"],
   ["connections", "サービス連携", "⊞"],
-  ["rules", "分類辞書", "≡"],
+  ["rules", "分類管理", "≡"],
   ["monthly", "月別経費表", "▦"],
   ["audit", "操作履歴", "◷"],
 ] as const;
@@ -121,18 +121,21 @@ export default function App() {
   const options = (
     <>
       <option value="">分類を選択</option>
-      {[2025, 2024, 2023].map((year) => (
-        <optgroup label={`${year}年度の分類`} key={year}>
-          {categories
-            .filter((c) => c.selectable && c.year === year)
-            .map((c) => (
-              <option value={c.id} key={c.id}>
-                {categories.find((p) => p.id === c.parent_id)?.name} › {c.name}{" "}
-                [{c.source_cell}]
-              </option>
-            ))}
-        </optgroup>
-      ))}
+      {[...new Set(categories.filter((c) => c.selectable).map((c) => c.year))]
+        .sort((a, b) => b - a)
+        .map((year) => (
+          <optgroup label={`${year}年度の分類`} key={year}>
+            {categories
+              .filter((c) => c.selectable && c.year === year)
+              .map((c) => (
+                <option value={c.id} key={c.id}>
+                  {categories.find((p) => p.id === c.parent_id)?.name} ›{" "}
+                  {c.name}
+                  {c.source_cell ? ` [${c.source_cell}]` : ""}
+                </option>
+              ))}
+          </optgroup>
+        ))}
     </>
   );
   const filtered = tx
@@ -598,7 +601,25 @@ export default function App() {
                     />
                   </label>
                 </div>
-                {txTable(filtered)}
+                {tab === "review"
+                  ? [
+                      ...new Set(
+                        filtered.map((t) => t.transaction_date.slice(0, 7)),
+                      ),
+                    ].map((m) => {
+                      const rows = filtered.filter((t) =>
+                        t.transaction_date.startsWith(m),
+                      );
+                      return (
+                        <div key={m}>
+                          <h3 className="review-month">
+                            {m.replace("-", "年")}月 · 未振分け {rows.length}件
+                          </h3>
+                          {txTable(rows)}
+                        </div>
+                      );
+                    })
+                  : txTable(filtered)}
               </section>
             )}
             {tab === "reconciliation" && (
@@ -1028,6 +1049,11 @@ export default function App() {
             )}
             {tab === "rules" && (
               <>
+                <CategoryManager
+                  categories={categories}
+                  busy={busy}
+                  onSave={(body) => act(() => post("categories", body))}
+                />
                 <section className="panel">
                   <h2>承認済みの分類ルール</h2>
                   <p>
@@ -1477,7 +1503,7 @@ function Monthly({
       <table>
         <thead>
           <tr>
-            <th>分類 / 元年度</th>
+            <th>分類</th>
             {Array.from({ length: 12 }, (_, i) => (
               <th key={i}>{i + 1}月</th>
             ))}
@@ -1496,9 +1522,7 @@ function Monthly({
                   key={p.id}
                   style={{ background: "#" + colorHex(p.color) }}
                 >
-                  <th colSpan={14}>
-                    {p.name} / {p.year}
-                  </th>
+                  <th colSpan={14}>{p.name}</th>
                 </tr>,
                 ...kids.map((c) => row(c.id, c.name, months([c.id]))),
                 row(
@@ -1522,5 +1546,169 @@ function Monthly({
         </tbody>
       </table>
     </div>
+  );
+}
+
+function CategoryManager({
+  categories,
+  busy,
+  onSave,
+}: {
+  categories: Category[];
+  busy: boolean;
+  onSave: (body: {
+    id?: string;
+    name: string;
+    parent_id: string | null;
+  }) => Promise<void>;
+}) {
+  const groups = categories.filter((c) => !c.selectable);
+  const [groupName, setGroupName] = useState(""),
+    [itemName, setItemName] = useState(""),
+    [itemParent, setItemParent] = useState("");
+  const [editId, setEditId] = useState(""),
+    [editName, setEditName] = useState(""),
+    [editParent, setEditParent] = useState("");
+  const selected = categories.find((c) => c.id === editId);
+  const groupOptions = groups.map((g) => (
+    <option value={g.id} key={g.id}>
+      {g.name} {g.source_cell ? `（${g.year}・${g.source_cell}）` : ""}
+    </option>
+  ));
+  return (
+    <section className="panel">
+      <h2>分類と項目を管理</h2>
+      <p className="muted">
+        分類 → 項目 →
+        取引の順に整理します。分類を変更しても元Excelの記録と取引IDは保持されます。
+      </p>
+      <div className="category-forms">
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            await onSave({ name: groupName, parent_id: null });
+            setGroupName("");
+          }}
+        >
+          <h3>分類を追加</h3>
+          <label>
+            新しい分類名
+            <input
+              required
+              maxLength={100}
+              value={groupName}
+              onChange={(e) => setGroupName(e.target.value)}
+              placeholder="例：家賃"
+            />
+          </label>
+          <button disabled={busy || !groupName.trim()}>分類を追加</button>
+        </form>
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            await onSave({ name: itemName, parent_id: itemParent });
+            setItemName("");
+          }}
+        >
+          <h3>分類の中に項目を追加</h3>
+          <label>
+            分類
+            <select
+              required
+              value={itemParent}
+              onChange={(e) => setItemParent(e.target.value)}
+            >
+              <option value="">分類を選択</option>
+              {groupOptions}
+            </select>
+          </label>
+          <label>
+            項目名
+            <input
+              required
+              maxLength={100}
+              value={itemName}
+              onChange={(e) => setItemName(e.target.value)}
+              placeholder="例：テナント料（柏院）"
+            />
+          </label>
+          <button disabled={busy || !itemParent || !itemName.trim()}>
+            項目を追加
+          </button>
+        </form>
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            if (selected)
+              await onSave({
+                id: selected.id,
+                name: editName,
+                parent_id: selected.selectable ? editParent : null,
+              });
+          }}
+        >
+          <h3>名前・所属分類を変更</h3>
+          <label>
+            変更する分類・項目
+            <select
+              required
+              value={editId}
+              onChange={(e) => {
+                const c = categories.find((c) => c.id === e.target.value);
+                setEditId(c?.id || "");
+                setEditName(c?.name || "");
+                setEditParent(c?.parent_id || "");
+              }}
+            >
+              <option value="">選択してください</option>
+              {groups.map((g) => (
+                <optgroup label={`${g.name}（${g.year}）`} key={g.id}>
+                  <option value={g.id}>分類：{g.name}</option>
+                  {categories
+                    .filter((c) => c.parent_id === g.id)
+                    .map((c) => (
+                      <option key={c.id} value={c.id}>
+                        項目：{c.name}
+                      </option>
+                    ))}
+                </optgroup>
+              ))}
+            </select>
+          </label>
+          <label>
+            新しい名前
+            <input
+              required
+              maxLength={100}
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+            />
+          </label>
+          {selected?.selectable && (
+            <label>
+              所属する分類
+              <select
+                required
+                value={editParent}
+                onChange={(e) => setEditParent(e.target.value)}
+              >
+                <option value="">分類を選択</option>
+                {groupOptions}
+              </select>
+            </label>
+          )}
+          <button
+            disabled={
+              busy ||
+              !selected ||
+              !editName.trim() ||
+              !!(selected?.selectable && !editParent)
+            }
+          >
+            変更を保存
+          </button>
+        </form>
+      </div>
+    </section>
   );
 }

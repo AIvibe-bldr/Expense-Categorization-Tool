@@ -118,6 +118,8 @@ export type Batch = {
 export type State = {
   version: number;
   transactions: Transaction[];
+  custom_categories: Category[];
+  category_edits: Record<string, { name: string; parent_id: string | null }>;
   rules: Rule[];
   reconciliations: Reconciliation[];
   batches: Batch[];
@@ -133,6 +135,8 @@ export type State = {
 export const emptyState = (): State => ({
   version: 0,
   transactions: [],
+  custom_categories: [],
+  category_edits: {},
   rules: [],
   reconciliations: [],
   batches: [],

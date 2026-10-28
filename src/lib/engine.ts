@@ -11,6 +11,75 @@ import type {
   Kind,
 } from "./types";
 export const categories = sourceCategories as Category[];
+export function effectiveCategories(s: State): Category[] {
+  return [...categories, ...(s.custom_categories || [])].map((category) => ({
+    ...category,
+    ...(s.category_edits?.[category.id] || {}),
+  }));
+}
+export function addCategory(s: State, name: string, parentId: string | null) {
+  const all = effectiveCategories(s);
+  if (!name.trim() || name.trim().length > 100 || name.includes("合計"))
+    throw Error("分類・項目名は1〜100文字で、合計を含めないでください");
+  if (parentId && !all.some((c) => c.id === parentId && !c.selectable))
+    throw Error("有効な分類を選択してください");
+  const category: Category = {
+    id: randomUUID(),
+    parent_id: parentId,
+    name: name.trim(),
+    year: new Date().getUTCFullYear(),
+    source_sheet: "ユーザー追加",
+    source_cell: "",
+    order: Math.max(0, ...all.map((c) => c.order)) + 1,
+    selectable: !!parentId,
+    color: { type: "rgb", value: "FFE8F1DF", tint: 0, pattern: "solid" },
+  };
+  (s.custom_categories ||= []).push(category);
+  audit(s, "add_category", category.id, {
+    parent_id: parentId,
+    name: category.name,
+  });
+  return category;
+}
+export function updateCategory(
+  s: State,
+  id: string,
+  name: string,
+  parentId: string | null,
+) {
+  const all = effectiveCategories(s),
+    current = all.find((c) => c.id === id);
+  if (
+    !current ||
+    !name.trim() ||
+    name.trim().length > 100 ||
+    name.includes("合計")
+  )
+    throw Error("有効な分類・項目名を入力してください");
+  if (
+    current.selectable
+      ? !parentId || !all.some((c) => c.id === parentId && !c.selectable)
+      : parentId !== null
+  )
+    throw Error("項目は分類の下に、分類は最上位に配置してください");
+  (s.category_edits ||= {})[id] = { name: name.trim(), parent_id: parentId };
+  if (current.selectable && current.parent_id !== parentId)
+    for (const t of s.transactions)
+      if (t.category_id === id) t.parent_category_id = parentId;
+  audit(s, "update_category", id, {
+    before: { name: current.name, parent_id: current.parent_id },
+    after: { name: name.trim(), parent_id: parentId },
+  });
+}
+export function otherCategory(s: State): Category | undefined {
+  const group = categories.find(
+    (c) => !c.selectable && c.name === "その他" && c.year === 2025,
+  );
+  const original = categories.find(
+    (c) => c.selectable && c.parent_id === group?.id && c.name === "その他",
+  );
+  return effectiveCategories(s).find((c) => c.id === original?.id);
+}
 export function audit(
   s: State,
   action: string,
@@ -27,11 +96,12 @@ export function audit(
   s.sync.dirty = true;
 }
 export function classify(t: Transaction, s: State) {
+  const all = effectiveCategories(s);
   const rule = s.rules.find(
     (r) => r.approved && r.merchant_normalized === t.merchant_normalized,
   );
   if (rule) {
-    const c = categories.find((c) => c.id === rule.category_id && c.selectable);
+    const c = all.find((c) => c.id === rule.category_id && c.selectable);
     if (c) {
       t.category_id = c.id;
       t.parent_category_id = c.parent_id;
@@ -53,7 +123,7 @@ export function classify(t: Transaction, s: State) {
   const key = Object.keys(words).find((k) =>
     t.merchant_normalized.includes(normalize(k)),
   );
-  let candidates = categories.filter(
+  let candidates = all.filter(
     (c) =>
       c.selectable &&
       c.year === 2025 &&
@@ -61,15 +131,20 @@ export function classify(t: Transaction, s: State) {
         (key && c.name === words[key])),
   );
   if (key && words[key] === "AIツール")
-    candidates = categories.filter(
+    candidates = all.filter(
       (c) =>
         c.selectable &&
         c.year === 2025 &&
-        categories.find((p) => p.id === c.parent_id)?.name === "AIツール",
+        all.find((p) => p.id === c.parent_id)?.name === "AIツール",
     );
   t.suggested_category_ids = candidates.map((c) => c.id);
   t.classification_source = candidates.length ? "suggestion" : "unknown";
   t.classification_confidence = candidates.length ? 0.6 : 0;
+  const fallback = otherCategory(s);
+  if (fallback) {
+    t.category_id = fallback.id;
+    t.parent_category_id = fallback.parent_id;
+  }
   // Merchant type is not a claim about purchased goods or deductible expenses.
   if (/AMAZON/.test(t.merchant_normalized)) t.merchant_category = "Amazon";
   if (/セブンイレブン|ローソン|ファミリーマート/.test(t.merchant_normalized))
@@ -151,7 +226,7 @@ export function approveCategory(
   businessUse: Transaction["business_use"] = "unknown",
 ) {
   const t = s.transactions.find((t) => t.transaction_id === id),
-    c = categories.find((c) => c.id === categoryId && c.selectable);
+    c = effectiveCategories(s).find((c) => c.id === categoryId && c.selectable);
   if (!t || !c) throw Error("有効な明細・分類を指定してください");
   const before = t.category_id;
   t.category_id = c.id;
@@ -494,7 +569,10 @@ export function summary(s: State, month: string) {
       .length,
     unreconciled: pending,
     candidates,
-    final: pending === 0 && candidates === 0,
+    final:
+      pending === 0 &&
+      candidates === 0 &&
+      selected.every((t) => t.classification_status !== "pending"),
     by_merchant: grouped((t) => t.merchant_normalized),
     by_category: grouped((t) => t.category_id || "unclassified"),
     by_service: grouped((t) => t.source_service),
@@ -523,6 +601,15 @@ export function summary(s: State, month: string) {
 
 /** Restore missing records only; never overwrite live edits or invent a reconciliation. */
 export function restoreMissing(s: State, backup: State) {
+  const knownCategories = new Set(effectiveCategories(s).map((c) => c.id));
+  for (const category of backup.custom_categories || [])
+    if (!knownCategories.has(category.id)) {
+      (s.custom_categories ||= []).push(structuredClone(category));
+      knownCategories.add(category.id);
+    }
+  for (const [id, edit] of Object.entries(backup.category_edits || {}))
+    if (knownCategories.has(id) && !s.category_edits?.[id])
+      (s.category_edits ||= {})[id] = structuredClone(edit);
   const seen = new Set(s.transactions.map((t) => t.fingerprint));
   const added: Transaction[] = [];
   for (const original of backup.transactions)

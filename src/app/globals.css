@@ -1015,3 +1015,32 @@ footer span {
     min-width: 1400px;
   }
 }
+.category-forms {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.category-forms form {
+  background: #f8faf6;
+  border: 1px solid var(--line);
+  padding: 18px;
+  border-radius: 10px;
+}
+.category-forms form label {
+  margin-bottom: 13px;
+}
+.category-forms form button {
+  margin-top: 5px;
+}
+.review-month {
+  background: #eaf3ec;
+  color: #1b604a;
+  padding: 10px 14px;
+  margin: 25px 0 0;
+  border-radius: 7px 7px 0 0;
+}
+@media (max-width: 1050px) {
+  .category-forms {
+    grid-template-columns: 1fr;
+  }
+}
