@@ -16,6 +16,7 @@ import {
   resolveMatch,
   resolveTransaction,
   reconcile,
+  replaceReferences,
   restoreMissing,
 } from "@/lib/engine";
 import { MAX_FILE_SIZE, fields, normalize } from "@/lib/csv";
@@ -26,8 +27,11 @@ import {
   callback,
   syncGoogle,
   oauthReady,
+  previewReferenceSheet,
+  readReferenceSheet,
 } from "@/lib/google";
 import { reports } from "@/lib/reports";
+import { parseSheetLink } from "@/lib/reference";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const monthSchema = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/);
@@ -391,6 +395,36 @@ async function handler(
         audit(s, "settings", "google");
       } else if (path === "google/connect")
         return NextResponse.json({ url: await authorizationUrl(who) });
+      else if (path === "reference/preview") {
+        const b = z.object({
+          url: z.string().url().max(500),
+          gid: z.number().int().min(0).optional(),
+          header_row: z.number().int().min(1).max(20).optional(),
+        }).parse(body);
+        return NextResponse.json(await previewReferenceSheet(who, b.url, b.gid, b.header_row));
+      } else if (path === "reference/sync") {
+        const b = z.object({
+          url: z.string().url().max(500),
+          gid: z.number().int().min(0),
+          header_row: z.number().int().min(1).max(20),
+          date_col: z.number().int().min(0).max(25),
+          name_cols: z.array(z.number().int().min(0).max(25)).min(1).max(2),
+          amount_col: z.number().int().min(0).max(25).nullable(),
+        }).parse(body);
+        const parsed = parseSheetLink(b.url);
+        if (parsed.sheet_id === s.settings.spreadsheet_id)
+          throw Error("支出出力先とは別の売上スプレッドシートを指定してください");
+        const config = {
+          sheet_id: parsed.sheet_id, gid: b.gid, header_row: b.header_row,
+          date_col: b.date_col, name_cols: b.name_cols, amount_col: b.amount_col,
+        };
+        const records = await readReferenceSheet(who, config);
+        if (!records.length) throw Error("日付と名前のある参照行を認識できませんでした。列を確認してください");
+        replaceReferences(s, records, parsed.sheet_id, b.gid);
+        s.settings.reference_sheet = { ...config, last_sync: new Date().toISOString() };
+        result = { count: records.length, candidates: s.reconciliations.filter((r) =>
+          r.kind === "external_reference" && r.status === "candidate").length };
+      }
       else if (path === "google/sync") {
         const b = z
           .object({ year: z.number().int().min(2000).max(2100).optional() })

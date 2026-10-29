@@ -10,6 +10,7 @@ import type {
   Category,
   Service,
   Reconciliation,
+  ReferenceRecord,
   Kind,
 } from "./types";
 export const categories = sourceCategories as Category[];
@@ -494,6 +495,58 @@ export function reconcile(s: State) {
     sameDate.push(t);
     byDate.set(t.transaction_date, sameDate);
   }
+  const purchasesByDate = new Map<string, Transaction[]>();
+  for (const t of s.transactions)
+    if (!t.excluded && ["purchase", "refund", "fee"].includes(t.transaction_type)) {
+      const rows = purchasesByDate.get(t.transaction_date) || [];
+      rows.push(t);
+      purchasesByDate.set(t.transaction_date, rows);
+    }
+  for (const reference of s.references || []) {
+    if (!reference.active) continue;
+    for (const t of purchasesByDate.get(reference.transaction_date) || []) {
+      const sameAmount = reference.amount !== null && reference.amount === t.amount;
+      const similarName = similarMerchant(reference.name, t.merchant_original);
+      if (!sameAmount && !similarName) continue;
+      if (s.reconciliations.some((r) => r.kind === "external_reference" &&
+        r.transaction_ids.includes(t.transaction_id) &&
+        r.reference_ids?.includes(reference.id))) continue;
+      s.reconciliations.push({
+        id: randomUUID(), kind: "external_reference",
+        transaction_ids: [t.transaction_id], reference_ids: [reference.id],
+        status: "candidate",
+        reason: sameAmount && similarName
+          ? "外部シートと同日・同額・名前が類似。売上と支出の関係を要確認"
+          : sameAmount
+            ? "外部シートと同日・同額。内容を要確認"
+            : "外部シートと同日・名前が類似。金額差を含めて要確認",
+        created_at: new Date().toISOString(),
+      });
+    }
+  }
+}
+export function replaceReferences(s: State, records: ReferenceRecord[], sheetId: string, gid: number) {
+  const current = new Set(records.map((r) => r.id));
+  const old = s.references || [];
+  for (const r of old) r.active = current.has(r.id);
+  const known = new Set(old.map((r) => r.id));
+  old.push(...records.filter((r) => !known.has(r.id)));
+  s.references = old;
+  for (const match of s.reconciliations)
+    if (match.kind === "external_reference" && match.status === "candidate" &&
+      match.reference_ids?.some((id) => !old.some((r) => r.id === id && r.active))) {
+      match.status = "rejected";
+      match.reason = "参照シートから該当行がなくなりました";
+    }
+  for (const match of s.reconciliations)
+    if (match.kind === "external_reference" && match.status === "rejected" &&
+      match.reason === "参照シートから該当行がなくなりました" &&
+      match.reference_ids?.every((id) => old.some((r) => r.id === id && r.active))) {
+      match.status = "candidate";
+      match.reason = "参照行が再出現しました。内容を要確認";
+    }
+  reconcile(s);
+  audit(s, "sync_reference", `${sheetId}:${gid}`, { active: records.length });
 }
 export function resolveMatch(
   s: State,
@@ -508,6 +561,12 @@ export function resolveMatch(
   const ts = s.transactions.filter((t) =>
     r.transaction_ids.includes(t.transaction_id),
   );
+  if (r.kind === "external_reference") {
+    r.status = confirmed ? "confirmed" : "rejected";
+    r.reason = reason;
+    audit(s, "resolve_reference", id, { confirmed, reason });
+    return;
+  }
   if (confirmed && ts.some((t) =>
     t.reconciliation_status === "matched" &&
     (r.kind !== "same_day_duplicate" ||
@@ -684,6 +743,8 @@ export function summary(s: State, month: string) {
 
 /** Restore missing records only; never overwrite live edits or invent a reconciliation. */
 export function restoreMissing(s: State, backup: State) {
+  if (!s.settings.reference_sheet && backup.settings.reference_sheet)
+    s.settings.reference_sheet = structuredClone(backup.settings.reference_sheet);
   const knownCategories = new Set(effectiveCategories(s).map((c) => c.id));
   for (const category of backup.custom_categories || [])
     if (!knownCategories.has(category.id)) {
@@ -704,18 +765,29 @@ export function restoreMissing(s: State, backup: State) {
     }
   const batchIds = new Set(s.batches.map((b) => b.id));
   s.batches.push(...backup.batches.filter((b) => !batchIds.has(b.id)));
+  const knownReferenceIds = new Set((s.references || []).map((r) => r.id));
+  const addedReferenceIds = new Set<string>();
+  for (const reference of backup.references || [])
+    if (!knownReferenceIds.has(reference.id)) {
+      (s.references ||= []).push(structuredClone(reference));
+      addedReferenceIds.add(reference.id);
+      knownReferenceIds.add(reference.id);
+    }
   const allIds = new Set(s.transactions.map((t) => t.transaction_id));
   const addedIds = new Set(added.map((t) => t.transaction_id));
   for (const r of backup.reconciliations) {
     if (
       s.reconciliations.some((existing) => existing.id === r.id) ||
-      !r.transaction_ids.some((id) => addedIds.has(id)) ||
-      !r.transaction_ids.every((id) => allIds.has(id))
+      !(r.transaction_ids.some((id) => addedIds.has(id)) ||
+        r.reference_ids?.some((id) => addedReferenceIds.has(id))) ||
+      !r.transaction_ids.every((id) => allIds.has(id)) ||
+      !(r.reference_ids || []).every((id) => knownReferenceIds.has(id))
     )
       continue;
     const conflict = s.reconciliations.some(
       (existing) =>
         existing.status === "confirmed" &&
+        existing.kind !== "external_reference" && r.kind !== "external_reference" &&
         existing.transaction_ids.some((id) => r.transaction_ids.includes(id)),
     );
     if (!conflict) s.reconciliations.push(structuredClone(r));

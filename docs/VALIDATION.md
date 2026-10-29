@@ -4,7 +4,7 @@
 
 | 検証 | 結果 |
 |---|---|
-| `npm test` | **63件成功、失敗0、スキップ0** |
+| `npm test` | **67件成功、失敗0、スキップ0** |
 | `npm run typecheck` | 成功 |
 | `npm run build` | 成功 |
 | `npm run test:e2e` | Chromiumで **1シナリオ成功** |

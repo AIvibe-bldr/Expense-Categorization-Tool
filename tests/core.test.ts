@@ -21,13 +21,15 @@ import {
   purchaseAmount,
   resolveMatch,
   resolveTransaction,
+  replaceReferences,
   restoreMissing,
   sum,
 } from "../src/lib/engine";
 import { encrypt, decrypt } from "../src/lib/crypto";
 import { load, save, putSecret, lock, unlock } from "../src/lib/store";
 import { reports } from "../src/lib/reports";
-import { syncGoogle, authorizationUrl, callback } from "../src/lib/google";
+import { syncGoogle, authorizationUrl, callback, previewReferenceSheet, readReferenceSheet, syncReferenceSheet } from "../src/lib/google";
+import { parseSheetLink, parseReferenceRows, suggestReferenceColumns } from "../src/lib/reference";
 process.env.GALAPAGOS_LOCAL_MODE = "1";
 process.env.GALAPAGOS_DATA_DIR = mkdtempSync(join(tmpdir(), "galapagos-test-"));
 const csv = (
@@ -693,6 +695,80 @@ test("Google Sheets existing unmanaged sheet never overwritten", async () => {
   } finally {
     globalThis.fetch = original;
   }
+});
+test("reference sheet link and columns are validated without trusting arbitrary hosts", () => {
+  assert.deepEqual(parseSheetLink("https://docs.google.com/spreadsheets/d/1234567890AbCd/edit?gid=42"),
+    { sheet_id: "1234567890AbCd", gid: 42 });
+  assert.throws(() => parseSheetLink("https://example.com/spreadsheets/d/1234567890AbCd/edit?gid=42"));
+  assert.deepEqual(suggestReferenceColumns(["日付", "支払先", "領収先", "金額"]),
+    { date_col: 0, name_cols: [1, 2], amount_col: 3 });
+});
+test("read-only reference rows produce review candidates but never change expense totals", () => {
+  const config = { sheet_id: "1234567890AbCd", gid: 42, header_row: 1,
+    date_col: 0, name_cols: [1, 2], amount_col: 3 };
+  const rows = parseReferenceRows([
+    ["日付", "支払先", "領収先", "金額"],
+    ["2026/10/05", "株式会社ABC柏院", "", "30,000"],
+    ["合計", "", "", "30,000"],
+  ], config);
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].amount, 30000);
+  const s = emptyState();
+  s.transactions = [make({ merchant_original: "ABC柏院店" })];
+  replaceReferences(s, rows, config.sheet_id, config.gid);
+  assert.equal(s.reconciliations[0].kind, "external_reference");
+  assert.equal(s.reconciliations[0].status, "candidate");
+  assert.equal(summary(s, "2026-10").purchase, 30000);
+  assert.equal(summary(s, "2026-10").final, false);
+  resolveMatch(s, s.reconciliations[0].id, true, "売上と支出の関係を確認");
+  assert.equal(summary(s, "2026-10").purchase, 30000);
+  replaceReferences(s, rows, config.sheet_id, config.gid);
+  assert.equal(s.reconciliations.length, 1);
+});
+test("disappearing reference rows retire unresolved candidates", () => {
+  const s = emptyState();
+  s.transactions = [make()];
+  const ref = { id: randomUUID(), sheet_id: "1234567890AbCd", gid: 42,
+    row_number: 2, transaction_date: "2026-10-05", name: "Amazon", amount: 30000, active: true };
+  replaceReferences(s, [ref], ref.sheet_id, ref.gid);
+  assert.equal(s.reconciliations[0].status, "candidate");
+  replaceReferences(s, [], ref.sheet_id, ref.gid);
+  assert.equal(s.reconciliations[0].status, "rejected");
+  assert.equal(summary(s, "2026-10").purchase, 30000);
+});
+test("Google reference preview and scheduled read use GET only", async () => {
+  const who = { id: randomUUID(), client: null, local: true };
+  await putSecret(who, "google_tokens", JSON.stringify({ access_token: "fake", expires: Date.now() + 3600000 }));
+  const original = globalThis.fetch;
+  const calls: string[] = [];
+  globalThis.fetch = async (input, init) => {
+    const url = String(input);
+    calls.push(`${init?.method || "GET"} ${url}`);
+    if (url.includes("?fields=sheets")) return Response.json({ sheets: [
+      { properties: { sheetId: 42, title: "支払いデータ" } },
+      { properties: { sheetId: 43, title: "未収金データ" } },
+    ] });
+    return Response.json({ values: [
+      ["日付", "支払先", "金額"], ["2026/10/05", "Amazon", "30,000"],
+    ] });
+  };
+  try {
+    const url = "https://docs.google.com/spreadsheets/d/1234567890AbCd/edit?gid=42";
+    const preview = await previewReferenceSheet(who, url);
+    assert.equal(preview.gid, 42);
+    assert.equal(preview.suggested.date_col, 0);
+    const config = { sheet_id: preview.sheet_id, gid: preview.gid, header_row: preview.header_row,
+      date_col: 0, name_cols: [1], amount_col: 2 };
+    assert.equal((await readReferenceSheet(who, config)).length, 1);
+    const state = emptyState();
+    state.settings.reference_sheet = { ...config, last_sync: null };
+    state.transactions = [make()];
+    await save(who, state);
+    assert.equal((await syncReferenceSheet(who)).count, 1);
+    assert.equal((await load(who)).reconciliations[0].kind, "external_reference");
+    assert.ok(calls.every((c) => c.startsWith("GET ")));
+    await assert.rejects(() => readReferenceSheet(who, { ...config, gid: 43 }), /未収金/);
+  } finally { globalThis.fetch = original; }
 });
 test("OAuth state cannot be used by another user or replayed", async () => {
   process.env.GOOGLE_CLIENT_ID = "test";

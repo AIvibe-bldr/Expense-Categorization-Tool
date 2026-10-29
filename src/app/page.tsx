@@ -10,6 +10,7 @@ import {
   type State,
   type Transaction,
   type Category,
+  type ReferenceRecord,
 } from "@/lib/types";
 import type { summary } from "@/lib/engine";
 type PublicTx = Omit<Transaction, "raw_encrypted">;
@@ -19,6 +20,14 @@ type Payload = {
   summary: ReturnType<typeof summary>;
   local: boolean;
   google: { configured: boolean; connected: boolean };
+};
+type ReferencePreview = {
+  sheet_id: string;
+  tabs: { gid: number; title: string }[];
+  gid: number;
+  header_row: number;
+  headers: string[];
+  suggested: { date_col: number; name_cols: number[]; amount_col: number | null };
 };
 const yen = (n: number) =>
   new Intl.NumberFormat("ja-JP", {
@@ -41,6 +50,7 @@ const kindNames: Record<string, string> = {
   failed: "引落不能",
   cancellation: "取消（要確認）",
   same_day_duplicate: "同日の重複候補",
+  external_reference: "別シートとの照合候補",
 };
 const nav = [
   ["dashboard", "概況", "◫"],
@@ -76,6 +86,11 @@ export default function App() {
     [allowDedup, setAllowDedup] = useState(false),
     [file, setFile] = useState<File | null>(null),
     [sheet, setSheet] = useState(""),
+    [referenceUrl, setReferenceUrl] = useState(""),
+    [referencePreview, setReferencePreview] = useState<ReferencePreview | null>(null),
+    [referenceMapping, setReferenceMapping] = useState({
+      header_row: 1, date_col: -1, name_cols: [] as number[], amount_col: null as number | null,
+    }),
     [ruleId, setRuleId] = useState(""),
     [ruleMerchant, setRuleMerchant] = useState(""),
     [ruleCategory, setRuleCategory] = useState("");
@@ -89,6 +104,9 @@ export default function App() {
     if (!r.ok) throw Error(body.error);
     setData(body);
     setSheet(body.state.settings.spreadsheet_id || "");
+    const reference = body.state.settings.reference_sheet;
+    if (reference)
+      setReferenceUrl(`https://docs.google.com/spreadsheets/d/${reference.sheet_id}/edit?gid=${reference.gid}`);
   }, [month]);
   useEffect(() => {
     refresh().catch((e) => setNotice(e.message));
@@ -103,6 +121,23 @@ export default function App() {
     const json = await r.json();
     if (!r.ok) throw Error(json.error);
     return json;
+  }
+  async function previewSalesSheet(gid?: number, headerRow?: number) {
+    setBusy(true);
+    try {
+      const result = await post("reference/preview", {
+        url: referenceUrl, gid, header_row: headerRow,
+      }) as ReferencePreview;
+      setReferencePreview(result);
+      setReferenceMapping({
+        header_row: result.header_row, ...result.suggested,
+      });
+      setNotice("参照シートの見出しを確認しました");
+    } catch (e) {
+      setNotice((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
   }
   async function act(work: () => Promise<unknown>, message = "保存しました") {
     setBusy(true);
@@ -119,6 +154,9 @@ export default function App() {
   const categories = data?.categories || [],
     tx = data?.state.transactions || [],
     stats = data?.summary;
+  const references = data?.state.references || [];
+  const referenceById = (id: string): ReferenceRecord | undefined =>
+    references.find((r) => r.id === id);
   const catName = (id: string | null) =>
     categories.find((c) => c.id === id)?.name || "未分類";
   const options = (
@@ -649,7 +687,7 @@ export default function App() {
                           {r.status === "candidate"
                             ? "確認待ち"
                             : r.status === "confirmed"
-                              ? "照合済み"
+                              ? r.kind === "external_reference" ? "確認済み" : "照合済み"
                               : "別の取引"}
                         </span>
                         <h3>{kindNames[r.kind] || "重複購入"}</h3>
@@ -663,6 +701,12 @@ export default function App() {
                                 {yen(t?.amount || 0)}
                               </li>
                             );
+                          })}
+                          {(r.reference_ids || []).map((id) => {
+                            const ref = referenceById(id);
+                            return <li key={id}>
+                              Googleシート{ref ? ` ${ref.row_number}行` : ""} · {ref?.transaction_date} · {ref?.name || "参照行なし"} · {ref?.amount === null || ref?.amount === undefined ? "金額なし" : yen(ref.amount)}
+                            </li>;
                           })}
                         </ul>
                       </div>
@@ -702,7 +746,9 @@ export default function App() {
                               )
                             }
                           >
-                            {r.kind === "same_day_duplicate" ? "同一取引として片方を計上" : "同一の取引として確定"}
+                            {r.kind === "external_reference"
+                              ? "内容を確認（計上額は変更しない）"
+                              : r.kind === "same_day_duplicate" ? "同一取引として片方を計上" : "同一の取引として確定"}
                           </button>
                           <button
                             className="secondary"
@@ -1010,6 +1056,84 @@ export default function App() {
                     <div className="notice">
                       手動メモはAO列以降、または専用の別シートへ。A〜AN列はシステムが更新します。
                     </div>
+                  </section>
+                  <section className="panel">
+                    <h2>売上ツールのシートを照合元にする</h2>
+                    <p>
+                      「支払いデータ」または「月次明細」を読み取り、同日・同額や名前が似た金融明細を確認待ちにします。売上額の計算や支出との相殺は行いません。
+                    </p>
+                    <label>
+                      売上ツールのスプレッドシートURL
+                      <input
+                        type="url"
+                        value={referenceUrl}
+                        onChange={(e) => { setReferenceUrl(e.target.value); setReferencePreview(null); }}
+                        placeholder="https://docs.google.com/spreadsheets/d/…/edit?gid=…"
+                      />
+                    </label>
+                    <div className="actions">
+                      <button className="secondary" disabled={busy || !data.google.connected || !referenceUrl}
+                        onClick={() => previewSalesSheet()}>
+                        タブと列を確認
+                      </button>
+                    </div>
+                    {referencePreview && <>
+                      <div className="filters">
+                        <label>参照タブ
+                          <select aria-label="参照タブ" value={referencePreview.gid}
+                            onChange={(e) => previewSalesSheet(Number(e.target.value), referenceMapping.header_row)}>
+                            {referencePreview.tabs.map((tab) =>
+                              <option key={tab.gid} value={tab.gid} disabled={tab.title === "未収金データ"}>{tab.title}</option>)}
+                          </select>
+                        </label>
+                        <label>見出し行
+                          <input aria-label="見出し行" type="number" min={1} max={20} value={referenceMapping.header_row}
+                            onChange={(e) => setReferenceMapping({ ...referenceMapping, header_row: Number(e.target.value) })} />
+                        </label>
+                        <button type="button" className="secondary" disabled={busy || referenceMapping.header_row < 1 || referenceMapping.header_row > 20}
+                          onClick={() => previewSalesSheet(referencePreview.gid, referenceMapping.header_row)}>この行の見出しを表示</button>
+                      </div>
+                      <div className="filters">
+                        <label>日付の列
+                          <select aria-label="日付の列" value={referenceMapping.date_col}
+                            onChange={(e) => setReferenceMapping({ ...referenceMapping, date_col: Number(e.target.value) })}>
+                            <option value={-1}>選択してください</option>
+                            {Array.from({ length: 26 }, (_, i) => <option key={i} value={i}>{String.fromCharCode(65 + i)}: {referencePreview.headers[i] || "（見出しなし）"}</option>)}
+                          </select>
+                        </label>
+                        <label>名前の列
+                          <select aria-label="名前の列" value={referenceMapping.name_cols[0] ?? -1}
+                            onChange={(e) => setReferenceMapping({ ...referenceMapping, name_cols: e.target.value === "-1" ? [] : [Number(e.target.value), ...referenceMapping.name_cols.slice(1)] })}>
+                            <option value={-1}>選択してください</option>
+                            {Array.from({ length: 26 }, (_, i) => <option key={i} value={i}>{String.fromCharCode(65 + i)}: {referencePreview.headers[i] || "（見出しなし）"}</option>)}
+                          </select>
+                        </label>
+                        <label>もう一つの名前の列（任意）
+                          <select aria-label="もう一つの名前の列" value={referenceMapping.name_cols[1] ?? -1}
+                            onChange={(e) => setReferenceMapping({ ...referenceMapping, name_cols: e.target.value === "-1" ? referenceMapping.name_cols.slice(0, 1) : [referenceMapping.name_cols[0], Number(e.target.value)] })}>
+                            <option value={-1}>なし</option>
+                            {Array.from({ length: 26 }, (_, i) => <option key={i} value={i}>{String.fromCharCode(65 + i)}: {referencePreview.headers[i] || "（見出しなし）"}</option>)}
+                          </select>
+                        </label>
+                        <label>金額の列（任意）
+                          <select aria-label="金額の列" value={referenceMapping.amount_col ?? -1}
+                            onChange={(e) => setReferenceMapping({ ...referenceMapping, amount_col: e.target.value === "-1" ? null : Number(e.target.value) })}>
+                            <option value={-1}>なし</option>
+                            {Array.from({ length: 26 }, (_, i) => <option key={i} value={i}>{String.fromCharCode(65 + i)}: {referencePreview.headers[i] || "（見出しなし）"}</option>)}
+                          </select>
+                        </label>
+                      </div>
+                      <button disabled={busy || referenceMapping.date_col < 0 || !referenceMapping.name_cols.length}
+                        onClick={() => act(() => post("reference/sync", {
+                          url: referenceUrl, gid: referencePreview.gid, ...referenceMapping,
+                        }), "照合元のシートを読み込みました")}>読み取って照合</button>
+                    </>}
+                    <p className="footnote">
+                      最終読取: {data.state.settings.reference_sheet?.last_sync
+                        ? new Date(data.state.settings.reference_sheet.last_sync).toLocaleString("ja-JP") : "未設定"}
+                      {" · "}現在の参照行: {references.filter((r) => r.active).length}件
+                    </p>
+                    <div className="notice">「未収金データ」は未回収の記録なので照合元にしません。参照シートは読み取りのみで、元データを書き換えません。</div>
                   </section>
                 </div>
                 <section className="panel">

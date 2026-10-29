@@ -3,6 +3,9 @@ import { encrypt, decrypt, hash } from "./crypto";
 import { getSecret, putSecret, lock, unlock, load, save } from "./store";
 import type { Identity } from "./auth";
 import { reports } from "./reports";
+import { parseReferenceRows, parseSheetLink, suggestReferenceColumns } from "./reference";
+import type { ReferenceSheetSettings } from "./types";
+import { replaceReferences } from "./engine";
 const redirect = () => `${process.env.APP_ORIGIN}/api/google/callback`;
 const oauthReady = () =>
   !!(
@@ -106,8 +109,67 @@ async function api(
       signal: AbortSignal.timeout(30000),
     },
   );
-  if (!r.ok) throw Error(`Google Sheets 更新エラー (${r.status})`);
+  if (!r.ok) throw Error(`Google Sheets アクセスエラー (${r.status})。対象シートの権限を確認してください`);
   return r.json();
+}
+async function referenceTab(who: Identity, sheetId: string, gid: number | null) {
+  const token = await accessToken(who);
+  const metadata = await api(token, `${sheetId}?fields=sheets(properties(sheetId,title,gridProperties(rowCount)))`) as {
+    sheets?: { properties: { sheetId: number; title: string; gridProperties?: { rowCount: number } } }[];
+  };
+  const tabs = (metadata.sheets || []).map((s) => ({
+    gid: s.properties.sheetId, title: s.properties.title,
+    rowCount: s.properties.gridProperties?.rowCount,
+  }));
+  const selected = tabs.find((t) => t.gid === gid) ||
+    (gid === null ? tabs.find((t) => t.title === "支払いデータ") || tabs[0] : undefined);
+  if (!selected) throw Error("指定したタブが見つかりません");
+  return { token, tabs, selected };
+}
+function referenceRange(title: string, lastRow: number) {
+  return encodeURIComponent(`'${title.replace(/'/g, "''")}'!A1:Z${lastRow}`);
+}
+export async function previewReferenceSheet(
+  who: Identity, link: string, requestedGid?: number, headerRow?: number,
+) {
+  const parsed = parseSheetLink(link);
+  const { token, tabs, selected } = await referenceTab(who, parsed.sheet_id, requestedGid ?? parsed.gid);
+  const data = await api(token, `${parsed.sheet_id}/values/${referenceRange(selected.title, 20)}`) as { values?: string[][] };
+  const rows = data.values || [];
+  const detected = headerRow || rows.findIndex((row) =>
+    suggestReferenceColumns(row).date_col >= 0 && suggestReferenceColumns(row).name_cols.length > 0,
+  ) + 1 || 1;
+  const headers = rows[detected - 1] || [];
+  return { sheet_id: parsed.sheet_id, tabs, gid: selected.gid, header_row: detected, headers,
+    suggested: suggestReferenceColumns(headers) };
+}
+export async function readReferenceSheet(
+  who: Identity,
+  config: Omit<ReferenceSheetSettings, "last_sync">,
+) {
+  const { token, selected } = await referenceTab(who, config.sheet_id, config.gid);
+  if (selected.title === "未収金データ")
+    throw Error("未収金データは入金済みの照合元として使用できません");
+  if (selected.rowCount && selected.rowCount > 5001)
+    throw Error("参照シートの物理行数が5,000行を超えています。未使用行を削除するか対象を分割してください");
+  const data = await api(token, `${config.sheet_id}/values/${referenceRange(selected.title, 5001)}`) as { values?: string[][] };
+  return parseReferenceRows(data.values || [], config);
+}
+export async function syncReferenceSheet(who: Identity) {
+  if (!(await lock(who, "reference_sync"))) throw Error("参照シートの同期中です");
+  try {
+    const config = (await load(who)).settings.reference_sheet;
+    if (!config) throw Error("参照シートが未設定です");
+    const records = await readReferenceSheet(who, config);
+    if (!records.length) throw Error("参照できる明細行がありません");
+    const state = await load(who);
+    replaceReferences(state, records, config.sheet_id, config.gid);
+    state.settings.reference_sheet = { ...config, last_sync: new Date().toISOString() };
+    await save(who, state);
+    return { count: records.length };
+  } finally {
+    await unlock(who, "reference_sync");
+  }
 }
 export async function syncGoogle(
   who: Identity,

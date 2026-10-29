@@ -185,6 +185,9 @@ test("CSV import → classify → reuse → dashboard → mobile", async ({
   await expect(sameDayMatch).toContainText("照合済み");
   const afterDuplicateReview = await (await request.get("/api/state?month=2026-10")).json();
   expect(afterDuplicateReview.summary.purchase).toBe(31000);
+  await page.getByRole("button", { name: /サービス連携/ }).click();
+  await expect(page.getByRole("heading", { name: "売上ツールのシートを照合元にする" })).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "売上ツールのスプレッドシートURL" })).toBeVisible();
   await page.getByRole("button", { name: /概況/ }).click();
   await page.reload();
   await expect(

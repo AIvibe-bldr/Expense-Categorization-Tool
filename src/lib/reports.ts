@@ -155,13 +155,14 @@ export function reports(s: State, year: number): Report[] {
     {
       title: "重複・照合",
       rows: [
-        ["照合ID", "種類", "状態", "根拠", "明細ID"],
+        ["照合ID", "種類", "状態", "根拠", "明細ID", "参照行ID"],
         ...s.reconciliations.map((r) => [
           r.id,
           r.kind,
           r.status,
           safe(r.reason),
           r.transaction_ids.join(","),
+          (r.reference_ids || []).join(","),
         ]),
       ],
     },

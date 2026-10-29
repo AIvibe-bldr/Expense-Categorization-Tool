@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { timingSafeEqual } from "node:crypto";
 import { identity, type Identity } from "@/lib/auth";
 import { load, getSecret } from "@/lib/store";
-import { syncGoogle } from "@/lib/google";
+import { syncGoogle, syncReferenceSheet } from "@/lib/google";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
@@ -57,14 +57,13 @@ export async function POST(req: Request) {
   for (const who of users) {
     try {
       const s = await load(who);
-      if (
-        !s.settings.spreadsheet_id ||
-        !(await getSecret(who, "google_tokens"))
-      ) {
+      if ((!s.settings.spreadsheet_id && !s.settings.reference_sheet) ||
+        !(await getSecret(who, "google_tokens"))) {
         skipped++;
         continue;
       }
-      await syncGoogle(who);
+      if (s.settings.reference_sheet) await syncReferenceSheet(who);
+      if (s.settings.spreadsheet_id) await syncGoogle(who);
       completed++;
     } catch {
       failed++;
