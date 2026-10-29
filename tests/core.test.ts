@@ -349,6 +349,74 @@ test("PayPay/card amount-only candidate makes aggregate provisional", () => {
   resolveMatch(s, s.reconciliations[0].id, true, "領収書の決済番号を確認");
   assert.equal(summary(s, "2026-10").purchase, 30000);
 });
+test("same date and price creates a review candidate without changing totals", () => {
+  const s = emptyState();
+  const first = make({ merchant_original: "A店", merchant_normalized: "A店" });
+  const second = make({
+    transaction_id: randomUUID(), source_service: "smbc_card",
+    merchant_original: "B店", merchant_normalized: "B店",
+  });
+  s.transactions = [first, second];
+  reconcile(s);
+  assert.equal(s.reconciliations.length, 1);
+  assert.equal(s.reconciliations[0].kind, "same_day_duplicate");
+  assert.equal(s.reconciliations[0].status, "candidate");
+  assert.equal(summary(s, "2026-10").purchase, 60000);
+  assert.equal(summary(s, "2026-10").final, false);
+  assert.throws(() => resolveMatch(s, s.reconciliations[0].id, true, "領収書を確認"));
+  resolveMatch(s, s.reconciliations[0].id, true, "領収書を確認", first.transaction_id);
+  assert.equal(summary(s, "2026-10").purchase, 30000);
+  assert.equal(second.excluded, true);
+  reconcile(s);
+  assert.equal(s.reconciliations.length, 1);
+});
+test("similar payee across sources is reviewed even with a different amount", () => {
+  const s = emptyState();
+  const first = make({ amount: 12000, merchant_original: "株式会社ABC柏院" });
+  const second = make({
+    transaction_id: randomUUID(), source_service: "smbc_card", amount: 12500,
+    merchant_original: "ABC柏院店", transaction_date: first.transaction_date,
+  });
+  s.transactions = [first, second];
+  reconcile(s);
+  assert.equal(s.reconciliations[0]?.kind, "same_day_duplicate");
+  assert.match(s.reconciliations[0].reason, /金額差/);
+  resolveMatch(s, s.reconciliations[0].id, false, "別の購入と確認");
+  reconcile(s);
+  assert.equal(s.reconciliations.length, 1);
+  assert.equal(summary(s, "2026-10").purchase, 24500);
+});
+test("same-day review remains possible after a card bill was reconciled", () => {
+  const s = emptyState();
+  const first = make({ card_id: "card-main", billing_month: "2026-10", scheduled_debit_date: "2026-11-27", statement_amount: 60000 });
+  const second = make({
+    transaction_id: randomUUID(), merchant_original: "別の店", card_id: "card-main",
+    billing_month: "2026-10", scheduled_debit_date: "2026-11-27", statement_amount: 60000,
+  });
+  const debit = make({
+    transaction_id: randomUUID(), source_service: "chiba_bank", transaction_date: "2026-11-27",
+    amount: 60000, transaction_type: "card_settlement", card_id: "card-main",
+    billing_month: "2026-10", statement_amount: 60000,
+  });
+  s.transactions = [first, second, debit];
+  reconcile(s);
+  assert.equal(s.reconciliations.find((r) => r.kind === "card_settlement")?.status, "confirmed");
+  const candidate = s.reconciliations.find((r) => r.kind === "same_day_duplicate");
+  assert.equal(candidate?.status, "candidate");
+  resolveMatch(s, candidate!.id, true, "同じ購入と確認", first.transaction_id);
+  assert.equal(summary(s, "2026-10").purchase, 30000);
+  assert.equal(s.reconciliations.find((r) => r.kind === "card_settlement")?.status, "confirmed");
+});
+test("different dates and opposite flows are not mistaken for same-day duplicates", () => {
+  const s = emptyState();
+  s.transactions = [
+    make(),
+    make({ transaction_id: randomUUID(), source_service: "smbc_card", transaction_date: "2026-10-06" }),
+    make({ transaction_id: randomUUID(), source_service: "chiba_bank", direction: "in", transaction_type: "refund" }),
+  ];
+  reconcile(s);
+  assert.equal(s.reconciliations.length, 0);
+});
 test("refund reduces month in which refund occurs", () => {
   const s = emptyState();
   s.transactions = [

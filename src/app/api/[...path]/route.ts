@@ -296,9 +296,10 @@ async function handler(
             id: z.uuid(),
             confirmed: z.boolean(),
             reason: z.string().min(3).max(1000),
+            keep_id: z.uuid().optional(),
           })
           .parse(body);
-        resolveMatch(s, b.id, b.confirmed, b.reason);
+        resolveMatch(s, b.id, b.confirmed, b.reason, b.keep_id);
       } else if (path === "type") {
         const b = z
           .object({

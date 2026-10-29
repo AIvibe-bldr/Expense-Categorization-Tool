@@ -274,6 +274,26 @@ export function approveCategory(
   audit(s, "classify", id, { before, after: c.id, remember });
 }
 const bank = (t: Transaction) => t.source_service.endsWith("bank");
+function similarMerchant(a: string, b: string) {
+  const clean = (name: string) => normalize(name).replace(/[^\p{L}\p{N}]/gu, "");
+  const left = clean(a), right = clean(b);
+  if (left === right) return left.length >= 3;
+  if (Math.min(left.length, right.length) < 4) return false;
+  if (left.includes(right) || right.includes(left)) return true;
+  const pairs = (value: string) => {
+    const result = new Map<string, number>();
+    for (let i = 0; i < value.length - 1; i++) {
+      const pair = value.slice(i, i + 2);
+      result.set(pair, (result.get(pair) || 0) + 1);
+    }
+    return result;
+  };
+  const first = pairs(left), second = pairs(right);
+  let shared = 0;
+  for (const [pair, count] of first)
+    shared += Math.min(count, second.get(pair) || 0);
+  return 2 * shared / (left.length + right.length - 2) >= 0.75;
+}
 function addMatch(
   s: State,
   kind: Reconciliation["kind"],
@@ -443,12 +463,44 @@ export function reconcile(s: State) {
       }
     }
   }
+  const byDate = new Map<string, Transaction[]>();
+  const reviewable = s.transactions.filter((t) =>
+    !t.excluded && ["purchase", "refund", "fee"].includes(t.transaction_type) &&
+    !s.reconciliations.some((r) =>
+      r.status === "confirmed" && r.kind !== "card_settlement" &&
+      r.transaction_ids.includes(t.transaction_id),
+    ));
+  for (const t of reviewable) {
+    const sameDate = byDate.get(t.transaction_date) || [];
+    for (const other of sameDate) {
+      if (t.direction !== other.direction || t.transaction_type !== other.transaction_type)
+        continue;
+      const sameAmount = t.amount === other.amount;
+      const similarName = t.source_service !== other.source_service &&
+        similarMerchant(t.merchant_original, other.merchant_original);
+      if (!sameAmount && !similarName) continue;
+      const ids = [t.transaction_id, other.transaction_id];
+      if (s.reconciliations.some((r) =>
+        r.transaction_ids.length === 2 && ids.every((id) => r.transaction_ids.includes(id)),
+      )) continue;
+      addMatch(s, "same_day_duplicate", [other, t], false,
+        sameAmount && similarName
+          ? "同日・同額で利用先名も類似。別経路の重複か要確認"
+          : sameAmount
+            ? "同日・同額。別の購入の可能性もあるため要確認"
+            : "別経路で同日・利用先名が類似。金額差を含めて要確認",
+      );
+    }
+    sameDate.push(t);
+    byDate.set(t.transaction_date, sameDate);
+  }
 }
 export function resolveMatch(
   s: State,
   id: string,
   confirmed: boolean,
   reason: string,
+  keepId?: string,
 ) {
   const r = s.reconciliations.find((r) => r.id === id);
   if (!r || r.status !== "candidate" || reason.trim().length < 3)
@@ -456,8 +508,17 @@ export function resolveMatch(
   const ts = s.transactions.filter((t) =>
     r.transaction_ids.includes(t.transaction_id),
   );
-  if (confirmed && ts.some((t) => t.reconciliation_status === "matched"))
+  if (confirmed && ts.some((t) =>
+    t.reconciliation_status === "matched" &&
+    (r.kind !== "same_day_duplicate" ||
+      s.reconciliations.some((other) =>
+        other.status === "confirmed" && other.kind !== "card_settlement" &&
+        other.transaction_ids.includes(t.transaction_id),
+      ))))
     throw Error("別の照合ですでに確定しています");
+  if (confirmed && r.kind === "same_day_duplicate" &&
+    (ts.length !== 2 || !ts.some((t) => t.transaction_id === keepId)))
+    throw Error("計上する明細を1件選択してください");
   r.status = confirmed ? "confirmed" : "rejected";
   r.reason = reason;
   if (confirmed) {
@@ -466,6 +527,8 @@ export function resolveMatch(
       ts.filter((t) => t.source_service === "paypay").forEach(
         (t) => (t.excluded = true),
       );
+    if (r.kind === "same_day_duplicate")
+      ts.filter((t) => t.transaction_id !== keepId).forEach((t) => (t.excluded = true));
     if (r.kind === "cancellation") ts.forEach((t) => (t.excluded = true));
   }
   if (confirmed)
@@ -478,7 +541,7 @@ export function resolveMatch(
         other.status = "rejected";
         other.reason = "別の照合で確定済み";
       }
-  audit(s, "resolve_match", id, { confirmed, reason });
+  audit(s, "resolve_match", id, { confirmed, reason, keep_id: keepId });
 }
 export function resolveTransaction(
   s: State,

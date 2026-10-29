@@ -40,6 +40,7 @@ const kindNames: Record<string, string> = {
   unknown: "未判定",
   failed: "引落不能",
   cancellation: "取消（要確認）",
+  same_day_duplicate: "同日の重複候補",
 };
 const nav = [
   ["dashboard", "概況", "◫"],
@@ -66,6 +67,7 @@ export default function App() {
     [checked, setChecked] = useState<string[]>([]),
     [reason, setReason] = useState(""),
     [matchKind, setMatchKind] = useState("transfer");
+  const [keepByMatch, setKeepByMatch] = useState<Record<string, string>>({});
   const [source, setSource] = useState<Service>("smbc_card"),
     [account, setAccount] = useState("card-main"),
     [encoding, setEncoding] = useState("utf-8"),
@@ -626,7 +628,7 @@ export default function App() {
             {tab === "reconciliation" && (
               <>
                 <div className="notice">
-                  金額だけでは自動確定しません。分割・リボ、再引落し、部分取得は請求書を確認してください。
+                  同日・同額、または別経路で同日・利用先名が類似する明細を要確認にします。候補だけでは金額を変更しません。領収書・明細を確認してから確定してください。
                 </div>
                 <section className="panel">
                   <h2>照合候補</h2>
@@ -657,7 +659,7 @@ export default function App() {
                             const t = tx.find((t) => t.transaction_id === id);
                             return (
                               <li key={id}>
-                                {t?.transaction_date} · {t?.merchant_original} ·{" "}
+                                {t?.transaction_date} · {t && serviceNames[t.source_service]} · {t?.merchant_original} ·{" "}
                                 {yen(t?.amount || 0)}
                               </li>
                             );
@@ -666,6 +668,21 @@ export default function App() {
                       </div>
                       {r.status === "candidate" && (
                         <div className="match-actions">
+                          {r.kind === "same_day_duplicate" && (
+                            <select
+                              aria-label="計上する明細"
+                              value={keepByMatch[r.id] || ""}
+                              onChange={(e) => setKeepByMatch({ ...keepByMatch, [r.id]: e.target.value })}
+                            >
+                              <option value="">計上する明細を選択</option>
+                              {r.transaction_ids.map((id) => {
+                                const t = tx.find((row) => row.transaction_id === id);
+                                return <option value={id} key={id}>
+                                  {t && serviceNames[t.source_service]} · {t?.merchant_original} · {yen(t?.amount || 0)}
+                                </option>;
+                              })}
+                            </select>
+                          )}
                           <input
                             aria-label="確認根拠"
                             placeholder="請求書などの確認根拠"
@@ -673,18 +690,19 @@ export default function App() {
                             onChange={(e) => setReason(e.target.value)}
                           />
                           <button
-                            disabled={busy || reason.length < 3}
+                            disabled={busy || reason.length < 3 || (r.kind === "same_day_duplicate" && !keepByMatch[r.id])}
                             onClick={() =>
                               act(() =>
                                 post("reconcile", {
                                   id: r.id,
                                   confirmed: true,
                                   reason,
+                                  keep_id: r.kind === "same_day_duplicate" ? keepByMatch[r.id] : undefined,
                                 }),
                               )
                             }
                           >
-                            同一の取引として確定
+                            {r.kind === "same_day_duplicate" ? "同一取引として片方を計上" : "同一の取引として確定"}
                           </button>
                           <button
                             className="secondary"

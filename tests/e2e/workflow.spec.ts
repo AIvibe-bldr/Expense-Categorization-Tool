@@ -162,6 +162,29 @@ test("CSV import → classify → reuse → dashboard → mobile", async ({
   await page.getByRole("button", { name: "↓ 下へ" }).click();
   const stateAfterOrder = await (await request.get("/api/state?month=2026-10")).json();
   expect(stateAfterOrder.categories.find((c: { id: string }) => c.id === group.id).display_order).toBe(1);
+  const sameDay = await request.post("/api/imports", {
+    headers: { Origin: "http://127.0.0.1:3100" },
+    multipart: {
+      source: "smbc_card",
+      account: "other-card",
+      file: {
+        name: "same-day.csv",
+        mimeType: "text/csv",
+        buffer: Buffer.from("利用日,利用先,利用金額,取引種別,利用明細ID\n2026-10-05,別の店,30000,購入,same-day"),
+      },
+    },
+  });
+  expect(sameDay.ok()).toBe(true);
+  await page.reload();
+  await page.getByRole("button", { name: /重複・照合/ }).click();
+  const sameDayMatch = page.locator(".match").filter({ hasText: "同日の重複候補" });
+  await expect(sameDayMatch).toBeVisible();
+  await sameDayMatch.getByRole("combobox", { name: "計上する明細" }).selectOption(s.state.transactions[0].transaction_id);
+  await sameDayMatch.getByRole("textbox", { name: "確認根拠" }).fill("領収書で同一決済と確認");
+  await sameDayMatch.getByRole("button", { name: "同一取引として片方を計上" }).click();
+  await expect(sameDayMatch).toContainText("照合済み");
+  const afterDuplicateReview = await (await request.get("/api/state?month=2026-10")).json();
+  expect(afterDuplicateReview.summary.purchase).toBe(31000);
   await page.getByRole("button", { name: /概況/ }).click();
   await page.reload();
   await expect(

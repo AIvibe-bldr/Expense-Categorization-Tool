@@ -93,6 +93,7 @@ export type Reconciliation = {
     | "transfer"
     | "charge"
     | "duplicate"
+    | "same_day_duplicate"
     | "cancellation"
     | "manual";
   transaction_ids: string[];

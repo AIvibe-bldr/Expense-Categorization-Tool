@@ -4,14 +4,14 @@
 
 | 検証 | 結果 |
 |---|---|
-| `npm test` | **58件成功、失敗0、スキップ0** |
+| `npm test` | **63件成功、失敗0、スキップ0** |
 | `npm run typecheck` | 成功 |
 | `npm run build` | 成功 |
 | `npm run test:e2e` | Chromiumで **1シナリオ成功** |
 | `bash scripts/setup.sh` | lockfileによる再インストールと本番ビルド成功 |
 | `npm audit --omit=dev` | 本番依存関係の既知脆弱性 **0件**（実施時点） |
 
-ブラウザーシナリオでは画面からCSV取込・分類承認・ルール保存を実行し、再取込の重複除外、次回の分類再利用、Origin拒否、日次APIの未認証拒否、暗号化バックアップ、Excelファイルの生成、PC/390pxスマホ表示を検証しました。SQLiteを使う実HTTP APIです。スクリーンショットは `test-results/dashboard-desktop.png` と `test-results/dashboard-mobile.png` に生成されます（架空データ、Git対象外）。
+ブラウザーシナリオでは画面からCSV取込・分類承認・ルール保存を実行し、再取込の重複除外、次回の分類再利用、同日・同額候補の人手確認と片方だけの計上、Origin拒否、日次APIの未認証拒否、暗号化バックアップ、Excelファイルの生成、PC/390pxスマホ表示を検証しました。SQLiteを使う実HTTP APIです。スクリーンショットは `test-results/dashboard-desktop.png` と `test-results/dashboard-mobile.png` に生成されます（架空データ、Git対象外）。
 
 ## 要求された試験との対応
 
