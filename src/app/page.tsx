@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback, type ReactNode } from "react";
 import { colorHex } from "@/lib/colors";
-import { sortGroups } from "@/lib/category-order";
+import { currentCategoryChoices, sortGroups } from "@/lib/category-order";
 import { createBrowserClient } from "@supabase/ssr";
 import {
   serviceNames,
@@ -93,7 +93,8 @@ export default function App() {
     }),
     [ruleId, setRuleId] = useState(""),
     [ruleMerchant, setRuleMerchant] = useState(""),
-    [ruleCategory, setRuleCategory] = useState("");
+    [ruleCategory, setRuleCategory] = useState(""),
+    [ruleCategorySearch, setRuleCategorySearch] = useState("");
   const refresh = useCallback(async () => {
     const r = await fetch(`/api/state?month=${month}`);
     if (r.status === 401) {
@@ -159,15 +160,26 @@ export default function App() {
     references.find((r) => r.id === id);
   const catName = (id: string | null) =>
     categories.find((c) => c.id === id)?.name || "未分類";
+  const choices = currentCategoryChoices(categories);
+  const choiceItems = [...choices.children.values()].flat();
+  const ruleQuery = ruleCategorySearch.normalize("NFKC").trim().toLocaleLowerCase();
+  const ruleChoices = choiceItems.filter((c) =>
+    !ruleQuery || c.id === ruleCategory ||
+    `${categories.find((p) => p.id === c.parent_id)?.name || ""} ${c.name}`
+      .normalize("NFKC").toLocaleLowerCase().includes(ruleQuery)
+  );
   const options = (
     <>
       <option value="">分類を選択</option>
-      {[...new Set(categories.filter((c) => c.selectable).map((c) => c.year))]
+      {ruleCategory && !ruleChoices.some((c) => c.id === ruleCategory) && (
+        <option value={ruleCategory}>{catName(ruleCategory)}（現在の設定）</option>
+      )}
+      {[...new Set(ruleChoices.map((c) => c.year))]
         .sort((a, b) => b - a)
         .map((year) => (
           <optgroup label={`${year}年度の分類`} key={year}>
-            {categories
-              .filter((c) => c.selectable && c.year === year)
+            {ruleChoices
+              .filter((c) => c.year === year)
               .map((c) => (
                 <option value={c.id} key={c.id}>
                   {categories.find((p) => p.id === c.parent_id)?.name} ›{" "}
@@ -1216,6 +1228,7 @@ export default function App() {
                         setRuleId("");
                         setRuleMerchant("");
                         setRuleCategory("");
+                        setRuleCategorySearch("");
                       });
                     }}
                   >
@@ -1227,6 +1240,10 @@ export default function App() {
                           value={ruleMerchant}
                           onChange={(e) => setRuleMerchant(e.target.value)}
                         />
+                      </label>
+                      <label>
+                        用途分類を検索
+                        <input type="search" value={ruleCategorySearch} onChange={(e) => setRuleCategorySearch(e.target.value)} placeholder="分類名・項目名を入力" />
                       </label>
                       <label>
                         用途分類
@@ -1456,15 +1473,16 @@ function Detail({
     [reason, setReason] = useState(""),
     [raw, setRaw] = useState("");
   const query = categorySearch.normalize("NFKC").trim().toLocaleLowerCase();
-  const matchingCategories = categories.filter((category) => {
-    if (!category.selectable) return false;
+  const choiceItems = [...currentCategoryChoices(categories).children.values()].flat();
+  const matchingCategories = choiceItems.filter((category) => {
     const parent = categories.find((c) => c.id === category.parent_id)?.name || "";
     return !query ||
       `${parent} ${category.name} ${category.source_cell}`.normalize("NFKC").toLocaleLowerCase().includes(query);
   });
-  const foundCategories = categories.filter((category) =>
-    category.selectable && (category.id === cat || matchingCategories.includes(category))
-  );
+  const selectedCategory = categories.find((c) => c.id === cat && c.selectable);
+  const foundCategories = selectedCategory && !matchingCategories.some((c) => c.id === cat)
+    ? [selectedCategory, ...matchingCategories]
+    : matchingCategories;
   return (
     <div className="modal-backdrop" onClick={close}>
       <section
@@ -1830,15 +1848,25 @@ function CategoryManager({
   }) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 }) {
-  const groups = categories.filter((c) => !c.selectable);
+  const { groups, children } = currentCategoryChoices(categories);
   const [groupName, setGroupName] = useState(""),
     [itemName, setItemName] = useState(""),
-    [itemParent, setItemParent] = useState("");
+    [itemParent, setItemParent] = useState(""),
+    [groupSearch, setGroupSearch] = useState("");
   const [editId, setEditId] = useState(""),
     [editName, setEditName] = useState(""),
-    [editParent, setEditParent] = useState("");
+    [editParent, setEditParent] = useState(""),
+    [editSearch, setEditSearch] = useState("");
   const selected = categories.find((c) => c.id === editId);
+  const matchingGroups = groups.filter((g) =>
+    g.id === itemParent || g.name.normalize("NFKC").toLocaleLowerCase().includes(groupSearch.normalize("NFKC").trim().toLocaleLowerCase())
+  );
   const groupOptions = groups.map((g) => (
+    <option value={g.id} key={g.id}>
+      {g.name} {g.source_cell ? `（${g.year}・${g.source_cell}）` : ""}
+    </option>
+  ));
+  const matchingGroupOptions = matchingGroups.map((g) => (
     <option value={g.id} key={g.id}>
       {g.name} {g.source_cell ? `（${g.year}・${g.source_cell}）` : ""}
     </option>
@@ -1879,6 +1907,9 @@ function CategoryManager({
           }}
         >
           <h3>分類の中に項目を追加</h3>
+          <label>分類を検索
+            <input type="search" value={groupSearch} onChange={(e) => setGroupSearch(e.target.value)} placeholder="分類名を入力" />
+          </label>
           <label>
             分類
             <select
@@ -1887,7 +1918,7 @@ function CategoryManager({
               onChange={(e) => setItemParent(e.target.value)}
             >
               <option value="">分類を選択</option>
-              {groupOptions}
+              {matchingGroupOptions}
             </select>
           </label>
           <label>
@@ -1916,6 +1947,9 @@ function CategoryManager({
           }}
         >
           <h3>名前・所属分類を変更</h3>
+          <label>変更する分類・項目を検索
+            <input type="search" value={editSearch} onChange={(e) => setEditSearch(e.target.value)} placeholder="分類名・項目名を入力" />
+          </label>
           <label>
             変更する分類・項目
             <select
@@ -1925,15 +1959,22 @@ function CategoryManager({
                 const c = categories.find((c) => c.id === e.target.value);
                 setEditId(c?.id || "");
                 setEditName(c?.name || "");
-                setEditParent(c?.parent_id || "");
+                const parent = categories.find((p) => p.id === c?.parent_id);
+                const currentParent = groups.find((g) => g.id === parent?.id) ||
+                  groups.find((g) => g.name.normalize("NFKC").replace(/\s+/g, "") === parent?.name.normalize("NFKC").replace(/\s+/g, ""));
+                setEditParent(currentParent?.id || "");
               }}
             >
               <option value="">選択してください</option>
-              {groups.map((g) => (
+              {groups.filter((g) => {
+                const query = editSearch.normalize("NFKC").trim().toLocaleLowerCase();
+                return !query || g.id === editId || g.name.normalize("NFKC").toLocaleLowerCase().includes(query) ||
+                  children.get(g.id)?.some((c) => c.id === editId || c.name.normalize("NFKC").toLocaleLowerCase().includes(query));
+              }).map((g) => (
                 <optgroup label={`${g.name}（${g.year}）`} key={g.id}>
                   <option value={g.id}>分類：{g.name}</option>
-                  {categories
-                    .filter((c) => c.parent_id === g.id)
+                  {(children.get(g.id) || [])
+                    .filter((c) => !editSearch || c.id === editId || g.name.normalize("NFKC").toLocaleLowerCase().includes(editSearch.normalize("NFKC").trim().toLocaleLowerCase()) || c.name.normalize("NFKC").toLocaleLowerCase().includes(editSearch.normalize("NFKC").trim().toLocaleLowerCase()))
                     .map((c) => (
                       <option key={c.id} value={c.id}>
                         項目：{c.name}

@@ -6,6 +6,7 @@ import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { emptyState, type Transaction, type Service } from "../src/lib/types";
 import { parseCsv, normalize, yen, readCsv } from "../src/lib/csv";
+import { currentCategoryChoices } from "../src/lib/category-order";
 import {
   categories,
   effectiveCategories,
@@ -1082,6 +1083,23 @@ test("monthly report does not show source year", () => {
   assert.equal(monthly.rows[0][1], "分類");
   assert.ok(monthly.rows.some((r) => r[1] === "家賃"));
   assert.ok(!monthly.rows.some((r) => String(r[1]).includes("家賃 (2025)")));
+});
+test("category menus prefer the newest matching year and retain older unique choices", () => {
+  const s = emptyState();
+  const choices = currentCategoryChoices(effectiveCategories(s));
+  const insurance = choices.groups.filter((g) => g.name === "保険");
+  assert.equal(insurance.length, 1);
+  assert.equal(insurance[0].year, 2025);
+  const allInsurance = categories.filter((c) => c.name === "保険" && !c.selectable);
+  assert.ok(allInsurance.some((c) => c.year === 2024));
+  const members = choices.children.get(insurance[0].id)!;
+  assert.deepEqual(members.filter((c) => c.name === "全労災").map((c) => c.year), [2025]);
+  assert.ok(choices.groups.some((g) => g.name === "国民健康保険" && g.year === 2024));
+  assert.equal(choices.groups.filter((g) => g.name === "交通費" && g.year === 2025).length, 2);
+  const custom = addCategory(s, "保険", null);
+  const afterCustom = currentCategoryChoices(effectiveCategories(s));
+  assert.ok(afterCustom.groups.some((g) => g.id === custom.id));
+  assert.ok(!afterCustom.groups.some((g) => g.id === insurance[0].id));
 });
 
 test("renaming Other keeps the stable fallback for new unknown merchants", () => {

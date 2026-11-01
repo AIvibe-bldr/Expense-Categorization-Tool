@@ -114,6 +114,7 @@ test("CSV import → classify → reuse → dashboard → mobile", async ({
   const addItem = page
     .getByRole("heading", { name: "分類の中に項目を追加" })
     .locator("..");
+  await addItem.getByRole("searchbox", { name: "分類を検索" }).fill("家賃テスト");
   await addItem.getByRole("combobox", { name: "分類" }).selectOption(group.id);
   await addItem
     .getByRole("textbox", { name: "項目名" })
@@ -130,6 +131,7 @@ test("CSV import → classify → reuse → dashboard → mobile", async ({
   const edit = page
     .getByRole("heading", { name: "名前・所属分類を変更" })
     .locator("..");
+  await edit.getByRole("searchbox", { name: "変更する分類・項目を検索" }).fill("テナント料（柏院）");
   await edit
     .getByRole("combobox", { name: "変更する分類・項目" })
     .selectOption(item.id);
@@ -144,6 +146,8 @@ test("CSV import → classify → reuse → dashboard → mobile", async ({
     stateAfterEdit.categories.find((c: { id: string }) => c.id === item.id)
       .name,
   ).toBe("テナント料（野田院）");
+  await page.getByRole("searchbox", { name: "用途分類を検索" }).fill("全労災");
+  await expect(page.getByRole("combobox", { name: "用途分類", exact: true }).locator("option").filter({ hasText: "全労災" })).toHaveCount(1);
   await page.getByRole("button", { name: /月別経費表/ }).click();
   await page.getByRole("button", { name: "家賃テストの分類を編集" }).click();
   await page.getByRole("textbox", { name: "分類名" }).fill("家賃テスト改名");
