@@ -192,8 +192,8 @@ async function handler(
         .partialRecord(z.enum(fields), z.string().max(150))
         .parse(JSON.parse(String(form.get("mapping") || "{}")));
       const encoding = z
-        .enum(["utf-8", "shift_jis"])
-        .parse(form.get("encoding") || "utf-8");
+        .enum(["auto", "utf-8", "shift_jis"])
+        .parse(form.get("encoding") || "auto");
       const feeMode = z
         .enum(["included", "additional"])
         .optional()

@@ -63,6 +63,19 @@ for (const service of [
       11,
     );
   });
+test("Shift_JIS bank CSV is detected and imported without changing the encoding setting", () => {
+  const buffer = Buffer.from(
+    "9798977093fa2c9798977090e62c979897708be08a7a2c8ee688f88eed95ca2c9798977096be8dd749440a323032362d31302d30352c89c692c02c33303030302c8d7793fc2c6f6e650a",
+    "hex",
+  );
+  const s = emptyState();
+  assert.equal(importCsv(s, buffer, "sbi_bank", "bank").count, 1);
+  assert.equal(s.transactions[0].merchant_original, "家賃");
+  assert.throws(
+    () => readCsv(buffer, "utf-8"),
+    /自動判定.*再試行/,
+  );
+});
 test("same CSV imported twice adds no records", () => {
   const s = emptyState(),
     b = csv(["2026-10-05,Amazon,30000,購入,one"]);

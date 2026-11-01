@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { hash, encrypt } from "./crypto";
 import { services, type Service, type Transaction, type Kind } from "./types";
 export const MAX_FILE_SIZE = 5 * 1024 * 1024;
+export type CsvEncoding = "auto" | "utf-8" | "shift_jis";
 export const fields = [
   "date",
   "merchant",
@@ -169,11 +170,27 @@ const types: Record<string, Kind> = {
 };
 export function readCsv(
   buffer: Buffer,
-  encoding: "utf-8" | "shift_jis" = "utf-8",
+  encoding: CsvEncoding = "auto",
 ) {
   if (!buffer.length || buffer.length > MAX_FILE_SIZE)
     throw Error("CSVは1バイト〜5MBです");
-  const text = new TextDecoder(encoding, { fatal: true }).decode(buffer);
+  let text: string | undefined;
+  for (const candidate of encoding === "auto"
+    ? (["utf-8", "shift_jis"] as const)
+    : [encoding]) {
+    try {
+      text = new TextDecoder(candidate, { fatal: true }).decode(buffer);
+      break;
+    } catch {
+      // Try the next supported encoding only when automatic detection is selected.
+    }
+  }
+  if (text === undefined)
+    throw Error(
+      encoding === "auto"
+        ? "文字コードを判別できません。UTF-8またはShift_JISのCSVを選択してください。"
+        : `選択した文字コード（${encoding === "utf-8" ? "UTF-8" : "Shift_JIS"}）とCSVが一致しません。「自動判定」を選んで再試行してください。`,
+    );
   if (text.includes("\0")) throw Error("CSVに不正な文字があります");
   const rows = parse(text, {
     bom: true,
@@ -191,7 +208,7 @@ export function parseCsv(
   batch: string,
   options: {
     mapping?: Mapping;
-    encoding?: "utf-8" | "shift_jis";
+    encoding?: CsvEncoding;
     feeMode?: "included" | "additional";
   } = {},
 ): Transaction[] {

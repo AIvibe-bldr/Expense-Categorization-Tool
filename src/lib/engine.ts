@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { sortGroups } from "./category-order";
 export { sortGroups } from "./category-order";
 import sourceCategories from "../../data/categories.json";
-import { normalize, parseCsv, type Mapping } from "./csv";
+import { normalize, parseCsv, type CsvEncoding, type Mapping } from "./csv";
 import { hash } from "./crypto";
 import type {
   State,
@@ -178,7 +178,7 @@ export function importCsv(
   account: string,
   options: {
     mapping?: Mapping;
-    encoding?: "utf-8" | "shift_jis";
+    encoding?: CsvEncoding;
     feeMode?: "included" | "additional";
     allowFingerprintDedup?: boolean;
   } = {},

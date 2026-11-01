@@ -80,7 +80,7 @@ export default function App() {
   const [keepByMatch, setKeepByMatch] = useState<Record<string, string>>({});
   const [source, setSource] = useState<Service>("smbc_card"),
     [account, setAccount] = useState("card-main"),
-    [encoding, setEncoding] = useState("utf-8"),
+    [encoding, setEncoding] = useState("auto"),
     [mapping, setMapping] = useState("{}"),
     [feeMode, setFeeMode] = useState(""),
     [allowDedup, setAllowDedup] = useState(false),
@@ -921,6 +921,7 @@ export default function App() {
                             value={encoding}
                             onChange={(e) => setEncoding(e.target.value)}
                           >
+                            <option value="auto">自動判定（推奨）</option>
                             <option value="utf-8">UTF-8</option>
                             <option value="shift_jis">Shift_JIS / CP932</option>
                           </select>
