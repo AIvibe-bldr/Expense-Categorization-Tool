@@ -8,6 +8,7 @@ import {
   effectiveCategories,
   addCategory,
   updateCategory,
+  deleteCategory,
   moveCategory,
   summary,
   importCsv,
@@ -253,6 +254,9 @@ async function handler(
           .parse(body);
         if (b.id) updateCategory(s, b.id, b.name, b.parent_id);
         else result = addCategory(s, b.name, b.parent_id);
+      } else if (path === "categories/delete") {
+        const b = z.object({ id: z.uuid() }).parse(body);
+        deleteCategory(s, b.id);
       } else if (path === "categories/reorder") {
         const b = z.object({
           id: z.uuid(),

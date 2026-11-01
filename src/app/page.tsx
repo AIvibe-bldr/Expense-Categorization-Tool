@@ -1197,6 +1197,7 @@ export default function App() {
                   categories={categories}
                   busy={busy}
                   onSave={(body) => act(() => post("categories", body))}
+                  onDelete={(id) => act(() => post("categories/delete", { id }))}
                 />
                 <section className="panel">
                   <h2>承認済みの分類ルール</h2>
@@ -1315,6 +1316,7 @@ export default function App() {
                   year={month.slice(0, 4)}
                   busy={busy}
                   onSave={(body) => act(() => post("categories", body))}
+                  onDelete={(id) => act(() => post("categories/delete", { id }))}
                   onReorder={(id, direction) =>
                     act(() => post("categories/reorder", { id, direction }))
                   }
@@ -1652,6 +1654,7 @@ function Monthly({
   year,
   busy,
   onSave,
+  onDelete,
   onReorder,
 }: {
   categories: Category[];
@@ -1659,6 +1662,7 @@ function Monthly({
   year: string;
   busy: boolean;
   onSave: (body: { id?: string; name: string; parent_id: string | null }) => Promise<void>;
+  onDelete: (id: string) => Promise<void>;
   onReorder: (id: string, direction: "up" | "down") => Promise<void>;
 }) {
   const groups = sortGroups(categories);
@@ -1702,6 +1706,11 @@ function Monthly({
             )}
             <button disabled={busy || !editName.trim() || (category.selectable && !editParent)}>変更を保存</button>
             <button type="button" className="secondary" onClick={() => setEditId("")}>キャンセル</button>
+            <button type="button" className="secondary" disabled={busy} onClick={async () => {
+              if (!window.confirm(`「${category.name}」を削除しますか？明細やルールで使用中の項目は削除できません。`)) return;
+              await onDelete(category.id);
+              setEditId("");
+            }}>{category.selectable ? "項目を削除" : "分類を削除"}</button>
           </form>
         </td>
       </tr>
@@ -1810,6 +1819,7 @@ function CategoryManager({
   categories,
   busy,
   onSave,
+  onDelete,
 }: {
   categories: Category[];
   busy: boolean;
@@ -1818,6 +1828,7 @@ function CategoryManager({
     name: string;
     parent_id: string | null;
   }) => Promise<void>;
+  onDelete: (id: string) => Promise<void>;
 }) {
   const groups = categories.filter((c) => !c.selectable);
   const [groupName, setGroupName] = useState(""),
@@ -1964,6 +1975,12 @@ function CategoryManager({
           >
             変更を保存
           </button>
+          {selected && <button type="button" className="secondary" disabled={busy} onClick={async () => {
+            if (!window.confirm(`「${selected.name}」を削除しますか？明細やルールで使用中の項目は削除できません。`)) return;
+            await onDelete(selected.id);
+            setEditId("");
+            setEditName("");
+          }}>{selected.selectable ? "項目を削除" : "分類を削除"}</button>}
         </form>
       </div>
     </section>

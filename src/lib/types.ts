@@ -142,6 +142,7 @@ export type State = {
   version: number;
   transactions: Transaction[];
   custom_categories: Category[];
+  archived_category_ids?: string[];
   category_edits: Record<string, { name: string; parent_id: string | null; display_order?: number }>;
   rules: Rule[];
   reconciliations: Reconciliation[];
@@ -160,6 +161,7 @@ export const emptyState = (): State => ({
   version: 0,
   transactions: [],
   custom_categories: [],
+  archived_category_ids: [],
   category_edits: {},
   rules: [],
   reconciliations: [],

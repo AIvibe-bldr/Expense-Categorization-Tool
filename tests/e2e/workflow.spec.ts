@@ -166,6 +166,11 @@ test("CSV import → classify → reuse → dashboard → mobile", async ({
   await page.getByRole("button", { name: "↓ 下へ" }).click();
   const stateAfterOrder = await (await request.get("/api/state?month=2026-10")).json();
   expect(stateAfterOrder.categories.find((c: { id: string }) => c.id === group.id).display_order).toBe(1);
+  await page.getByRole("button", { name: "追加テナント料・改名の項目を編集" }).click();
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "項目を削除" }).click();
+  const stateAfterDelete = await (await request.get("/api/state?month=2026-10")).json();
+  expect(stateAfterDelete.categories.some((c: { id: string }) => c.id === movedItem.id)).toBe(false);
   const sameDay = await request.post("/api/imports", {
     headers: { Origin: "http://127.0.0.1:3100" },
     multipart: {

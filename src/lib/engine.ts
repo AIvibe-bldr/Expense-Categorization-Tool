@@ -15,10 +15,31 @@ import type {
 } from "./types";
 export const categories = sourceCategories as Category[];
 export function effectiveCategories(s: State): Category[] {
-  return [...categories, ...(s.custom_categories || [])].map((category) => ({
-    ...category,
-    ...(s.category_edits?.[category.id] || {}),
-  }));
+  const archived = new Set(s.archived_category_ids || []);
+  return [...categories, ...(s.custom_categories || [])]
+    .filter((category) => !archived.has(category.id))
+    .map((category) => ({
+      ...category,
+      ...(s.category_edits?.[category.id] || {}),
+    }));
+}
+export function deleteCategory(s: State, id: string) {
+  const all = effectiveCategories(s);
+  const current = all.find((c) => c.id === id);
+  if (!current) throw Error("削除する分類・項目が見つかりません");
+  const fallback = otherCategory(s);
+  if (id === fallback?.id || id === fallback?.parent_id)
+    throw Error("未分類の振分け先になる「その他」は削除できません");
+  if (all.some((c) => c.parent_id === id))
+    throw Error("この分類には項目があります。先に項目を移動または削除してください");
+  if (
+    s.transactions.some((t) => t.category_id === id || t.parent_category_id === id) ||
+    s.rules.some((r) => r.category_id === id)
+  ) throw Error("明細または分類ルールが参照しています。分類先を変更してから削除してください");
+  (s.archived_category_ids ||= []).push(id);
+  for (const t of s.transactions)
+    t.suggested_category_ids = t.suggested_category_ids.filter((candidate) => candidate !== id);
+  audit(s, "delete_category", id, { name: current.name, parent_id: current.parent_id });
 }
 export function moveCategory(s: State, id: string, direction: "up" | "down") {
   const groups = sortGroups(effectiveCategories(s));

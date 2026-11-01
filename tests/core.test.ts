@@ -10,6 +10,7 @@ import {
   categories,
   effectiveCategories,
   addCategory,
+  deleteCategory,
   updateCategory,
   moveCategory,
   sortGroups,
@@ -961,6 +962,35 @@ test("custom category and items can be added, renamed, and moved without changin
   );
   assert.throws(() => updateCategory(s, item.id, "不正", null));
   assert.throws(() => addCategory(s, "合計", null));
+});
+test("unused categories can be archived without erasing source records", () => {
+  const s = emptyState();
+  const group = addCategory(s, "所得控除・共済", null);
+  const item = addCategory(s, "小規模企業共済掛金", group.id);
+  assert.throws(() => deleteCategory(s, group.id), /先に項目/);
+  deleteCategory(s, item.id);
+  assert.ok(s.custom_categories.some((c) => c.id === item.id));
+  assert.ok(!effectiveCategories(s).some((c) => c.id === item.id));
+  deleteCategory(s, group.id);
+  assert.ok(!effectiveCategories(s).some((c) => c.id === group.id));
+  assert.equal(s.audit.at(-1)?.action, "delete_category");
+  const imported = categories.find((c) => c.name === "文房具" && c.year === 2025)!;
+  deleteCategory(s, imported.id);
+  assert.ok(categories.some((c) => c.id === imported.id));
+  assert.ok(!effectiveCategories(s).some((c) => c.id === imported.id));
+});
+test("categories used by transactions or rules and the Other fallback cannot be deleted", () => {
+  const s = emptyState();
+  const group = addCategory(s, "テスト分類", null);
+  const item = addCategory(s, "テスト項目", group.id);
+  importCsv(s, csv(["2026-10-05,テスト店,100,購入,one"]), "rakuten_card", "card");
+  approveCategory(s, s.transactions[0].transaction_id, item.id, true, null, "");
+  assert.throws(() => deleteCategory(s, item.id), /明細または分類ルール/);
+  s.transactions = [];
+  assert.throws(() => deleteCategory(s, item.id), /明細または分類ルール/);
+  s.rules = [];
+  deleteCategory(s, item.id);
+  assert.throws(() => deleteCategory(s, otherCategory(s)!.id), /その他/);
 });
 test("moving a category changes monthly display order and survives renaming", () => {
   const s = emptyState();
