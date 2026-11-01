@@ -641,8 +641,9 @@ test("Sheets report totals equal ledger and preserve category IDs", () => {
     monthly.rows.filter((r) =>
       categories.some((c) => c.selectable && c.id === r[0]),
     ).length,
-    298,
+    [...currentCategoryChoices(categories).children.values()].flat().length,
   );
+  assert.ok(output.find((r) => r.title === "分類マスター")!.rows.some((r) => r[0] === categories.find((c) => c.name === "全労災" && c.year === 2024)?.id));
 });
 test("spreadsheet formula injection neutralized", () => {
   const s = emptyState();
@@ -1100,6 +1101,47 @@ test("category menus prefer the newest matching year and retain older unique cho
   const afterCustom = currentCategoryChoices(effectiveCategories(s));
   assert.ok(afterCustom.groups.some((g) => g.id === custom.id));
   assert.ok(!afterCustom.groups.some((g) => g.id === insurance[0].id));
+});
+test("monthly report combines historical duplicate category IDs into the newest row", () => {
+  const s = emptyState();
+  const insurance = categories.filter((c) => c.name === "保険" && !c.selectable);
+  const old = categories.find((c) => c.name === "全労災" && c.year === 2024 && c.parent_id === insurance.find((p) => p.year === 2024)?.id)!;
+  const newest = categories.find((c) => c.name === "全労災" && c.year === 2025 && c.parent_id === insurance.find((p) => p.year === 2025)?.id)!;
+  importCsv(s, csv(["2026-10-05,共済A,1000,購入,old", "2026-10-06,共済B,2000,購入,new"]), "rakuten_card", "card");
+  approveCategory(s, s.transactions[0].transaction_id, old.id, false, null, "");
+  approveCategory(s, s.transactions[1].transaction_id, newest.id, false, null, "");
+  const monthly = reports(s, 2026).find((r) => r.title === "2026年 月別経費")!;
+  const rows = monthly.rows.filter((r) => String(r[1]).trim() === "全労災");
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0][0], newest.id);
+  assert.equal(rows[0][11], 3000);
+  assert.equal(monthly.rows.at(-1)![11], 3000);
+  assert.equal(summary(s, "2026-10").purchase, 3000);
+});
+test("monthly report keeps distinct same-year category IDs separate", () => {
+  const s = emptyState();
+  const firstGroup = addCategory(s, "同名分類", null);
+  const secondGroup = addCategory(s, "同名分類", null);
+  const first = addCategory(s, "同名項目", firstGroup.id);
+  const second = addCategory(s, "同名項目", secondGroup.id);
+  importCsv(s, csv(["2026-10-05,店A,100,購入,one", "2026-10-06,店B,200,購入,two"]), "rakuten_card", "card");
+  approveCategory(s, s.transactions[0].transaction_id, first.id, false, null, "");
+  approveCategory(s, s.transactions[1].transaction_id, second.id, false, null, "");
+  const monthly = reports(s, 2026).find((r) => r.title === "2026年 月別経費")!;
+  assert.equal(monthly.rows.find((r) => r[0] === first.id)?.[11], 100);
+  assert.equal(monthly.rows.find((r) => r[0] === second.id)?.[11], 200);
+  assert.equal(monthly.rows.at(-1)![11], 300);
+});
+test("classified unknown bank outflow reaches monthly expense only after purchase confirmation", () => {
+  const s = emptyState();
+  importCsv(s, Buffer.from("日付,内容,出金額,入金額\n2026-10-05,店舗A,700,\n"), "sbi_bank", "bank");
+  const item = categories.find((c) => c.name === "文房具" && c.year === 2025)!;
+  approveCategory(s, s.transactions[0].transaction_id, item.id, true, null, "");
+  assert.equal(summary(s, "2026-10").purchase, 0);
+  resolveTransaction(s, s.transactions[0].transaction_id, "purchase", "店舗で購入した明細を確認");
+  assert.equal(summary(s, "2026-10").purchase, 700);
+  const monthly = reports(s, 2026).find((r) => r.title === "2026年 月別経費")!;
+  assert.equal(monthly.rows.find((r) => r[0] === item.id)![11], 700);
 });
 
 test("renaming Other keeps the stable fallback for new unknown merchants", () => {

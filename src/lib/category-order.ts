@@ -35,5 +35,16 @@ export function currentCategoryChoices(all: Category[]) {
     if (displayGroup) children.get(displayGroup.id)!.push(item);
   }
   for (const items of children.values()) items.sort((a, b) => b.year - a.year || a.order - b.order);
-  return { groups, children };
+  const canonicalByKey = new Map<string, string>();
+  const displayGroupByItemId = new Map<string, string>();
+  for (const [groupId, items] of children)
+    for (const item of items) {
+      if (!canonicalByKey.has(itemKey(item))) canonicalByKey.set(itemKey(item), item.id);
+      displayGroupByItemId.set(item.id, groupId);
+    }
+  const canonicalIdById = new Map<string, string>();
+  const displayedIds = new Set([...children.values()].flat().map((c) => c.id));
+  for (const item of all.filter((c) => c.selectable))
+    canonicalIdById.set(item.id, displayedIds.has(item.id) ? item.id : canonicalByKey.get(itemKey(item)) || item.id);
+  return { groups, children, canonicalIdById, displayGroupByItemId };
 }

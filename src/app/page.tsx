@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback, type ReactNode } from "react";
 import { colorHex } from "@/lib/colors";
-import { currentCategoryChoices, sortGroups } from "@/lib/category-order";
+import { currentCategoryChoices } from "@/lib/category-order";
 import { createBrowserClient } from "@supabase/ssr";
 import {
   serviceNames,
@@ -1470,8 +1470,11 @@ function Detail({
     [note, setNote] = useState(tx.purpose_note),
     [use, setUse] = useState(tx.business_use),
     [kind, setKind] = useState(tx.transaction_type),
+    [bankDecision, setBankDecision] = useState(""),
     [reason, setReason] = useState(""),
     [raw, setRaw] = useState("");
+  const needsBankDecision = tx.source_service.endsWith("bank") &&
+    tx.direction === "out" && tx.transaction_type === "unknown";
   const query = categorySearch.normalize("NFKC").trim().toLocaleLowerCase();
   const choiceItems = [...currentCategoryChoices(categories).children.values()].flat();
   const matchingCategories = choiceItems.filter((category) => {
@@ -1529,6 +1532,7 @@ function Detail({
               category_id: cat,
               remember,
               apply_existing: applyExisting,
+              bank_decision: needsBankDecision ? bankDecision : undefined,
               merchant_category: merchant || null,
               purpose_note: note,
               business_use: use,
@@ -1567,6 +1571,17 @@ function Detail({
             </select>
           </label>
           {query && <small>検索結果: {matchingCategories.length}件</small>}
+          {needsBankDecision && <label>
+            この銀行出金の扱い
+            <select required value={bankDecision} onChange={(e) => setBankDecision(e.target.value)}>
+              <option value="">確認して選択してください</option>
+              <option value="purchase">商品・サービスの購入として月別経費表に計上</option>
+              <option value="undetermined">未判定のまま保存（購入支出には計上しない）</option>
+            </select>
+            <small>カード引落し・口座振替・PayPayチャージは購入として計上しないでください。</small>
+          </label>}
+          {!needsBankDecision && !["purchase", "refund", "fee"].includes(tx.transaction_type) &&
+            <p className="muted">この取引種別は月別購入支出に含まれません。取引種別も確認してください。</p>}
           <label>
             利用先分類（用途とは別）
             <input
@@ -1613,7 +1628,7 @@ function Detail({
             />
             同じ名称の既存の支出明細にも適用する（分類済みも含む）
           </label>
-          <button disabled={busy || !cat}>分類を承認して保存</button>
+          <button disabled={busy || !cat || (needsBankDecision && !bankDecision)}>分類を承認して保存</button>
         </form>
         <hr />
         <h3>取引種別の確認</h3>
@@ -1683,7 +1698,7 @@ function Monthly({
   onDelete: (id: string) => Promise<void>;
   onReorder: (id: string, direction: "up" | "down") => Promise<void>;
 }) {
-  const groups = sortGroups(categories);
+  const { groups, children, canonicalIdById, displayGroupByItemId } = currentCategoryChoices(categories);
   const [editId, setEditId] = useState("");
   const [editName, setEditName] = useState("");
   const [editParent, setEditParent] = useState("");
@@ -1693,7 +1708,7 @@ function Monthly({
     setAddParent("");
     setEditId(category.id);
     setEditName(category.name);
-    setEditParent(category.parent_id || "");
+    setEditParent(displayGroupByItemId.get(category.id) || category.parent_id || "");
   };
   const editRow = (category: Category) =>
     editId === category.id ? (
@@ -1737,18 +1752,27 @@ function Monthly({
     !t.excluded && ["purchase", "refund", "fee"].includes(t.transaction_type)
       ? t.amount * (t.direction === "in" ? -1 : 1)
       : 0;
-  const months = (ids: (string | null)[]) =>
-    Array.from({ length: 12 }, (_, i) =>
-      transactions
-        .filter(
-          (t) =>
-            ids.includes(t.category_id) &&
-            t.transaction_date.startsWith(
-              `${year}-${String(i + 1).padStart(2, "0")}`,
-            ),
-        )
-        .reduce((n, t) => n + amount(t), 0),
-    );
+  const totalsByCategory = new Map<string, number[]>();
+  const annualTotals = Array(12).fill(0) as number[];
+  for (const transaction of transactions) {
+    if (!transaction.transaction_date.startsWith(`${year}-`)) continue;
+    const monthIndex = Number(transaction.transaction_date.slice(5, 7)) - 1;
+    const value = amount(transaction);
+    if (!value || monthIndex < 0 || monthIndex > 11) continue;
+    const categoryId = transaction.category_id
+      ? canonicalIdById.get(transaction.category_id) || ""
+      : "";
+    const values = totalsByCategory.get(categoryId) || Array(12).fill(0) as number[];
+    values[monthIndex] += value;
+    totalsByCategory.set(categoryId, values);
+    annualTotals[monthIndex] += value;
+  }
+  const months = (ids: (string | null)[]) => {
+    const values = Array(12).fill(0) as number[];
+    for (const id of new Set(ids.map((item) => item || "")))
+      totalsByCategory.get(id)?.forEach((value, index) => { values[index] += value; });
+    return values;
+  };
   const row = (
     key: string,
     label: ReactNode,
@@ -1779,7 +1803,7 @@ function Monthly({
         </thead>
         <tbody>
           {groups.flatMap((p) => {
-              const kids = categories.filter((c) => c.parent_id === p.id).sort((a, b) => a.order - b.order);
+              const kids = children.get(p.id) || [];
               return [
                 <tr
                   className="group"
@@ -1818,15 +1842,7 @@ function Monthly({
               ];
             })}
           {row("unknown", "未分類", months([null]))}
-          {row(
-            "total",
-            "購入支出合計",
-            months([
-              null,
-              ...categories.filter((c) => c.selectable).map((c) => c.id),
-            ]),
-            "subtotal",
-          )}
+          {row("total", "購入支出合計", annualTotals, "subtotal")}
         </tbody>
       </table>
     </div>

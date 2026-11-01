@@ -227,6 +227,7 @@ async function handler(
             category_id: z.uuid(),
             remember: z.boolean(),
             apply_existing: z.boolean().default(false),
+            bank_decision: z.enum(["purchase", "undetermined"]).optional(),
             merchant_category: z.string().max(100).nullable(),
             purpose_note: z.string().max(1000),
             business_use: z
@@ -234,6 +235,13 @@ async function handler(
               .default("unknown"),
           })
           .parse(body);
+        if (b.bank_decision === "purchase") {
+          const target = s.transactions.find((t) => t.transaction_id === b.id);
+          if (!target || !target.source_service.endsWith("bank") ||
+              target.direction !== "out" || target.transaction_type !== "unknown")
+            throw Error("未判定の銀行出金だけを購入支出として確認できます");
+          resolveTransaction(s, b.id, "purchase", "用途分類の確認時に購入支出として確定");
+        }
         approveCategory(
           s,
           b.id,

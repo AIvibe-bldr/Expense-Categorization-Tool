@@ -198,6 +198,31 @@ test("CSV import → classify → reuse → dashboard → mobile", async ({
   await expect(sameDayMatch).toContainText("照合済み");
   const afterDuplicateReview = await (await request.get("/api/state?month=2026-10")).json();
   expect(afterDuplicateReview.summary.purchase).toBe(31000);
+  const bankImport = await request.post("/api/imports", {
+    headers: { Origin: "http://127.0.0.1:3100" },
+    multipart: {
+      source: "sbi_bank",
+      account: "bank-test",
+      file: {
+        name: "bank-unknown.csv",
+        mimeType: "text/csv",
+        buffer: Buffer.from("日付,内容,出金額,入金額\n2026-10-11,テスト購入,700,\n"),
+      },
+    },
+  });
+  expect(bankImport.ok()).toBe(true);
+  await page.reload();
+  await page.getByRole("button", { name: /明細管理/ }).click();
+  await page.getByRole("row").filter({ hasText: "テスト購入" }).getByRole("button", { name: "詳細・分類 →" }).click();
+  const bankDialog = page.getByRole("dialog");
+  await bankDialog.getByRole("combobox", { name: "用途分類", exact: true }).selectOption(item.id);
+  await bankDialog.getByRole("combobox", { name: "この銀行出金の扱い" }).selectOption("purchase");
+  await bankDialog.getByRole("button", { name: "分類を承認して保存" }).click();
+  await expect(bankDialog).toBeHidden();
+  const afterBankClassification = await (await request.get("/api/state?month=2026-10")).json();
+  expect(afterBankClassification.summary.purchase).toBe(31700);
+  await page.getByRole("button", { name: /月別経費表/ }).click();
+  await expect(page.getByRole("row").filter({ has: page.getByRole("button", { name: "テナント料（野田院）の項目を編集" }) })).toContainText("700");
   await page.getByRole("button", { name: /サービス連携/ }).click();
   await expect(page.getByRole("heading", { name: "売上ツールのシートを照合元にする" })).toBeVisible();
   await expect(page.getByRole("textbox", { name: "売上ツールのスプレッドシートURL" })).toBeVisible();

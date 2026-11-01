@@ -1,5 +1,6 @@
 import { colorHex } from "./colors";
-import { effectiveCategories, purchaseAmount, sortGroups, sum, summary } from "./engine";
+import { currentCategoryChoices } from "./category-order";
+import { effectiveCategories, purchaseAmount, sum, summary } from "./engine";
 import { type State, serviceNames } from "./types";
 export type Report = {
   title: string;
@@ -11,6 +12,7 @@ function safe(s: string) {
 }
 export function reports(s: State, year: number): Report[] {
   const categories = effectiveCategories(s);
+  const { groups, children, canonicalIdById } = currentCategoryChoices(categories);
   const month = `${year}-${String(new Date().getUTCMonth() + 1).padStart(2, "0")}`,
     stats = summary(s, month);
   const monthly: Report = {
@@ -25,28 +27,27 @@ export function reports(s: State, year: number): Report[] {
     ],
     colors: {},
   };
+  const totalsByCategory = new Map<string, number[]>();
+  for (const transaction of s.transactions) {
+    if (!transaction.transaction_date.startsWith(`${year}-`)) continue;
+    const monthIndex = Number(transaction.transaction_date.slice(5, 7)) - 1;
+    const amount = purchaseAmount(transaction);
+    if (!amount || monthIndex < 0 || monthIndex > 11) continue;
+    const categoryId = transaction.category_id
+      ? canonicalIdById.get(transaction.category_id) || ""
+      : "";
+    const values = totalsByCategory.get(categoryId) || Array(12).fill(0) as number[];
+    values[monthIndex] = sum([values[monthIndex], amount]);
+    totalsByCategory.set(categoryId, values);
+  }
   const months = (categoryId: string | null) =>
-    Array.from({ length: 12 }, (_, i) =>
-      sum(
-        s.transactions
-          .filter(
-            (t) =>
-              t.category_id === categoryId &&
-              t.transaction_date.startsWith(
-                `${year}-${String(i + 1).padStart(2, "0")}`,
-              ),
-          )
-          .map(purchaseAmount),
-      ),
-    );
-  for (const parent of sortGroups(categories)) {
-    const children = categories
-      .filter((c) => c.parent_id === parent.id)
-      .sort((a, b) => a.order - b.order);
+    totalsByCategory.get(categoryId || "") || Array(12).fill(0) as number[];
+  for (const parent of groups) {
+    const items = children.get(parent.id) || [];
     monthly.colors![monthly.rows.length] = colorHex(parent.color);
     monthly.rows.push([parent.id, parent.name]);
     const totals = Array(12).fill(0) as number[];
-    for (const child of children) {
+    for (const child of items) {
       const m = months(child.id);
       m.forEach((n, i) => (totals[i] = sum([totals[i], n])));
       monthly.rows.push([child.id, `  ${child.name}`, ...m, sum(m)]);
