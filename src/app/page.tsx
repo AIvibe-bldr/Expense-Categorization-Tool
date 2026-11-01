@@ -1364,7 +1364,6 @@ export default function App() {
         <Detail
           key={selected.transaction_id}
           tx={selected}
-          options={options}
           categories={categories}
           busy={busy}
           close={() => setSelected(null)}
@@ -1431,14 +1430,12 @@ function Breakdown({
 }
 function Detail({
   tx,
-  options,
   categories,
   busy,
   close,
   submit,
 }: {
   tx: PublicTx;
-  options: React.ReactNode;
   categories: Category[];
   busy: boolean;
   close: () => void;
@@ -1447,13 +1444,25 @@ function Detail({
   const [cat, setCat] = useState(
       tx.category_id || tx.suggested_category_ids[0] || "",
     ),
+    [categorySearch, setCategorySearch] = useState(""),
     [remember, setRemember] = useState(true),
+    [applyExisting, setApplyExisting] = useState(true),
     [merchant, setMerchant] = useState(tx.merchant_category || ""),
     [note, setNote] = useState(tx.purpose_note),
     [use, setUse] = useState(tx.business_use),
     [kind, setKind] = useState(tx.transaction_type),
     [reason, setReason] = useState(""),
     [raw, setRaw] = useState("");
+  const query = categorySearch.normalize("NFKC").trim().toLocaleLowerCase();
+  const matchingCategories = categories.filter((category) => {
+    if (!category.selectable) return false;
+    const parent = categories.find((c) => c.id === category.parent_id)?.name || "";
+    return !query ||
+      `${parent} ${category.name} ${category.source_cell}`.normalize("NFKC").toLocaleLowerCase().includes(query);
+  });
+  const foundCategories = categories.filter((category) =>
+    category.selectable && (category.id === cat || matchingCategories.includes(category))
+  );
   return (
     <div className="modal-backdrop" onClick={close}>
       <section
@@ -1499,6 +1508,7 @@ function Detail({
               id: tx.transaction_id,
               category_id: cat,
               remember,
+              apply_existing: applyExisting,
               merchant_category: merchant || null,
               purpose_note: note,
               business_use: use,
@@ -1506,15 +1516,37 @@ function Detail({
           }}
         >
           <label>
+            用途分類を検索
+            <input
+              type="search"
+              value={categorySearch}
+              onChange={(e) => setCategorySearch(e.target.value)}
+              placeholder="分類名・項目名を入力"
+            />
+          </label>
+          <label>
             用途分類
             <select
               required
               value={cat}
               onChange={(e) => setCat(e.target.value)}
             >
-              {options}
+              <option value="">分類を選択</option>
+              {[...new Set(foundCategories.map((c) => c.year))]
+                .sort((a, b) => b - a)
+                .map((year) => (
+                  <optgroup label={`${year}年度の分類`} key={year}>
+                    {foundCategories.filter((c) => c.year === year).map((c) => (
+                      <option value={c.id} key={c.id}>
+                        {categories.find((p) => p.id === c.parent_id)?.name} › {c.name}
+                        {c.source_cell ? ` [${c.source_cell}]` : ""}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
             </select>
           </label>
+          {query && <small>検索結果: {matchingCategories.length}件</small>}
           <label>
             利用先分類（用途とは別）
             <input
@@ -1552,6 +1584,14 @@ function Detail({
               onChange={(e) => setRemember(e.target.checked)}
             />
             同じ利用先の用途分類を次回も適用する
+          </label>
+          <label className="check">
+            <input
+              type="checkbox"
+              checked={applyExisting}
+              onChange={(e) => setApplyExisting(e.target.checked)}
+            />
+            同じ名称の既存の支出明細にも適用する（分類済みも含む）
           </label>
           <button disabled={busy || !cat}>分類を承認して保存</button>
         </form>

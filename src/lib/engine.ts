@@ -116,12 +116,16 @@ export function audit(
   });
   s.sync.dirty = true;
 }
+function classifiableByMerchant(t: Transaction) {
+  return ["purchase", "refund", "fee"].includes(t.transaction_type) ||
+    (t.transaction_type === "unknown" && t.direction === "out");
+}
 export function classify(t: Transaction, s: State) {
   const all = effectiveCategories(s);
   const rule = s.rules.find(
     (r) => r.approved && r.merchant_normalized === t.merchant_normalized,
   );
-  if (rule) {
+  if (rule && classifiableByMerchant(t)) {
     const c = all.find((c) => c.id === rule.category_id && c.selectable);
     if (c) {
       t.category_id = c.id;
@@ -245,6 +249,7 @@ export function approveCategory(
   merchantCategory: string | null,
   purposeNote: string,
   businessUse: Transaction["business_use"] = "unknown",
+  applyExisting = false,
 ) {
   const t = s.transactions.find((t) => t.transaction_id === id),
     c = effectiveCategories(s).find((c) => c.id === categoryId && c.selectable);
@@ -259,6 +264,26 @@ export function approveCategory(
   t.purpose_note = purposeNote;
   t.business_use = businessUse;
   t.updated_at = new Date().toISOString();
+  let updatedExisting = 0;
+  if (applyExisting) {
+    for (const other of s.transactions) {
+      if (
+        other.transaction_id === id ||
+        other.merchant_normalized !== t.merchant_normalized ||
+        !classifiableByMerchant(other)
+      ) continue;
+      if (other.category_id === c.id && other.classification_status === "confirmed")
+        continue;
+      other.category_id = c.id;
+      other.parent_category_id = c.parent_id;
+      other.classification_status = "confirmed";
+      other.classification_source = "user";
+      other.classification_confidence = 1;
+      other.merchant_category = merchantCategory;
+      other.updated_at = new Date().toISOString();
+      updatedExisting++;
+    }
+  }
   if (remember) {
     s.rules = s.rules.filter(
       (r) => r.merchant_normalized !== t.merchant_normalized,
@@ -272,7 +297,7 @@ export function approveCategory(
       created_at: new Date().toISOString(),
     });
   }
-  audit(s, "classify", id, { before, after: c.id, remember });
+  audit(s, "classify", id, { before, after: c.id, remember, updated_existing: updatedExisting });
 }
 const bank = (t: Transaction) => t.source_service.endsWith("bank");
 function similarMerchant(a: string, b: string) {

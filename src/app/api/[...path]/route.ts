@@ -225,6 +225,7 @@ async function handler(
             id: z.uuid(),
             category_id: z.uuid(),
             remember: z.boolean(),
+            apply_existing: z.boolean().default(false),
             merchant_category: z.string().max(100).nullable(),
             purpose_note: z.string().max(1000),
             business_use: z
@@ -240,6 +241,7 @@ async function handler(
           b.merchant_category,
           b.purpose_note,
           b.business_use,
+          b.apply_existing,
         );
       } else if (path === "categories") {
         const b = z

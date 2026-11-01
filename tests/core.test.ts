@@ -189,6 +189,30 @@ test("approved category rule is reused before suggestions", () => {
   assert.equal(s.transactions[1].category_id, c.id);
   assert.equal(s.transactions[1].classification_source, "rule");
 });
+test("approving a purpose updates existing same-name expenses and future imports", () => {
+  const s = emptyState();
+  importCsv(s, csv([
+    "2026-10-05,Ａｍａｚｏｎ,100,購入,one",
+    "2026-10-06,Amazon,200,購入,two",
+    "2026-10-07,Amazon Prime,300,購入,three",
+  ]), "rakuten_card", "card");
+  importCsv(s, csv(["2026-10-08,Amazon,400,購入,four"]), "smbc_card", "other-card");
+  importCsv(s, csv(["2026-10-09,Amazon,500,送金,transfer"]), "sbi_bank", "bank");
+  const target = categories.find((c) => c.name === "文房具" && c.year === 2025)!;
+  const previous = categories.find((c) => c.name === "家賃" && c.selectable)!;
+  approveCategory(s, s.transactions[1].transaction_id, previous.id, false, null, "", "personal");
+  approveCategory(s, s.transactions[0].transaction_id, target.id, true, null, "確認済み", "business", true);
+  assert.deepEqual(s.transactions.slice(0, 2).map((t) => t.category_id), [target.id, target.id]);
+  assert.equal(s.transactions[1].business_use, "personal");
+  assert.equal(s.transactions[1].purpose_note, "");
+  assert.equal(s.transactions[3].category_id, target.id);
+  assert.notEqual(s.transactions[2].category_id, target.id);
+  assert.notEqual(s.transactions[4].category_id, target.id);
+  importCsv(s, csv(["2026-10-10,Amazon,600,購入,five"]), "rakuten_card", "card");
+  assert.equal(s.transactions[5].category_id, target.id);
+  assert.equal(s.transactions[5].classification_source, "rule");
+  assert.equal(s.audit.at(-2)?.detail.updated_existing, 2);
+});
 test("Amazon merchant class does not confirm purpose", () => {
   const s = emptyState();
   importCsv(s, csv(["2026-10-05,Amazon,100,購入,one"]), "rakuten_card", "card");

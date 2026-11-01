@@ -28,14 +28,18 @@ test("CSV import → classify → reuse → dashboard → mobile", async ({
   await page.getByRole("button", { name: "詳細・分類 →" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
   const dialog = page.getByRole("dialog");
-  const options = await dialog
+  await dialog.getByRole("searchbox", { name: "用途分類を検索" }).fill("Amazon");
+  await expect(dialog.getByLabel("同じ名称の既存の支出明細にも適用する（分類済みも含む）")).toBeChecked();
+  const categoryId = await dialog
     .getByRole("combobox", { name: "用途分類", exact: true })
     .locator("option")
-    .allTextContents();
-  const label = options.find((v) => v.includes("Amazon [A137]"))!;
+    .filter({ hasText: "Amazon [A137]" })
+    .first()
+    .getAttribute("value");
+  expect(categoryId).toBeTruthy();
   await dialog
     .getByRole("combobox", { name: "用途分類", exact: true })
-    .selectOption({ label });
+    .selectOption(categoryId!);
   await expect(
     dialog.getByLabel("同じ利用先の用途分類を次回も適用する"),
   ).toBeChecked();
