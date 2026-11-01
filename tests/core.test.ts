@@ -76,6 +76,22 @@ test("Shift_JIS bank CSV is detected and imported without changing the encoding 
     /自動判定.*再試行/,
   );
 });
+test("SBI bank export headers with ASCII parentheses import both flows", () => {
+  const header = Buffer.from(
+    "93fa95742c93e097652c8f6f8be08be08a7a28897e292c93fc8be08be08a7a28897e292c8e638d8228897e292c838183820a",
+    "hex",
+  );
+  const buffer = Buffer.concat([
+    header,
+    Buffer.from("2026/10/31,Shop,1000,,9000,-\n2026/10/30,Deposit,,2000,10000,-\n"),
+  ]);
+  const s = emptyState();
+  const first = importCsv(s, buffer, "sbi_bank", "bank-main");
+  const repeat = importCsv(s, buffer, "sbi_bank", "bank-main");
+  assert.equal(first.count, 2);
+  assert.equal(repeat.count, 0);
+  assert.deepEqual(s.transactions.map((t) => t.direction), ["out", "in"]);
+});
 test("same CSV imported twice adds no records", () => {
   const s = emptyState(),
     b = csv(["2026-10-05,Amazon,30000,購入,one"]);

@@ -59,9 +59,10 @@ const common: Record<Field, string[]> = {
     "お支払金額",
     "お引出し金額",
     "出金金額（円）",
+    "出金金額(円)",
     "outflow",
   ],
-  inflow: ["入金額", "お預り金額", "お預入れ金額", "入金金額（円）", "inflow"],
+  inflow: ["入金額", "お預り金額", "お預入れ金額", "入金金額（円）", "入金金額(円)", "inflow"],
   type: ["取引種別", "取引種類", "種別", "type"],
   id: ["利用明細ID", "取引番号", "取引ID", "明細ID", "id"],
   posted_date: ["計上日", "posted_date"],
@@ -72,7 +73,7 @@ const common: Record<Field, string[]> = {
   counterparty: ["相手口座ID", "counterparty"],
   reference: ["共通参照ID", "reference"],
   installment: ["支払区分", "分割・リボ", "installment"],
-  balance: ["残高", "お取引後残高", "balance"],
+  balance: ["残高", "残高(円)", "残高（円）", "お取引後残高", "balance"],
   fee: ["振込手数料", "fee"],
 };
 export interface Adapter {
