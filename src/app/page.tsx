@@ -1297,7 +1297,7 @@ export default function App() {
               <section className="panel">
                 <div className="panel-head">
                   <div>
-                    <h2>{month.slice(0, 4)}年 月別経費</h2>
+                    <h2>月別経費表</h2>
                     <p>
                       分類・項目名を押すと編集できます。各分類の末尾から項目を追加できます。
                     </p>
@@ -1703,7 +1703,7 @@ function Monthly({
       <table>
         <thead>
           <tr>
-            <th>分類</th>
+            <th>分類・項目</th>
             {Array.from({ length: 12 }, (_, i) => (
               <th key={i}>{i + 1}月</th>
             ))}
@@ -1723,7 +1723,7 @@ function Monthly({
                 </tr>,
                 editRow(p),
                 ...kids.flatMap((c) => [
-                  row(c.id, <button type="button" className="monthly-name" onClick={() => startEdit(c)} aria-label={`${c.name}の項目を編集`}>{c.name} <span aria-hidden="true">✎</span></button>, months([c.id])),
+                  row(c.id, <button type="button" className="monthly-name" onClick={() => startEdit(c)} aria-label={`${c.name}の項目を編集`}>{c.name} <span aria-hidden="true">名前変更</span></button>, months([c.id])),
                   editRow(c),
                 ]),
                 row(
