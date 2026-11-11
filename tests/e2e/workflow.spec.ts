@@ -223,6 +223,33 @@ test("CSV import → classify → reuse → dashboard → mobile", async ({
   expect(afterBankClassification.summary.purchase).toBe(31700);
   await page.getByRole("button", { name: /月別経費表/ }).click();
   await expect(page.getByRole("row").filter({ has: page.getByRole("button", { name: "テナント料（野田院）の項目を編集" }) })).toContainText("700");
+  const beforeWholesaler = await (await request.get("/api/state?month=2026-10")).json();
+  const oldWholesaler = beforeWholesaler.categories.find((c: { name: string; year: number }) => c.name === "問屋(アクティ)" && c.year === 2024);
+  const wholesalerImport = await request.post("/api/imports", {
+    headers: { Origin: "http://127.0.0.1:3100" },
+    multipart: {
+      source: "rakuten_card",
+      account: "card",
+      file: {
+        name: "wholesaler-old-category.csv",
+        mimeType: "text/csv",
+        buffer: Buffer.from("利用日,利用先,利用金額,取引種別,利用明細ID\n2026-10-12,問屋検証,1234,購入,wholesaler-test"),
+      },
+    },
+  });
+  expect(wholesalerImport.ok()).toBe(true);
+  const importedWholesaler = await (await request.get("/api/state?month=2026-10")).json();
+  const wholesalerTransaction = importedWholesaler.state.transactions.find((t: { merchant_original: string }) => t.merchant_original === "問屋検証");
+  const classifiedWholesaler = await request.post("/api/classify", {
+    headers: { Origin: "http://127.0.0.1:3100" },
+    data: { id: wholesalerTransaction.transaction_id, category_id: oldWholesaler.id,
+      remember: false, apply_existing: false, merchant_category: null, purpose_note: "", business_use: "unknown" },
+  });
+  expect(classifiedWholesaler.ok()).toBe(true);
+  await page.reload();
+  await page.getByRole("button", { name: /月別経費表/ }).click();
+  await expect(page.getByRole("button", { name: "問屋(アクティ)の項目を編集" })).toHaveCount(0);
+  await expect(page.getByRole("row").filter({ has: page.getByRole("button", { name: "問屋　アクティの項目を編集" }) })).toContainText("1,234");
   await page.getByRole("button", { name: /サービス連携/ }).click();
   await expect(page.getByRole("heading", { name: "売上ツールのシートを照合元にする" })).toBeVisible();
   await expect(page.getByRole("textbox", { name: "売上ツールのスプレッドシートURL" })).toBeVisible();

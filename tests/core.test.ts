@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { emptyState, type Transaction, type Service } from "../src/lib/types";
 import { parseCsv, normalize, yen, readCsv } from "../src/lib/csv";
-import { currentCategoryChoices } from "../src/lib/category-order";
+import { categoryDisplayName, currentCategoryChoices } from "../src/lib/category-order";
 import {
   categories,
   effectiveCategories,
@@ -1117,6 +1117,36 @@ test("monthly report combines historical duplicate category IDs into the newest 
   assert.equal(rows[0][11], 3000);
   assert.equal(monthly.rows.at(-1)![11], 3000);
   assert.equal(summary(s, "2026-10").purchase, 3000);
+});
+test("wholesaler spelling variants share the newest monthly row without losing amounts", () => {
+  const s = emptyState();
+  const old = categories.find((c) => c.name === "問屋(アクティ)" && c.year === 2024)!;
+  const newest = categories.find((c) => c.name === "問屋　アクティ" && c.year === 2025)!;
+  const oldIwabuchi = categories.find((c) => c.name === "問屋(岩渕)" && c.year === 2024)!;
+  const newestIwabuchi = categories.find((c) => c.name === "問屋　岩渕薬品" && c.year === 2025)!;
+  const choices = currentCategoryChoices(categories);
+  assert.equal(choices.canonicalIdById.get(old.id), newest.id);
+  assert.equal(choices.canonicalIdById.get(oldIwabuchi.id), newestIwabuchi.id);
+  assert.ok(choices.children.get(categories.find((c) => c.name === "問屋" && c.year === 2025 && !c.selectable)!.id)?.some((c) => c.name === "問屋(プラセンタ)"));
+  importCsv(s, csv(["2026-10-05,問屋A,1000,購入,old", "2026-10-06,問屋B,2000,購入,new"]), "rakuten_card", "card");
+  approveCategory(s, s.transactions[0].transaction_id, old.id, false, null, "");
+  approveCategory(s, s.transactions[1].transaction_id, newest.id, false, null, "");
+  const monthly = reports(s, 2026).find((r) => r.title === "2026年 月別経費")!;
+  assert.equal(monthly.rows.filter((r) => r[0] === old.id).length, 0);
+  assert.equal(monthly.rows.find((r) => r[0] === newest.id)?.[11], 3000);
+  assert.equal(monthly.rows.at(-1)?.[11], 3000);
+});
+test("monthly labels omit source-year suffixes while category master retains originals", () => {
+  assert.equal(categoryDisplayName("項目（2025年度）"), "項目");
+  assert.equal(categoryDisplayName("項目 (2024)"), "項目");
+  assert.equal(categoryDisplayName("2025年の契約"), "2025年の契約");
+  const s = emptyState();
+  const group = addCategory(s, "分類（2025年度）", null);
+  const item = addCategory(s, "項目 (2024)", group.id);
+  const monthly = reports(s, 2026).find((r) => r.title === "2026年 月別経費")!;
+  assert.equal(monthly.rows.find((r) => r[0] === group.id)?.[1], "分類");
+  assert.equal(monthly.rows.find((r) => r[0] === item.id)?.[1], "  項目");
+  assert.equal(reports(s, 2026).find((r) => r.title === "分類マスター")!.rows.find((r) => r[0] === item.id)?.[2], "項目 (2024)");
 });
 test("monthly report keeps distinct same-year category IDs separate", () => {
   const s = emptyState();

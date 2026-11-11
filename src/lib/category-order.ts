@@ -1,5 +1,16 @@
 import type { Category } from "./types";
 
+export function categoryDisplayName(name: string) {
+  const displayed = name.replace(/(?:[\s　]*[（(]\s*20(?:23|24|25)\s*(?:年(?:度)?)?\s*[）)]|[\s　]+20(?:23|24|25)(?:年(?:度)?)?)$/u, "").trim();
+  return displayed || name.trim();
+}
+
+function categoryKey(name: string) {
+  return categoryDisplayName(name).normalize("NFKC")
+    .replace(/[\s()（）・･,，.。\-‐–—_]/gu, "")
+    .toLocaleLowerCase();
+}
+
 export function sortGroups(all: Category[]): Category[] {
   return all.filter((c) => !c.selectable).sort((a, b) =>
     (a.display_order ?? Number.MAX_SAFE_INTEGER) - (b.display_order ?? Number.MAX_SAFE_INTEGER) ||
@@ -7,10 +18,10 @@ export function sortGroups(all: Category[]): Category[] {
   );
 }
 
-// Collapse only matching names across years in assignment/editing menus.
+// Collapse equivalent names across years in assignment menus and monthly reports.
 // Keep original IDs and same-year duplicates for historical records.
 export function currentCategoryChoices(all: Category[]) {
-  const key = (name: string) => name.normalize("NFKC").replace(/\s+/g, "").toLocaleLowerCase();
+  const key = categoryKey;
   const parents = all.filter((c) => !c.selectable);
   const byId = new Map(parents.map((c) => [c.id, c]));
   const newestGroupYear = new Map<string, number>();
@@ -23,7 +34,11 @@ export function currentCategoryChoices(all: Category[]) {
   const newestItemYear = new Map<string, number>();
   const itemKey = (item: Category) => {
     const parent = byId.get(item.parent_id || "");
-    return parent ? `${key(parent.name)}|${key(item.name)}` : item.id;
+    if (!parent) return item.id;
+    const parentName = key(parent.name);
+    let itemName = key(item.name);
+    if (parentName === "問屋" && itemName === "問屋岩渕") itemName = "問屋岩渕薬品";
+    return `${parentName}|${itemName}`;
   };
   for (const item of all.filter((c) => c.selectable))
     newestItemYear.set(itemKey(item), Math.max(newestItemYear.get(itemKey(item)) || 0, item.year));

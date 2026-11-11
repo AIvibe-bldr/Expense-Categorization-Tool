@@ -1,5 +1,5 @@
 import { colorHex } from "./colors";
-import { currentCategoryChoices } from "./category-order";
+import { categoryDisplayName, currentCategoryChoices } from "./category-order";
 import { effectiveCategories, purchaseAmount, sum, summary } from "./engine";
 import { type State, serviceNames } from "./types";
 export type Report = {
@@ -45,14 +45,14 @@ export function reports(s: State, year: number): Report[] {
   for (const parent of groups) {
     const items = children.get(parent.id) || [];
     monthly.colors![monthly.rows.length] = colorHex(parent.color);
-    monthly.rows.push([parent.id, parent.name]);
+    monthly.rows.push([parent.id, categoryDisplayName(parent.name)]);
     const totals = Array(12).fill(0) as number[];
     for (const child of items) {
       const m = months(child.id);
       m.forEach((n, i) => (totals[i] = sum([totals[i], n])));
-      monthly.rows.push([child.id, `  ${child.name}`, ...m, sum(m)]);
+      monthly.rows.push([child.id, `  ${categoryDisplayName(child.name)}`, ...m, sum(m)]);
     }
-    monthly.rows.push(["", `${parent.name} 小計`, ...totals, sum(totals)]);
+    monthly.rows.push(["", `${categoryDisplayName(parent.name)} 小計`, ...totals, sum(totals)]);
   }
   const unknown = months(null);
   monthly.rows.push([

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback, type ReactNode } from "react";
 import { colorHex } from "@/lib/colors";
-import { currentCategoryChoices } from "@/lib/category-order";
+import { categoryDisplayName, currentCategoryChoices } from "@/lib/category-order";
 import { createBrowserClient } from "@supabase/ssr";
 import {
   serviceNames,
@@ -1810,16 +1810,16 @@ function Monthly({
                   key={p.id}
                   style={{ background: "#" + colorHex(p.color) }}
                 >
-                  <th colSpan={14}><button type="button" className="monthly-name" onClick={() => startEdit(p)} aria-label={`${p.name}の分類を編集`}>{p.name} <span aria-hidden="true">✎</span></button></th>
+                  <th colSpan={14}><button type="button" className="monthly-name" onClick={() => startEdit(p)} aria-label={`${categoryDisplayName(p.name)}の分類を編集`}>{categoryDisplayName(p.name)} <span aria-hidden="true">✎</span></button></th>
                 </tr>,
                 editRow(p),
                 ...kids.flatMap((c) => [
-                  row(c.id, <button type="button" className="monthly-name" onClick={() => startEdit(c)} aria-label={`${c.name}の項目を編集`}>{c.name} <span aria-hidden="true">名前変更</span></button>, months([c.id])),
+                  row(c.id, <button type="button" className="monthly-name" onClick={() => startEdit(c)} aria-label={`${categoryDisplayName(c.name)}の項目を編集`}>{categoryDisplayName(c.name)} <span aria-hidden="true">名前変更</span></button>, months([c.id])),
                   editRow(c),
                 ]),
                 row(
                   p.id + "total",
-                  p.name + " 小計",
+                  categoryDisplayName(p.name) + " 小計",
                   months(kids.map((c) => c.id)),
                   "subtotal",
                 ),
