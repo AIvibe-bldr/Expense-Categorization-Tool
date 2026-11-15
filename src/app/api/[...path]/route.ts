@@ -517,6 +517,15 @@ async function handler(
       } else return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
     }
     await save(who, s);
+    if (path === "classify") {
+      return NextResponse.json({
+        ok: true,
+        state: {
+          transactions: s.transactions.map(({ raw_encrypted, ...t }) => t),
+        },
+        categories: effectiveCategories(s),
+      });
+    }
     return NextResponse.json(result);
   } catch (e) {
     const message =

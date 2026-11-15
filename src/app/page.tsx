@@ -1,6 +1,6 @@
 "use client";
 import { categoryDisplayName } from "@/lib/category-order";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { personalReports, personalCategoryChoices } from "@/lib/spreadsheet";
 import { createBrowserClient } from "@supabase/ssr";
 import {
@@ -40,8 +40,10 @@ export default function App() {
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
+  const [lastCategoryId, setLastCategoryId] = useState("");
+  const previewRef = useRef<HTMLDivElement>(null);
   async function refresh() {
-    const r = await fetch("/api/state");
+    const r = await fetch("/api/state", { cache: "no-store" });
     if (r.status === 401) {
       location.href = "/login";
       return;
@@ -76,7 +78,15 @@ export default function App() {
       const result = await r.json();
       if (!r.ok) throw Error(result.error);
       persisted = true;
-      await refresh();
+      if (path === "classify" && result.state && result.categories) {
+        setData((current) =>
+          current
+            ? { ...current, state: result.state, categories: result.categories }
+            : current,
+        );
+      } else {
+        await refresh();
+      }
       setNotice(
         path === "imports"
           ? `${result.count}件を取り込みました（重複${result.duplicates}件をスキップ）。項目を選んで振り分けてください。`
@@ -123,6 +133,18 @@ export default function App() {
   );
   const spreadsheet = sheets[previewSheet];
   const previewRows = spreadsheet.rows.slice(1);
+  const highlightedCategory =
+    choices.canonicalIdById.get(lastCategoryId) || lastCategoryId;
+  useEffect(() => {
+    const container = previewRef.current;
+    const row = container?.querySelector<HTMLElement>('[data-updated="true"]');
+    if (container && row) {
+      container.scrollTop +=
+        row.getBoundingClientRect().top -
+        container.getBoundingClientRect().top -
+        100;
+    }
+  }, [data, highlightedCategory, previewSheet]);
   return (
     <main className="simple-main">
       <header>
@@ -342,10 +364,11 @@ export default function App() {
               利用した月で集計します（請求月・引落月ではありません）。返金は返金された月に差し引きます。カード引落・振替・チャージ・重複除外は年間表に加算しません。入金や集計対象外の取引も月別明細で確認できます。
             </p>
             <p className="muted">
-              上の検索・未分類フィルターは年間表と出力には影響しません。
+              検索・未分類フィルターは年間表と出力には影響しません。項目を選ぶと年間表の該当行を強調表示します。
             </p>
             <div
               className="table-scroll spreadsheet-preview"
+              ref={previewRef}
               tabIndex={0}
               role="region"
               aria-label="Excel出力プレビュー"
@@ -379,6 +402,16 @@ export default function App() {
                     .map((row, i) => (
                       <tr
                         key={i}
+                        data-updated={
+                          spreadsheet.categoryIds?.[i + 1] ===
+                            highlightedCategory && !!highlightedCategory
+                        }
+                        className={
+                          spreadsheet.categoryIds?.[i + 1] ===
+                            highlightedCategory && highlightedCategory
+                            ? "updated-row"
+                            : undefined
+                        }
                         style={
                           spreadsheet.colors?.[i + 1]
                             ? {
@@ -496,51 +529,56 @@ export default function App() {
                         <select
                           aria-label={`${t.merchant_original} ${t.transaction_date}の項目`}
                           disabled={busy}
-                          value={t.category_id ?? ""}
+                          value={
+                            t.classification_status === "pending"
+                              ? ""
+                              : (t.category_id ?? "")
+                          }
                           onChange={(e) => {
-                            if (e.target.value)
-                              void save(
-                                "classify",
-                                {
-                                  id: t.transaction_id,
-                                  category_id: e.target.value,
-                                  remember: true,
-                                  apply_existing: true,
-                                  all_merchant_types: true,
-                                  merchant_category: t.merchant_category,
-                                  purpose_note: t.purpose_note,
-                                  business_use: "personal",
+                            const categoryId = e.target.value;
+                            if (!categoryId) return;
+                            setLastCategoryId(categoryId);
+                            setPreviewSheet(0);
+                            void save(
+                              "classify",
+                              {
+                                id: t.transaction_id,
+                                category_id: categoryId,
+                                remember: true,
+                                apply_existing: true,
+                                all_merchant_types: true,
+                                merchant_category: t.merchant_category,
+                                purpose_note: t.purpose_note,
+                                business_use: "personal",
+                              },
+                              {
+                                ...data,
+                                state: {
+                                  ...data.state,
+                                  transactions: data.state.transactions.map(
+                                    (other) =>
+                                      other.merchant_normalized ===
+                                      t.merchant_normalized
+                                        ? {
+                                            ...other,
+                                            category_id: categoryId,
+                                            parent_category_id:
+                                              categories.find(
+                                                (c) => c.id === categoryId,
+                                              )?.parent_id ?? null,
+                                            classification_status: "confirmed",
+                                            classification_source: "user",
+                                            classification_confidence: 1,
+                                          }
+                                        : other,
+                                  ),
                                 },
-                                {
-                                  ...data,
-                                  state: {
-                                    ...data.state,
-                                    transactions: data.state.transactions.map(
-                                      (other) =>
-                                        other.merchant_normalized ===
-                                        t.merchant_normalized
-                                          ? {
-                                              ...other,
-                                              category_id: e.target.value,
-                                              parent_category_id:
-                                                categories.find(
-                                                  (c) =>
-                                                    c.id === e.target.value,
-                                                )?.parent_id ?? null,
-                                              classification_status:
-                                                "confirmed",
-                                              classification_source: "user",
-                                              classification_confidence: 1,
-                                            }
-                                          : other,
-                                    ),
-                                  },
-                                },
-                              );
+                              },
+                            );
                           }}
                         >
                           <option value="" disabled>
-                            未分類 — 項目を選択
+                            未確認 — 項目を選択
                           </option>
                           {choices.groups.map((group) => (
                             <optgroup

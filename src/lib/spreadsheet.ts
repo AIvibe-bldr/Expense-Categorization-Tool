@@ -62,6 +62,7 @@ export type SpreadsheetReport = {
   title: string;
   rows: (string | number)[][];
   colors?: Record<number, string>;
+  categoryIds?: Record<number, string>;
 };
 
 /** Personal use of funds, independent of business/tax eligibility. */
@@ -150,6 +151,7 @@ export function personalReports(
       ],
     ],
     colors: {},
+    categoryIds: {},
   };
   const append = (name: string, amounts: number[]) =>
     annual.rows.push([
@@ -165,6 +167,7 @@ export function personalReports(
     for (const item of children.get(group.id) || []) {
       displayedIds.add(item.id);
       const amounts = values.get(item.id) || Array<number>(12).fill(0);
+      annual.categoryIds![annual.rows.length] = item.id;
       append(`　${categoryDisplayName(item.name)}`, amounts);
       amounts.forEach((n, i) => (subtotal[i] += n));
     }

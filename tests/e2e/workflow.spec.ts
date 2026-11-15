@@ -192,3 +192,68 @@ test("sheet follows import, immediate merchant updates, failure rollback and fut
   expect(latest.transactions.at(-1).category_id).toBe(assigned);
   expect(latest.transactions.at(-1).classification_source).toBe("rule");
 });
+
+test("pending Other can be confirmed and a stale state read cannot undo sheet updates", async ({
+  page,
+  request,
+}) => {
+  const imported = await request.post("/api/imports", {
+    headers: { Origin: "http://127.0.0.1:3100" },
+    multipart: {
+      source: "rakuten_card",
+      account: "other-regression",
+      file: {
+        name: "synthetic.csv",
+        mimeType: "text/csv",
+        buffer: Buffer.from(
+          "利用日,利用先,利用金額,取引種別,利用明細ID\n2026-08-21,その他選択の検証店,789,購入,other-regression",
+        ),
+      },
+    },
+  });
+  expect(imported.ok()).toBe(true);
+  await page.goto("/");
+  await page.getByLabel("対象年").fill("2026");
+  const category = page.getByRole("combobox", {
+    name: "その他選択の検証店 2026-08-21の項目",
+  });
+  await expect(category).toHaveValue("");
+  const stale = await (await request.get("/api/state")).json();
+  let reads = 0;
+  await page.route("**/api/state", async (route) => {
+    reads++;
+    await route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify(stale),
+    });
+  });
+  await page.getByLabel("表示するシート").selectOption("1");
+  const savedResponse = page.waitForResponse(
+    (r) => r.url().endsWith("/api/classify") && r.request().method() === "POST",
+  );
+  await category.selectOption({ label: "その他" });
+  await expect(page.getByRole("status")).toHaveText("振り分けを保存しました。");
+  await expect(page.getByLabel("表示するシート")).toHaveValue("0");
+  await expect(category).not.toHaveValue("");
+  const result = await (await savedResponse).json();
+  expect(
+    result.state.transactions.find(
+      (t: { merchant_original: string }) =>
+        t.merchant_original === "その他選択の検証店",
+    ).classification_status,
+  ).toBe("confirmed");
+  expect(
+    result.state.transactions.every((t: object) => !("raw_encrypted" in t)),
+  ).toBe(true);
+  expect(reads).toBe(0);
+  const updated = page
+    .getByRole("region", { name: "Excel出力プレビュー" })
+    .locator('[data-updated="true"]');
+  await expect(updated).toHaveCount(1);
+  await expect(updated.locator("td").first()).toHaveText("その他");
+  await expect(updated.locator("td").nth(8)).toHaveText("789");
+  await page.unroute("**/api/state");
+  await page.reload();
+  await page.getByLabel("対象年").fill("2026");
+  await expect(category).not.toHaveValue("");
+});
