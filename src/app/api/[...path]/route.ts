@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse, after } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { randomUUID } from "node:crypto";
 import ExcelJS from "exceljs";
@@ -24,7 +24,7 @@ import {
   syncGoogle,
   oauthReady,
 } from "@/lib/google";
-import { reports } from "@/lib/reports";
+import { reports, simpleReport } from "@/lib/reports";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const monthSchema = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/);
@@ -121,7 +121,9 @@ async function handler(
             req.nextUrl.searchParams.get("year") || new Date().getUTCFullYear(),
           );
         const book = new ExcelJS.Workbook();
-        for (const report of reports(s, year)) {
+        for (const report of req.nextUrl.searchParams.get("format") === "simple"
+          ? [simpleReport(s, year)]
+          : reports(s, year)) {
           const sheet = book.addWorksheet(report.title);
           sheet.addRows(report.rows);
           sheet.views = [{ state: "frozen", ySplit: 1 }];
@@ -387,14 +389,6 @@ async function handler(
       } else return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
     }
     await save(who, s);
-    if (s.settings.spreadsheet_id && (await getSecret(who, "google_tokens")))
-      after(async () => {
-        try {
-          await syncGoogle(who);
-        } catch {
-          /* Persisted error is shown in the dashboard; avoid logging tokens/financial data. */
-        }
-      });
     return NextResponse.json(result);
   } catch (e) {
     const message =

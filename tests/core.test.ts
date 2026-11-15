@@ -20,7 +20,7 @@ import {
 } from "../src/lib/engine";
 import { encrypt, decrypt } from "../src/lib/crypto";
 import { load, save, putSecret, lock, unlock } from "../src/lib/store";
-import { reports } from "../src/lib/reports";
+import { reports, simpleReport } from "../src/lib/reports";
 import { syncGoogle, authorizationUrl, callback } from "../src/lib/google";
 process.env.GALAPAGOS_LOCAL_MODE = "1";
 process.env.GALAPAGOS_DATA_DIR = mkdtempSync(join(tmpdir(), "galapagos-test-"));
@@ -725,4 +725,24 @@ test("restore preserves matched duplicate state and reconciliation evidence", ()
   assert.equal(summary(live, "2026-10").purchase, 30000);
   restoreMissing(live, backup);
   assert.equal(live.transactions.length, 2);
+});
+
+test("simple Excel ledger scopes year and preserves unclassified, transfers, and refunds", () => {
+  const s = emptyState();
+  s.transactions = [
+    make(),
+    make({ transaction_date: "2025-10-01" }),
+    make({ transaction_type: "transfer", amount: 500 }),
+    make({
+      direction: "in",
+      transaction_type: "refund",
+      amount: 200,
+      merchant_original: "=SUM(1)",
+    }),
+  ];
+  const output = simpleReport(s, 2026);
+  assert.equal(output.rows.length, 4);
+  assert.ok(output.rows.slice(1).every((row) => row[0] === "未分類"));
+  assert.ok(output.rows.some((row) => row[3] === 500));
+  assert.ok(output.rows.some((row) => row[4] === 200 && row[2] === "'=SUM(1)"));
 });

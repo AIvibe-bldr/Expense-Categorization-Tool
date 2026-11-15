@@ -1015,3 +1015,56 @@ footer span {
     min-width: 1400px;
   }
 }
+
+.simple-main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  width: 100%;
+  min-width: 0;
+}
+.simple-main header {
+  margin-bottom: 28px;
+}
+.simple-main h1 {
+  font-size: clamp(24px, 4vw, 34px);
+}
+.simple-main .panel {
+  margin-bottom: 24px;
+}
+.simple-main details {
+  margin: 20px 0;
+}
+.simple-main summary {
+  cursor: pointer;
+  color: var(--green);
+  margin-bottom: 12px;
+}
+.simple-main .panel-head > label {
+  max-width: 130px;
+}
+.simple-main td select {
+  min-width: 250px;
+  max-width: 400px;
+}
+.simple-main .export-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.simple-main .export-panel p {
+  margin-bottom: 6px;
+}
+@media (max-width: 650px) {
+  .simple-main {
+    padding: 24px 14px;
+  }
+  .simple-main .export-panel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .simple-main header {
+    display: block;
+  }
+}
