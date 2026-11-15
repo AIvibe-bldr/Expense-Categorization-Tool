@@ -354,7 +354,7 @@
   {
     "id": "2499c745-b1f3-5e7c-bb41-eed04eae967f",
     "parent_id": "6dbdb152-5e8f-5a36-b7e7-3c4047a0800e",
-    "name": "千葉銀決済端末レンタル料",
+    "name": "千葉銀端末",
     "year": 2025,
     "source_sheet": "2025年度　経費",
     "source_cell": "A39",
@@ -1090,7 +1090,7 @@
   {
     "id": "d171c981-5e9b-5552-adab-32dfa72aab94",
     "parent_id": "c93171a2-9c92-5b39-b672-527ef467edef",
-    "name": "小林様　顧客紹介料",
+    "name": "小林様　紹介料",
     "year": 2025,
     "source_sheet": "2025年度　経費",
     "source_cell": "A113",
@@ -1394,7 +1394,7 @@
   {
     "id": "3445794a-66b0-5897-aeb6-8a3b8b74911e",
     "parent_id": "b43af3cb-5b3c-5718-8fdc-e503bee560d2",
-    "name": "ファイトフィット　キックボクシング",
+    "name": "ファイトフィット",
     "year": 2025,
     "source_sheet": "2025年度　経費",
     "source_cell": "A157",
@@ -1410,7 +1410,7 @@
   {
     "id": "d0598a35-e409-597d-933e-6122d61f3cfe",
     "parent_id": "b43af3cb-5b3c-5718-8fdc-e503bee560d2",
-    "name": "くもん　ボールペン字",
+    "name": "くもん",
     "year": 2025,
     "source_sheet": "2025年度　経費",
     "source_cell": "A158",

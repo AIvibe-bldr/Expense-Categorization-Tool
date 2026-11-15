@@ -1,3 +1,4 @@
+import { personalReports } from "@/lib/spreadsheet";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { randomUUID } from "node:crypto";
@@ -31,7 +32,7 @@ import {
   previewReferenceSheet,
   readReferenceSheet,
 } from "@/lib/google";
-import { reports, simpleReport } from "@/lib/reports";
+import { reports } from "@/lib/reports";
 import { parseSheetLink } from "@/lib/reference";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -130,7 +131,7 @@ async function handler(
           );
         const book = new ExcelJS.Workbook();
         for (const report of req.nextUrl.searchParams.get("format") === "simple"
-          ? [simpleReport(s, year)]
+          ? personalReports(s.transactions, effectiveCategories(s), year)
           : reports(s, year)) {
           const sheet = book.addWorksheet(report.title);
           sheet.addRows(report.rows);
@@ -138,18 +139,27 @@ async function handler(
           sheet.getColumn(1).width = 38;
           sheet.getColumn(2).width = 35;
           if (req.nextUrl.searchParams.get("format") === "simple") {
-            [52, 15, 32, 16, 16, 24, 22, 36].forEach((width, index) => {
+            const annual = report.title.includes("年間_項目別");
+            const widths = annual
+              ? [42, ...Array(13).fill(15)]
+              : [15, 32, 48, 16, 16, 18, 24, 22, 38];
+            widths.forEach((width, index) => {
               sheet.getColumn(index + 1).width = width;
             });
-            sheet.autoFilter = "A1:H1";
+            sheet.views = [{ state: "frozen", ySplit: 1, xSplit: 1 }];
+            if (!annual) sheet.autoFilter = "A1:I1";
             sheet.getRow(1).font = { bold: true };
             sheet.getRow(1).fill = {
               type: "pattern",
               pattern: "solid",
               fgColor: { argb: "FFE6F1E9" },
             };
-            sheet.getColumn(4).numFmt = "#,##0";
-            sheet.getColumn(5).numFmt = "#,##0";
+            for (
+              let column = annual ? 2 : 4;
+              column <= (annual ? 14 : 6);
+              column++
+            )
+              sheet.getColumn(column).numFmt = "#,##0";
           }
           for (const [row, color] of Object.entries(report.colors || {}))
             sheet.getRow(+row + 1).fill = {

@@ -1,6 +1,7 @@
 "use client";
+import { categoryDisplayName } from "@/lib/category-order";
 import { useEffect, useState } from "react";
-import { spreadsheetReport } from "@/lib/spreadsheet";
+import { personalReports, personalCategoryChoices } from "@/lib/spreadsheet";
 import { createBrowserClient } from "@supabase/ssr";
 import {
   services,
@@ -35,6 +36,7 @@ export default function App() {
   const [pendingOnly, setPendingOnly] = useState(false);
   const [limit, setLimit] = useState(100);
   const [previewLimit, setPreviewLimit] = useState(100);
+  const [previewSheet, setPreviewSheet] = useState(0);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
@@ -94,23 +96,28 @@ export default function App() {
           .includes(search.toLowerCase()),
     )
     .sort((a, b) => b.transaction_date.localeCompare(a.transaction_date));
-  const categoryYears = [...new Set(categories.map((c) => c.year))].sort(
-    (a, b) => b - a,
+  const choices = personalCategoryChoices(
+    categories,
+    data?.state.transactions ?? [],
   );
-  const spreadsheet = spreadsheetReport(
+  const selectableIds = new Set(
+    [...choices.children.values()].flat().map((c) => c.id),
+  );
+  const sheets = personalReports(
     data?.state.transactions ?? [],
     categories,
     Number(year),
   );
+  const spreadsheet = sheets[previewSheet];
   const previewRows = spreadsheet.rows.slice(1);
   return (
     <main className="simple-main">
       <header>
         <div>
           <p className="eyebrow">GALAPAGOS</p>
-          <h1>CSVを、項目別のExcelに。</h1>
+          <h1>自分のお金の使い道を、月ごとに。</h1>
           <p className="muted">
-            CSVを取り込み、項目を選んで、Excelをダウンロード。
+            CSVを取り込み、分類・項目に振り分けて、毎月の資金用途を記録します。
           </p>
         </div>
         {data && !data.local && (
@@ -277,6 +284,7 @@ export default function App() {
                     setYear(e.target.value);
                     setLimit(100);
                     setPreviewLimit(100);
+                    setPreviewSheet(0);
                   }}
                 />
               </label>
@@ -349,29 +357,34 @@ export default function App() {
                                 remember: false,
                                 merchant_category: t.merchant_category,
                                 purpose_note: t.purpose_note,
-                                business_use: t.business_use,
+                                business_use: "personal",
                               });
                           }}
                         >
                           <option value="" disabled>
                             未分類 — 項目を選択
                           </option>
-                          {categoryYears.map((y) => (
-                            <optgroup key={y} label={`${y}年度の項目`}>
-                              {categories
-                                .filter((c) => c.selectable && c.year === y)
-                                .map((c) => (
-                                  <option key={c.id} value={c.id}>
-                                    {
-                                      categories.find(
-                                        (p) => p.id === c.parent_id,
-                                      )?.name
-                                    }{" "}
-                                    › {c.name} [{c.source_cell}]
+                          {choices.groups.map((group) => (
+                            <optgroup
+                              key={group.id}
+                              label={categoryDisplayName(group.name)}
+                            >
+                              {(choices.children.get(group.id) || []).map(
+                                (item) => (
+                                  <option key={item.id} value={item.id}>
+                                    {categoryDisplayName(item.name)}
                                   </option>
-                                ))}
+                                ),
+                              )}
                             </optgroup>
                           ))}
+                          {t.category_id &&
+                            !selectableIds.has(t.category_id) && (
+                              <option value={t.category_id}>
+                                {categories.find((c) => c.id === t.category_id)
+                                  ?.name || "過去の項目"}
+                              </option>
+                            )}
                         </select>
                       </td>
                     </tr>
@@ -401,10 +414,10 @@ export default function App() {
                 <h2 id="excel-preview-title">3. 振り分け結果を確認・出力</h2>
                 <p>
                   {year}
-                  年の振り分け結果です。下の表と同じ内容をExcelに出力します。
+                  年の年間表と月別明細を確認できます。同じ内容をExcelに出力します。
                 </p>
                 <small>
-                  未分類も出力します。入金・振替などを含むすべての明細を確認できます。
+                  利用日を基準に集計します。税金・保険・投資も含めた、ご自身の資金用途の記録です。
                 </small>
               </div>
               <button
@@ -423,9 +436,28 @@ export default function App() {
               スプレッドシートで確認する場合は、ダウンロードしたExcelを「ファイル
               → インポート → アップロード」で開いてください。
             </p>
+            <label className="sheet-picker">
+              表示するシート
+              <select
+                value={previewSheet}
+                onChange={(e) => {
+                  setPreviewSheet(Number(e.target.value));
+                  setPreviewLimit(100);
+                }}
+              >
+                <option value={0}>年間_項目別（1〜12月）</option>
+                {sheets.slice(1).map((sheet, i) => (
+                  <option key={i} value={i + 1}>
+                    {i + 1}月の明細
+                  </option>
+                ))}
+              </select>
+            </label>
             <p className="muted">
-              対象年の全{previewRows.length}
-              件を項目順に表示します。上の検索・未分類フィルターは出力には影響しません。
+              利用した月で集計します（請求月・引落月ではありません）。返金は返金された月に差し引きます。カード引落・振替・チャージ・重複除外は年間表に加算しません。入金や集計対象外の取引も月別明細で確認できます。
+            </p>
+            <p className="muted">
+              上の検索・未分類フィルターは年間表と出力には影響しません。
             </p>
             <div
               className="table-scroll spreadsheet-preview"
@@ -454,32 +486,48 @@ export default function App() {
                   </tr>
                 </thead>
                 <tbody>
-                  {previewRows.slice(0, previewLimit).map((row, i) => (
-                    <tr key={i}>
-                      <th scope="row">{i + 2}</th>
-                      {row.map((cell, j) => (
-                        <td
-                          key={j}
-                          className={
-                            typeof cell === "number" ? "money" : undefined
-                          }
-                        >
-                          {typeof cell === "number"
-                            ? cell.toLocaleString("ja-JP")
-                            : cell}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
+                  {previewRows
+                    .slice(
+                      0,
+                      previewSheet === 0 ? previewRows.length : previewLimit,
+                    )
+                    .map((row, i) => (
+                      <tr
+                        key={i}
+                        style={
+                          spreadsheet.colors?.[i + 1]
+                            ? {
+                                backgroundColor:
+                                  "#" + spreadsheet.colors[i + 1],
+                                fontWeight: 600,
+                              }
+                            : undefined
+                        }
+                      >
+                        <th scope="row">{i + 2}</th>
+                        {row.map((cell, j) => (
+                          <td
+                            key={j}
+                            className={
+                              typeof cell === "number" ? "money" : undefined
+                            }
+                          >
+                            {typeof cell === "number"
+                              ? cell.toLocaleString("ja-JP")
+                              : cell}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
             {!previewRows.length && (
               <p className="empty">
-                対象年の明細を取り込むと、ここにExcelの振り分け結果が表示されます。
+                対象年の明細を取り込むと、ここに月別明細が表示されます。
               </p>
             )}
-            {previewRows.length > previewLimit && (
+            {previewSheet !== 0 && previewRows.length > previewLimit && (
               <button
                 className="secondary"
                 onClick={() => setPreviewLimit(previewLimit + 100)}
@@ -488,7 +536,8 @@ export default function App() {
               </button>
             )}
             <small>
-              画面で項目を変更すると、保存後にこの表も更新されます。Excel・スプレッドシートでの編集はこのツールには反映されません。
+              年間表の月別合計は、月別明細の「資金用途
+              集計額」の合計と一致します。画面で項目を変更すると、保存後に表も更新されます。Excel・スプレッドシートでの編集はこのツールには反映されません。
             </small>
           </section>
         </>

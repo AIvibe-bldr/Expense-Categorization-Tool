@@ -1106,3 +1106,16 @@ footer span {
 .simple-main section > .export-panel {
   margin-bottom: 16px;
 }
+
+.simple-main .sheet-picker {
+  max-width: 340px;
+  margin: 20px 0;
+}
+.spreadsheet-preview tbody td:first-of-type {
+  position: sticky;
+  left: 0;
+  background: #fff;
+}
+.spreadsheet-preview tbody tr[style] td:first-of-type {
+  background: inherit;
+}
