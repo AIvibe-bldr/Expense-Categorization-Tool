@@ -146,7 +146,7 @@ export function classify(t: Transaction, s: State) {
   const rule = s.rules.find(
     (r) => r.approved && r.merchant_normalized === t.merchant_normalized,
   );
-  if (rule && classifiableByMerchant(t)) {
+  if (rule && (rule.all_transaction_types || classifiableByMerchant(t))) {
     const c = all.find((c) => c.id === rule.category_id && c.selectable);
     if (c) {
       t.category_id = c.id;
@@ -271,6 +271,7 @@ export function approveCategory(
   purposeNote: string,
   businessUse: Transaction["business_use"] = "unknown",
   applyExisting = false,
+  allMerchantTypes = false,
 ) {
   const t = s.transactions.find((t) => t.transaction_id === id),
     c = effectiveCategories(s).find((c) => c.id === categoryId && c.selectable);
@@ -291,7 +292,7 @@ export function approveCategory(
       if (
         other.transaction_id === id ||
         other.merchant_normalized !== t.merchant_normalized ||
-        !classifiableByMerchant(other)
+        (!allMerchantTypes && !classifiableByMerchant(other))
       ) continue;
       if (other.category_id === c.id && other.classification_status === "confirmed")
         continue;
@@ -315,6 +316,7 @@ export function approveCategory(
       category_id: c.id,
       merchant_category: merchantCategory,
       approved: true,
+      all_transaction_types: allMerchantTypes,
       created_at: new Date().toISOString(),
     });
   }

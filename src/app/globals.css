@@ -1119,3 +1119,7 @@ footer span {
 .spreadsheet-preview tbody tr[style] td:first-of-type {
   background: inherit;
 }
+
+.simple-main .export-panel > label {
+  max-width: 130px;
+}

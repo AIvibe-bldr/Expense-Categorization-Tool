@@ -2,9 +2,9 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { parseCsv } from "../src/lib/csv";
-import { categories } from "../src/lib/engine";
+import { categories, approveCategory, classify } from "../src/lib/engine";
 import { personalReports } from "../src/lib/spreadsheet";
-import type { Transaction } from "../src/lib/types";
+import { emptyState, type Transaction } from "../src/lib/types";
 function tx(overrides: Partial<Transaction> = {}) {
   return {
     ...parseCsv(
@@ -142,4 +142,53 @@ test("historical unique items retain their amounts in the personal layout", () =
     itemRows.reduce((sum, row) => sum + Number(row[1]), 0),
     1234,
   );
+});
+
+test("personal merchant assignment changes all years and transaction types and remembers future imports", () => {
+  const state = emptyState();
+  const selected = item("外食");
+  state.transactions = [
+    tx(),
+    tx({ transaction_type: "investment", transaction_date: "2025-02-03" }),
+    tx({ transaction_type: "transfer", source_service: "sbi_bank" }),
+    tx({ merchant_original: "別の店", merchant_normalized: "別の店" }),
+  ];
+  approveCategory(
+    state,
+    state.transactions[0].transaction_id,
+    selected.id,
+    true,
+    null,
+    "",
+    "personal",
+    true,
+    true,
+  );
+  assert.ok(
+    state.transactions.slice(0, 3).every((t) => t.category_id === selected.id),
+  );
+  assert.notEqual(state.transactions[3].category_id, selected.id);
+  assert.equal(state.transactions[2].transaction_type, "transfer");
+  const future = tx({ transaction_type: "tax" });
+  classify(future, state);
+  assert.equal(future.category_id, selected.id);
+  assert.equal(future.classification_source, "rule");
+  const replacement = item("スーパー");
+  approveCategory(
+    state,
+    state.transactions[0].transaction_id,
+    replacement.id,
+    true,
+    null,
+    "",
+    "personal",
+    true,
+    true,
+  );
+  assert.ok(
+    state.transactions
+      .slice(0, 3)
+      .every((t) => t.category_id === replacement.id),
+  );
+  assert.equal(state.rules.length, 1);
 });

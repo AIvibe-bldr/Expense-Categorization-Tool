@@ -79,6 +79,7 @@ export type Transaction = {
   suggested_category_ids: string[];
 };
 export type Rule = {
+  all_transaction_types?: boolean;
   id: string;
   merchant_normalized: string;
   category_id: string;

@@ -253,6 +253,7 @@ async function handler(
             category_id: z.uuid(),
             remember: z.boolean(),
             apply_existing: z.boolean().default(false),
+            all_merchant_types: z.boolean().default(false),
             bank_decision: z.enum(["purchase", "undetermined"]).optional(),
             merchant_category: z.string().max(100).nullable(),
             purpose_note: z.string().max(1000),
@@ -286,6 +287,7 @@ async function handler(
           b.purpose_note,
           b.business_use,
           b.apply_existing,
+          b.all_merchant_types,
         );
       } else if (path === "categories") {
         const b = z

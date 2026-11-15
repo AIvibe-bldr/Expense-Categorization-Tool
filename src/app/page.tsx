@@ -53,7 +53,14 @@ export default function App() {
   useEffect(() => {
     refresh().catch((e) => setError(e.message));
   }, []);
-  async function save(path: string, body: FormData | object) {
+  async function save(
+    path: string,
+    body: FormData | object,
+    optimistic?: Payload,
+  ) {
+    const previous = data;
+    let persisted = false;
+    if (optimistic) setData(optimistic);
     setBusy(true);
     setError("");
     setNotice("");
@@ -68,6 +75,7 @@ export default function App() {
       });
       const result = await r.json();
       if (!r.ok) throw Error(result.error);
+      persisted = true;
       await refresh();
       setNotice(
         path === "imports"
@@ -75,7 +83,12 @@ export default function App() {
           : "振り分けを保存しました。",
       );
     } catch (e) {
-      setError((e as Error).message);
+      if (optimistic && !persisted) setData(previous);
+      setError(
+        persisted
+          ? "保存済みですが、最新情報を取得できませんでした。再読み込みしてください。"
+          : (e as Error).message,
+      );
     } finally {
       setBusy(false);
     }
@@ -264,13 +277,17 @@ export default function App() {
               </button>
             </form>
           </section>
-          <section className="panel">
-            <div className="panel-head">
+          <section className="panel" aria-labelledby="excel-preview-title">
+            <div className="export-panel">
               <div>
-                <h2>2. 項目に振り分ける</h2>
+                <h2 id="excel-preview-title">2. 振り分け結果を確認・出力</h2>
                 <p>
-                  {transactions.length}件 ／ 未分類 {pending}件
+                  {year}
+                  年の年間表と月別明細を確認できます。同じ内容をExcelに出力します。
                 </p>
+                <small>
+                  利用日を基準に集計します。税金・保険・投資も含めた、ご自身の資金用途の記録です。
+                </small>
               </div>
               <label>
                 対象年
@@ -288,138 +305,6 @@ export default function App() {
                   }}
                 />
               </label>
-            </div>
-            <div className="filters">
-              <label>
-                明細を検索
-                <input
-                  type="search"
-                  placeholder="利用先・日付"
-                  value={search}
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                    setLimit(100);
-                  }}
-                />
-              </label>
-              <label className="check">
-                <input
-                  type="checkbox"
-                  checked={pendingOnly}
-                  onChange={(e) => {
-                    setPendingOnly(e.target.checked);
-                    setLimit(100);
-                  }}
-                />
-                未分類だけ表示
-              </label>
-            </div>
-            <div className="table-scroll">
-              <table>
-                <thead>
-                  <tr>
-                    <th>日付</th>
-                    <th>利用先</th>
-                    <th>金額</th>
-                    <th>振り分け項目</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.slice(0, limit).map((t) => (
-                    <tr key={t.transaction_id}>
-                      <td>
-                        {t.transaction_date}
-                        <small>{serviceNames[t.source_service]}</small>
-                      </td>
-                      <td>
-                        {t.merchant_original}
-                        <small>
-                          {t.excluded
-                            ? "重複除外"
-                            : t.direction === "in"
-                              ? "入金・返金"
-                              : "出金"}
-                        </small>
-                      </td>
-                      <td className="money">
-                        {yen(t.direction === "in" ? -t.amount : t.amount)}
-                      </td>
-                      <td>
-                        <select
-                          aria-label={`${t.merchant_original} ${t.transaction_date}の項目`}
-                          disabled={busy}
-                          value={t.category_id ?? ""}
-                          onChange={(e) => {
-                            if (e.target.value)
-                              void save("classify", {
-                                id: t.transaction_id,
-                                category_id: e.target.value,
-                                remember: false,
-                                merchant_category: t.merchant_category,
-                                purpose_note: t.purpose_note,
-                                business_use: "personal",
-                              });
-                          }}
-                        >
-                          <option value="" disabled>
-                            未分類 — 項目を選択
-                          </option>
-                          {choices.groups.map((group) => (
-                            <optgroup
-                              key={group.id}
-                              label={categoryDisplayName(group.name)}
-                            >
-                              {(choices.children.get(group.id) || []).map(
-                                (item) => (
-                                  <option key={item.id} value={item.id}>
-                                    {categoryDisplayName(item.name)}
-                                  </option>
-                                ),
-                              )}
-                            </optgroup>
-                          ))}
-                          {t.category_id &&
-                            !selectableIds.has(t.category_id) && (
-                              <option value={t.category_id}>
-                                {categories.find((c) => c.id === t.category_id)
-                                  ?.name || "過去の項目"}
-                              </option>
-                            )}
-                        </select>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            {!rows.length && (
-              <p className="empty">
-                {transactions.length
-                  ? "該当する明細はありません。"
-                  : `${year}年の明細はありません。CSVを取り込むか、対象年を変更してください。`}
-              </p>
-            )}
-            {rows.length > limit && (
-              <button
-                className="secondary"
-                onClick={() => setLimit(limit + 100)}
-              >
-                次の100件を表示
-              </button>
-            )}
-          </section>
-          <section className="panel" aria-labelledby="excel-preview-title">
-            <div className="export-panel">
-              <div>
-                <h2 id="excel-preview-title">3. 振り分け結果を確認・出力</h2>
-                <p>
-                  {year}
-                  年の年間表と月別明細を確認できます。同じ内容をExcelに出力します。
-                </p>
-                <small>
-                  利用日を基準に集計します。税金・保険・投資も含めた、ご自身の資金用途の記録です。
-                </small>
-              </div>
               <button
                 disabled={
                   busy || !transactions.length || !/^20\d{2}$|^2100$/.test(year)
@@ -537,8 +422,169 @@ export default function App() {
             )}
             <small>
               年間表の月別合計は、月別明細の「資金用途
-              集計額」の合計と一致します。画面で項目を変更すると、保存後に表も更新されます。Excel・スプレッドシートでの編集はこのツールには反映されません。
+              集計額」の合計と一致します。項目を選ぶと、同じ利用先の明細とこの表をすぐに更新して保存します。Excel・スプレッドシートでの編集はこのツールには反映されません。
             </small>
+          </section>
+          <section className="panel">
+            <div className="panel-head">
+              <div>
+                <h2>3. 項目に振り分ける</h2>
+                <p>
+                  {transactions.length}件 ／ 未分類 {pending}件
+                </p>
+              </div>
+            </div>
+            <p className="muted">
+              項目を選ぶと、同じ利用先のすべての明細に反映します。今後取り込む同じ利用先にも適用します（全角・半角、空白などの表記をそろえて照合します）。
+            </p>
+            <div className="filters">
+              <label>
+                明細を検索
+                <input
+                  type="search"
+                  placeholder="利用先・日付"
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setLimit(100);
+                  }}
+                />
+              </label>
+              <label className="check">
+                <input
+                  type="checkbox"
+                  checked={pendingOnly}
+                  onChange={(e) => {
+                    setPendingOnly(e.target.checked);
+                    setLimit(100);
+                  }}
+                />
+                未分類だけ表示
+              </label>
+            </div>
+            <div className="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>日付</th>
+                    <th>利用先</th>
+                    <th>金額</th>
+                    <th>振り分け項目</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.slice(0, limit).map((t) => (
+                    <tr key={t.transaction_id}>
+                      <td>
+                        {t.transaction_date}
+                        <small>{serviceNames[t.source_service]}</small>
+                      </td>
+                      <td>
+                        {t.merchant_original}
+                        <small>
+                          {t.excluded
+                            ? "重複除外"
+                            : t.direction === "in"
+                              ? "入金・返金"
+                              : "出金"}
+                        </small>
+                      </td>
+                      <td className="money">
+                        {yen(t.direction === "in" ? -t.amount : t.amount)}
+                      </td>
+                      <td>
+                        <select
+                          aria-label={`${t.merchant_original} ${t.transaction_date}の項目`}
+                          disabled={busy}
+                          value={t.category_id ?? ""}
+                          onChange={(e) => {
+                            if (e.target.value)
+                              void save(
+                                "classify",
+                                {
+                                  id: t.transaction_id,
+                                  category_id: e.target.value,
+                                  remember: true,
+                                  apply_existing: true,
+                                  all_merchant_types: true,
+                                  merchant_category: t.merchant_category,
+                                  purpose_note: t.purpose_note,
+                                  business_use: "personal",
+                                },
+                                {
+                                  ...data,
+                                  state: {
+                                    ...data.state,
+                                    transactions: data.state.transactions.map(
+                                      (other) =>
+                                        other.merchant_normalized ===
+                                        t.merchant_normalized
+                                          ? {
+                                              ...other,
+                                              category_id: e.target.value,
+                                              parent_category_id:
+                                                categories.find(
+                                                  (c) =>
+                                                    c.id === e.target.value,
+                                                )?.parent_id ?? null,
+                                              classification_status:
+                                                "confirmed",
+                                              classification_source: "user",
+                                              classification_confidence: 1,
+                                            }
+                                          : other,
+                                    ),
+                                  },
+                                },
+                              );
+                          }}
+                        >
+                          <option value="" disabled>
+                            未分類 — 項目を選択
+                          </option>
+                          {choices.groups.map((group) => (
+                            <optgroup
+                              key={group.id}
+                              label={categoryDisplayName(group.name)}
+                            >
+                              {(choices.children.get(group.id) || []).map(
+                                (item) => (
+                                  <option key={item.id} value={item.id}>
+                                    {categoryDisplayName(item.name)}
+                                  </option>
+                                ),
+                              )}
+                            </optgroup>
+                          ))}
+                          {t.category_id &&
+                            !selectableIds.has(t.category_id) && (
+                              <option value={t.category_id}>
+                                {categories.find((c) => c.id === t.category_id)
+                                  ?.name || "過去の項目"}
+                              </option>
+                            )}
+                        </select>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {!rows.length && (
+              <p className="empty">
+                {transactions.length
+                  ? "該当する明細はありません。"
+                  : `${year}年の明細はありません。CSVを取り込むか、対象年を変更してください。`}
+              </p>
+            )}
+            {rows.length > limit && (
+              <button
+                className="secondary"
+                onClick={() => setLimit(limit + 100)}
+              >
+                次の100件を表示
+              </button>
+            )}
           </section>
         </>
       )}
