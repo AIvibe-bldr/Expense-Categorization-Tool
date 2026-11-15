@@ -1,6 +1,8 @@
 import { randomUUID } from "node:crypto";
+import { sortGroups } from "./category-order";
+export { sortGroups } from "./category-order";
 import sourceCategories from "../../data/categories.json";
-import { normalize, parseCsv, type Mapping } from "./csv";
+import { normalize, parseCsv, type CsvEncoding, type Mapping } from "./csv";
 import { hash } from "./crypto";
 import type {
   State,
@@ -8,9 +10,118 @@ import type {
   Category,
   Service,
   Reconciliation,
+  ReferenceRecord,
   Kind,
 } from "./types";
 export const categories = sourceCategories as Category[];
+export function effectiveCategories(s: State): Category[] {
+  const archived = new Set(s.archived_category_ids || []);
+  return [...categories, ...(s.custom_categories || [])]
+    .filter((category) => !archived.has(category.id))
+    .map((category) => ({
+      ...category,
+      ...(s.category_edits?.[category.id] || {}),
+    }));
+}
+export function deleteCategory(s: State, id: string) {
+  const all = effectiveCategories(s);
+  const current = all.find((c) => c.id === id);
+  if (!current) throw Error("削除する分類・項目が見つかりません");
+  const fallback = otherCategory(s);
+  if (id === fallback?.id || id === fallback?.parent_id)
+    throw Error("未分類の振分け先になる「その他」は削除できません");
+  if (all.some((c) => c.parent_id === id))
+    throw Error("この分類には項目があります。先に項目を移動または削除してください");
+  if (
+    s.transactions.some((t) => t.category_id === id || t.parent_category_id === id) ||
+    s.rules.some((r) => r.category_id === id)
+  ) throw Error("明細または分類ルールが参照しています。分類先を変更してから削除してください");
+  (s.archived_category_ids ||= []).push(id);
+  for (const t of s.transactions)
+    t.suggested_category_ids = t.suggested_category_ids.filter((candidate) => candidate !== id);
+  audit(s, "delete_category", id, { name: current.name, parent_id: current.parent_id });
+}
+export function moveCategory(s: State, id: string, direction: "up" | "down") {
+  const groups = sortGroups(effectiveCategories(s));
+  const from = groups.findIndex((c) => c.id === id);
+  const to = from + (direction === "up" ? -1 : 1);
+  if (from < 0 || to < 0 || to >= groups.length)
+    throw Error("移動先の分類がありません");
+  [groups[from], groups[to]] = [groups[to], groups[from]];
+  for (const [index, group] of groups.entries())
+    (s.category_edits ||= {})[group.id] = {
+      ...s.category_edits?.[group.id],
+      name: group.name,
+      parent_id: null,
+      display_order: index,
+    };
+  audit(s, "move_category", id, { direction, from, to });
+}
+export function addCategory(s: State, name: string, parentId: string | null) {
+  const all = effectiveCategories(s);
+  if (!name.trim() || name.trim().length > 100 || name.includes("合計"))
+    throw Error("分類・項目名は1〜100文字で、合計を含めないでください");
+  if (parentId && !all.some((c) => c.id === parentId && !c.selectable))
+    throw Error("有効な分類を選択してください");
+  const category: Category = {
+    id: randomUUID(),
+    parent_id: parentId,
+    name: name.trim(),
+    year: new Date().getUTCFullYear(),
+    source_sheet: "ユーザー追加",
+    source_cell: "",
+    order: Math.max(0, ...all.map((c) => c.order)) + 1,
+    selectable: !!parentId,
+    color: { type: "rgb", value: "FFE8F1DF", tint: 0, pattern: "solid" },
+  };
+  (s.custom_categories ||= []).push(category);
+  audit(s, "add_category", category.id, {
+    parent_id: parentId,
+    name: category.name,
+  });
+  return category;
+}
+export function updateCategory(
+  s: State,
+  id: string,
+  name: string,
+  parentId: string | null,
+) {
+  const all = effectiveCategories(s),
+    current = all.find((c) => c.id === id);
+  if (
+    !current ||
+    !name.trim() ||
+    name.trim().length > 100 ||
+    name.includes("合計")
+  )
+    throw Error("有効な分類・項目名を入力してください");
+  if (
+    current.selectable
+      ? !parentId || !all.some((c) => c.id === parentId && !c.selectable)
+      : parentId !== null
+  )
+    throw Error("項目は分類の下に、分類は最上位に配置してください");
+  (s.category_edits ||= {})[id] = {
+    ...s.category_edits?.[id], name: name.trim(), parent_id: parentId,
+  };
+  if (current.selectable && current.parent_id !== parentId)
+    for (const t of s.transactions)
+      if (t.category_id === id) t.parent_category_id = parentId;
+  audit(s, "update_category", id, {
+    before: { name: current.name, parent_id: current.parent_id },
+    after: { name: name.trim(), parent_id: parentId },
+  });
+}
+export function otherCategory(s: State): Category | undefined {
+  const group = categories.find(
+    (c) => !c.selectable && c.name === "その他" && c.year === 2025,
+  );
+  const original = categories.find(
+    (c) => c.selectable && c.parent_id === group?.id && c.name === "その他",
+  );
+  return effectiveCategories(s).find((c) => c.id === original?.id);
+}
 export function audit(
   s: State,
   action: string,
@@ -26,12 +137,17 @@ export function audit(
   });
   s.sync.dirty = true;
 }
+function classifiableByMerchant(t: Transaction) {
+  return ["purchase", "refund", "fee"].includes(t.transaction_type) ||
+    (t.transaction_type === "unknown" && t.direction === "out");
+}
 export function classify(t: Transaction, s: State) {
+  const all = effectiveCategories(s);
   const rule = s.rules.find(
     (r) => r.approved && r.merchant_normalized === t.merchant_normalized,
   );
-  if (rule) {
-    const c = categories.find((c) => c.id === rule.category_id && c.selectable);
+  if (rule && classifiableByMerchant(t)) {
+    const c = all.find((c) => c.id === rule.category_id && c.selectable);
     if (c) {
       t.category_id = c.id;
       t.parent_category_id = c.parent_id;
@@ -53,7 +169,7 @@ export function classify(t: Transaction, s: State) {
   const key = Object.keys(words).find((k) =>
     t.merchant_normalized.includes(normalize(k)),
   );
-  let candidates = categories.filter(
+  let candidates = all.filter(
     (c) =>
       c.selectable &&
       c.year === 2025 &&
@@ -61,15 +177,20 @@ export function classify(t: Transaction, s: State) {
         (key && c.name === words[key])),
   );
   if (key && words[key] === "AIツール")
-    candidates = categories.filter(
+    candidates = all.filter(
       (c) =>
         c.selectable &&
         c.year === 2025 &&
-        categories.find((p) => p.id === c.parent_id)?.name === "AIツール",
+        all.find((p) => p.id === c.parent_id)?.name === "AIツール",
     );
   t.suggested_category_ids = candidates.map((c) => c.id);
   t.classification_source = candidates.length ? "suggestion" : "unknown";
   t.classification_confidence = candidates.length ? 0.6 : 0;
+  const fallback = otherCategory(s);
+  if (fallback) {
+    t.category_id = fallback.id;
+    t.parent_category_id = fallback.parent_id;
+  }
   // Merchant type is not a claim about purchased goods or deductible expenses.
   if (/AMAZON/.test(t.merchant_normalized)) t.merchant_category = "Amazon";
   if (/セブンイレブン|ローソン|ファミリーマート/.test(t.merchant_normalized))
@@ -82,7 +203,7 @@ export function importCsv(
   account: string,
   options: {
     mapping?: Mapping;
-    encoding?: "utf-8" | "shift_jis";
+    encoding?: CsvEncoding;
     feeMode?: "included" | "additional";
     allowFingerprintDedup?: boolean;
   } = {},
@@ -149,9 +270,10 @@ export function approveCategory(
   merchantCategory: string | null,
   purposeNote: string,
   businessUse: Transaction["business_use"] = "unknown",
+  applyExisting = false,
 ) {
   const t = s.transactions.find((t) => t.transaction_id === id),
-    c = categories.find((c) => c.id === categoryId && c.selectable);
+    c = effectiveCategories(s).find((c) => c.id === categoryId && c.selectable);
   if (!t || !c) throw Error("有効な明細・分類を指定してください");
   const before = t.category_id;
   t.category_id = c.id;
@@ -163,6 +285,26 @@ export function approveCategory(
   t.purpose_note = purposeNote;
   t.business_use = businessUse;
   t.updated_at = new Date().toISOString();
+  let updatedExisting = 0;
+  if (applyExisting) {
+    for (const other of s.transactions) {
+      if (
+        other.transaction_id === id ||
+        other.merchant_normalized !== t.merchant_normalized ||
+        !classifiableByMerchant(other)
+      ) continue;
+      if (other.category_id === c.id && other.classification_status === "confirmed")
+        continue;
+      other.category_id = c.id;
+      other.parent_category_id = c.parent_id;
+      other.classification_status = "confirmed";
+      other.classification_source = "user";
+      other.classification_confidence = 1;
+      other.merchant_category = merchantCategory;
+      other.updated_at = new Date().toISOString();
+      updatedExisting++;
+    }
+  }
   if (remember) {
     s.rules = s.rules.filter(
       (r) => r.merchant_normalized !== t.merchant_normalized,
@@ -176,9 +318,29 @@ export function approveCategory(
       created_at: new Date().toISOString(),
     });
   }
-  audit(s, "classify", id, { before, after: c.id, remember });
+  audit(s, "classify", id, { before, after: c.id, remember, updated_existing: updatedExisting });
 }
 const bank = (t: Transaction) => t.source_service.endsWith("bank");
+function similarMerchant(a: string, b: string) {
+  const clean = (name: string) => normalize(name).replace(/[^\p{L}\p{N}]/gu, "");
+  const left = clean(a), right = clean(b);
+  if (left === right) return left.length >= 3;
+  if (Math.min(left.length, right.length) < 4) return false;
+  if (left.includes(right) || right.includes(left)) return true;
+  const pairs = (value: string) => {
+    const result = new Map<string, number>();
+    for (let i = 0; i < value.length - 1; i++) {
+      const pair = value.slice(i, i + 2);
+      result.set(pair, (result.get(pair) || 0) + 1);
+    }
+    return result;
+  };
+  const first = pairs(left), second = pairs(right);
+  let shared = 0;
+  for (const [pair, count] of first)
+    shared += Math.min(count, second.get(pair) || 0);
+  return 2 * shared / (left.length + right.length - 2) >= 0.75;
+}
 function addMatch(
   s: State,
   kind: Reconciliation["kind"],
@@ -348,12 +510,96 @@ export function reconcile(s: State) {
       }
     }
   }
+  const byDate = new Map<string, Transaction[]>();
+  const reviewable = s.transactions.filter((t) =>
+    !t.excluded && ["purchase", "refund", "fee"].includes(t.transaction_type) &&
+    !s.reconciliations.some((r) =>
+      r.status === "confirmed" && r.kind !== "card_settlement" &&
+      r.transaction_ids.includes(t.transaction_id),
+    ));
+  for (const t of reviewable) {
+    const sameDate = byDate.get(t.transaction_date) || [];
+    for (const other of sameDate) {
+      if (t.direction !== other.direction || t.transaction_type !== other.transaction_type)
+        continue;
+      const sameAmount = t.amount === other.amount;
+      const similarName = t.source_service !== other.source_service &&
+        similarMerchant(t.merchant_original, other.merchant_original);
+      if (!sameAmount && !similarName) continue;
+      const ids = [t.transaction_id, other.transaction_id];
+      if (s.reconciliations.some((r) =>
+        r.transaction_ids.length === 2 && ids.every((id) => r.transaction_ids.includes(id)),
+      )) continue;
+      addMatch(s, "same_day_duplicate", [other, t], false,
+        sameAmount && similarName
+          ? "同日・同額で利用先名も類似。別経路の重複か要確認"
+          : sameAmount
+            ? "同日・同額。別の購入の可能性もあるため要確認"
+            : "別経路で同日・利用先名が類似。金額差を含めて要確認",
+      );
+    }
+    sameDate.push(t);
+    byDate.set(t.transaction_date, sameDate);
+  }
+  const purchasesByDate = new Map<string, Transaction[]>();
+  for (const t of s.transactions)
+    if (!t.excluded && ["purchase", "refund", "fee"].includes(t.transaction_type)) {
+      const rows = purchasesByDate.get(t.transaction_date) || [];
+      rows.push(t);
+      purchasesByDate.set(t.transaction_date, rows);
+    }
+  for (const reference of s.references || []) {
+    if (!reference.active) continue;
+    for (const t of purchasesByDate.get(reference.transaction_date) || []) {
+      const sameAmount = reference.amount !== null && reference.amount === t.amount;
+      const similarName = similarMerchant(reference.name, t.merchant_original);
+      if (!sameAmount && !similarName) continue;
+      if (s.reconciliations.some((r) => r.kind === "external_reference" &&
+        r.transaction_ids.includes(t.transaction_id) &&
+        r.reference_ids?.includes(reference.id))) continue;
+      s.reconciliations.push({
+        id: randomUUID(), kind: "external_reference",
+        transaction_ids: [t.transaction_id], reference_ids: [reference.id],
+        status: "candidate",
+        reason: sameAmount && similarName
+          ? "外部シートと同日・同額・名前が類似。売上と支出の関係を要確認"
+          : sameAmount
+            ? "外部シートと同日・同額。内容を要確認"
+            : "外部シートと同日・名前が類似。金額差を含めて要確認",
+        created_at: new Date().toISOString(),
+      });
+    }
+  }
+}
+export function replaceReferences(s: State, records: ReferenceRecord[], sheetId: string, gid: number) {
+  const current = new Set(records.map((r) => r.id));
+  const old = s.references || [];
+  for (const r of old) r.active = current.has(r.id);
+  const known = new Set(old.map((r) => r.id));
+  old.push(...records.filter((r) => !known.has(r.id)));
+  s.references = old;
+  for (const match of s.reconciliations)
+    if (match.kind === "external_reference" && match.status === "candidate" &&
+      match.reference_ids?.some((id) => !old.some((r) => r.id === id && r.active))) {
+      match.status = "rejected";
+      match.reason = "参照シートから該当行がなくなりました";
+    }
+  for (const match of s.reconciliations)
+    if (match.kind === "external_reference" && match.status === "rejected" &&
+      match.reason === "参照シートから該当行がなくなりました" &&
+      match.reference_ids?.every((id) => old.some((r) => r.id === id && r.active))) {
+      match.status = "candidate";
+      match.reason = "参照行が再出現しました。内容を要確認";
+    }
+  reconcile(s);
+  audit(s, "sync_reference", `${sheetId}:${gid}`, { active: records.length });
 }
 export function resolveMatch(
   s: State,
   id: string,
   confirmed: boolean,
   reason: string,
+  keepId?: string,
 ) {
   const r = s.reconciliations.find((r) => r.id === id);
   if (!r || r.status !== "candidate" || reason.trim().length < 3)
@@ -361,8 +607,23 @@ export function resolveMatch(
   const ts = s.transactions.filter((t) =>
     r.transaction_ids.includes(t.transaction_id),
   );
-  if (confirmed && ts.some((t) => t.reconciliation_status === "matched"))
+  if (r.kind === "external_reference") {
+    r.status = confirmed ? "confirmed" : "rejected";
+    r.reason = reason;
+    audit(s, "resolve_reference", id, { confirmed, reason });
+    return;
+  }
+  if (confirmed && ts.some((t) =>
+    t.reconciliation_status === "matched" &&
+    (r.kind !== "same_day_duplicate" ||
+      s.reconciliations.some((other) =>
+        other.status === "confirmed" && other.kind !== "card_settlement" &&
+        other.transaction_ids.includes(t.transaction_id),
+      ))))
     throw Error("別の照合ですでに確定しています");
+  if (confirmed && r.kind === "same_day_duplicate" &&
+    (ts.length !== 2 || !ts.some((t) => t.transaction_id === keepId)))
+    throw Error("計上する明細を1件選択してください");
   r.status = confirmed ? "confirmed" : "rejected";
   r.reason = reason;
   if (confirmed) {
@@ -371,6 +632,8 @@ export function resolveMatch(
       ts.filter((t) => t.source_service === "paypay").forEach(
         (t) => (t.excluded = true),
       );
+    if (r.kind === "same_day_duplicate")
+      ts.filter((t) => t.transaction_id !== keepId).forEach((t) => (t.excluded = true));
     if (r.kind === "cancellation") ts.forEach((t) => (t.excluded = true));
   }
   if (confirmed)
@@ -383,7 +646,7 @@ export function resolveMatch(
         other.status = "rejected";
         other.reason = "別の照合で確定済み";
       }
-  audit(s, "resolve_match", id, { confirmed, reason });
+  audit(s, "resolve_match", id, { confirmed, reason, keep_id: keepId });
 }
 export function resolveTransaction(
   s: State,
@@ -494,7 +757,10 @@ export function summary(s: State, month: string) {
       .length,
     unreconciled: pending,
     candidates,
-    final: pending === 0 && candidates === 0,
+    final:
+      pending === 0 &&
+      candidates === 0 &&
+      selected.every((t) => t.classification_status !== "pending"),
     by_merchant: grouped((t) => t.merchant_normalized),
     by_category: grouped((t) => t.category_id || "unclassified"),
     by_service: grouped((t) => t.source_service),
@@ -523,6 +789,17 @@ export function summary(s: State, month: string) {
 
 /** Restore missing records only; never overwrite live edits or invent a reconciliation. */
 export function restoreMissing(s: State, backup: State) {
+  if (!s.settings.reference_sheet && backup.settings.reference_sheet)
+    s.settings.reference_sheet = structuredClone(backup.settings.reference_sheet);
+  const knownCategories = new Set(effectiveCategories(s).map((c) => c.id));
+  for (const category of backup.custom_categories || [])
+    if (!knownCategories.has(category.id)) {
+      (s.custom_categories ||= []).push(structuredClone(category));
+      knownCategories.add(category.id);
+    }
+  for (const [id, edit] of Object.entries(backup.category_edits || {}))
+    if (knownCategories.has(id) && !s.category_edits?.[id])
+      (s.category_edits ||= {})[id] = structuredClone(edit);
   const seen = new Set(s.transactions.map((t) => t.fingerprint));
   const added: Transaction[] = [];
   for (const original of backup.transactions)
@@ -534,18 +811,29 @@ export function restoreMissing(s: State, backup: State) {
     }
   const batchIds = new Set(s.batches.map((b) => b.id));
   s.batches.push(...backup.batches.filter((b) => !batchIds.has(b.id)));
+  const knownReferenceIds = new Set((s.references || []).map((r) => r.id));
+  const addedReferenceIds = new Set<string>();
+  for (const reference of backup.references || [])
+    if (!knownReferenceIds.has(reference.id)) {
+      (s.references ||= []).push(structuredClone(reference));
+      addedReferenceIds.add(reference.id);
+      knownReferenceIds.add(reference.id);
+    }
   const allIds = new Set(s.transactions.map((t) => t.transaction_id));
   const addedIds = new Set(added.map((t) => t.transaction_id));
   for (const r of backup.reconciliations) {
     if (
       s.reconciliations.some((existing) => existing.id === r.id) ||
-      !r.transaction_ids.some((id) => addedIds.has(id)) ||
-      !r.transaction_ids.every((id) => allIds.has(id))
+      !(r.transaction_ids.some((id) => addedIds.has(id)) ||
+        r.reference_ids?.some((id) => addedReferenceIds.has(id))) ||
+      !r.transaction_ids.every((id) => allIds.has(id)) ||
+      !(r.reference_ids || []).every((id) => knownReferenceIds.has(id))
     )
       continue;
     const conflict = s.reconciliations.some(
       (existing) =>
         existing.status === "confirmed" &&
+        existing.kind !== "external_reference" && r.kind !== "external_reference" &&
         existing.transaction_ids.some((id) => r.transaction_ids.includes(id)),
     );
     if (!conflict) s.reconciliations.push(structuredClone(r));

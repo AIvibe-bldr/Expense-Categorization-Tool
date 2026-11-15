@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { hash, encrypt } from "./crypto";
 import { services, type Service, type Transaction, type Kind } from "./types";
 export const MAX_FILE_SIZE = 5 * 1024 * 1024;
+export type CsvEncoding = "auto" | "utf-8" | "shift_jis";
 export const fields = [
   "date",
   "merchant",
@@ -58,9 +59,10 @@ const common: Record<Field, string[]> = {
     "お支払金額",
     "お引出し金額",
     "出金金額（円）",
+    "出金金額(円)",
     "outflow",
   ],
-  inflow: ["入金額", "お預り金額", "お預入れ金額", "入金金額（円）", "inflow"],
+  inflow: ["入金額", "お預り金額", "お預入れ金額", "入金金額（円）", "入金金額(円)", "inflow"],
   type: ["取引種別", "取引種類", "種別", "type"],
   id: ["利用明細ID", "取引番号", "取引ID", "明細ID", "id"],
   posted_date: ["計上日", "posted_date"],
@@ -71,7 +73,7 @@ const common: Record<Field, string[]> = {
   counterparty: ["相手口座ID", "counterparty"],
   reference: ["共通参照ID", "reference"],
   installment: ["支払区分", "分割・リボ", "installment"],
-  balance: ["残高", "お取引後残高", "balance"],
+  balance: ["残高", "残高(円)", "残高（円）", "お取引後残高", "balance"],
   fee: ["振込手数料", "fee"],
 };
 export interface Adapter {
@@ -169,11 +171,27 @@ const types: Record<string, Kind> = {
 };
 export function readCsv(
   buffer: Buffer,
-  encoding: "utf-8" | "shift_jis" = "utf-8",
+  encoding: CsvEncoding = "auto",
 ) {
   if (!buffer.length || buffer.length > MAX_FILE_SIZE)
     throw Error("CSVは1バイト〜5MBです");
-  const text = new TextDecoder(encoding, { fatal: true }).decode(buffer);
+  let text: string | undefined;
+  for (const candidate of encoding === "auto"
+    ? (["utf-8", "shift_jis"] as const)
+    : [encoding]) {
+    try {
+      text = new TextDecoder(candidate, { fatal: true }).decode(buffer);
+      break;
+    } catch {
+      // Try the next supported encoding only when automatic detection is selected.
+    }
+  }
+  if (text === undefined)
+    throw Error(
+      encoding === "auto"
+        ? "文字コードを判別できません。UTF-8またはShift_JISのCSVを選択してください。"
+        : `選択した文字コード（${encoding === "utf-8" ? "UTF-8" : "Shift_JIS"}）とCSVが一致しません。「自動判定」を選んで再試行してください。`,
+    );
   if (text.includes("\0")) throw Error("CSVに不正な文字があります");
   const rows = parse(text, {
     bom: true,
@@ -191,7 +209,7 @@ export function parseCsv(
   batch: string,
   options: {
     mapping?: Mapping;
-    encoding?: "utf-8" | "shift_jis";
+    encoding?: CsvEncoding;
     feeMode?: "included" | "additional";
   } = {},
 ): Transaction[] {

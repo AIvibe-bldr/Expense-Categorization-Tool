@@ -35,6 +35,7 @@ export type Category = {
   source_sheet: string;
   source_cell: string;
   order: number;
+  display_order?: number;
   selectable: boolean;
   color: { type: string; value: string; tint: number; pattern: string | null };
 };
@@ -92,9 +93,12 @@ export type Reconciliation = {
     | "transfer"
     | "charge"
     | "duplicate"
+    | "same_day_duplicate"
+    | "external_reference"
     | "cancellation"
     | "manual";
   transaction_ids: string[];
+  reference_ids?: string[];
   status: "candidate" | "confirmed" | "rejected";
   reason: string;
   created_at: string;
@@ -115,11 +119,34 @@ export type Batch = {
   count: number;
   duplicates: number;
 };
+export type ReferenceRecord = {
+  id: string;
+  sheet_id: string;
+  gid: number;
+  row_number: number;
+  transaction_date: string;
+  name: string;
+  amount: number | null;
+  active: boolean;
+};
+export type ReferenceSheetSettings = {
+  sheet_id: string;
+  gid: number;
+  header_row: number;
+  date_col: number;
+  name_cols: number[];
+  amount_col: number | null;
+  last_sync: string | null;
+};
 export type State = {
   version: number;
   transactions: Transaction[];
+  custom_categories: Category[];
+  archived_category_ids?: string[];
+  category_edits: Record<string, { name: string; parent_id: string | null; display_order?: number }>;
   rules: Rule[];
   reconciliations: Reconciliation[];
+  references?: ReferenceRecord[];
   batches: Batch[];
   audit: Audit[];
   sync: {
@@ -128,13 +155,17 @@ export type State = {
     error: string | null;
     dirty: boolean;
   };
-  settings: { spreadsheet_id: string | null };
+  settings: { spreadsheet_id: string | null; reference_sheet?: ReferenceSheetSettings };
 };
 export const emptyState = (): State => ({
   version: 0,
   transactions: [],
+  custom_categories: [],
+  archived_category_ids: [],
+  category_edits: {},
   rules: [],
   reconciliations: [],
+  references: [],
   batches: [],
   audit: [],
   sync: { last_success: null, last_attempt: null, error: null, dirty: false },

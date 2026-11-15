@@ -7,7 +7,18 @@ import { randomUUID } from "node:crypto";
 import { emptyState, type Transaction, type Service } from "../src/lib/types";
 import { parseCsv, normalize, yen, readCsv } from "../src/lib/csv";
 import {
+  categoryDisplayName,
+  currentCategoryChoices,
+} from "../src/lib/category-order";
+import {
   categories,
+  effectiveCategories,
+  addCategory,
+  deleteCategory,
+  updateCategory,
+  moveCategory,
+  sortGroups,
+  otherCategory,
   importCsv,
   summary,
   approveCategory,
@@ -15,13 +26,27 @@ import {
   purchaseAmount,
   resolveMatch,
   resolveTransaction,
+  replaceReferences,
   restoreMissing,
   sum,
 } from "../src/lib/engine";
 import { encrypt, decrypt } from "../src/lib/crypto";
 import { load, save, putSecret, lock, unlock } from "../src/lib/store";
 import { reports, simpleReport } from "../src/lib/reports";
-import { syncGoogle, authorizationUrl, callback } from "../src/lib/google";
+import {
+  syncGoogle,
+  authorizationUrl,
+  callback,
+  previewReferenceSheet,
+  readReferenceSheet,
+  syncReferenceSheet,
+} from "../src/lib/google";
+import {
+  parseSheetLink,
+  parseReferenceRows,
+  suggestReferenceColumns,
+} from "../src/lib/reference";
+
 process.env.GALAPAGOS_LOCAL_MODE = "1";
 process.env.GALAPAGOS_DATA_DIR = mkdtempSync(join(tmpdir(), "galapagos-test-"));
 const csv = (
@@ -55,6 +80,37 @@ for (const service of [
       11,
     );
   });
+test("Shift_JIS bank CSV is detected and imported without changing the encoding setting", () => {
+  const buffer = Buffer.from(
+    "9798977093fa2c9798977090e62c979897708be08a7a2c8ee688f88eed95ca2c9798977096be8dd749440a323032362d31302d30352c89c692c02c33303030302c8d7793fc2c6f6e650a",
+    "hex",
+  );
+  const s = emptyState();
+  assert.equal(importCsv(s, buffer, "sbi_bank", "bank").count, 1);
+  assert.equal(s.transactions[0].merchant_original, "家賃");
+  assert.throws(() => readCsv(buffer, "utf-8"), /自動判定.*再試行/);
+});
+test("SBI bank export headers with ASCII parentheses import both flows", () => {
+  const header = Buffer.from(
+    "93fa95742c93e097652c8f6f8be08be08a7a28897e292c93fc8be08be08a7a28897e292c8e638d8228897e292c838183820a",
+    "hex",
+  );
+  const buffer = Buffer.concat([
+    header,
+    Buffer.from(
+      "2026/10/31,Shop,1000,,9000,-\n2026/10/30,Deposit,,2000,10000,-\n",
+    ),
+  ]);
+  const s = emptyState();
+  const first = importCsv(s, buffer, "sbi_bank", "bank-main");
+  const repeat = importCsv(s, buffer, "sbi_bank", "bank-main");
+  assert.equal(first.count, 2);
+  assert.equal(repeat.count, 0);
+  assert.deepEqual(
+    s.transactions.map((t) => t.direction),
+    ["out", "in"],
+  );
+});
 test("same CSV imported twice adds no records", () => {
   const s = emptyState(),
     b = csv(["2026-10-05,Amazon,30000,購入,one"]);
@@ -128,7 +184,8 @@ test("unknown merchant remains pending, not guessed", () => {
     "card",
   );
   assert.equal(s.transactions[0].classification_status, "pending");
-  assert.equal(s.transactions[0].category_id, null);
+  assert.equal(s.transactions[0].category_id, otherCategory(s)?.id);
+  assert.equal(s.transactions[0].classification_status, "pending");
 });
 test("approved category rule is reused before suggestions", () => {
   const s = emptyState();
@@ -151,11 +208,77 @@ test("approved category rule is reused before suggestions", () => {
   assert.equal(s.transactions[1].category_id, c.id);
   assert.equal(s.transactions[1].classification_source, "rule");
 });
+test("approving a purpose updates existing same-name expenses and future imports", () => {
+  const s = emptyState();
+  importCsv(
+    s,
+    csv([
+      "2026-10-05,Ａｍａｚｏｎ,100,購入,one",
+      "2026-10-06,Amazon,200,購入,two",
+      "2026-10-07,Amazon Prime,300,購入,three",
+    ]),
+    "rakuten_card",
+    "card",
+  );
+  importCsv(
+    s,
+    csv(["2026-10-08,Amazon,400,購入,four"]),
+    "smbc_card",
+    "other-card",
+  );
+  importCsv(
+    s,
+    csv(["2026-10-09,Amazon,500,送金,transfer"]),
+    "sbi_bank",
+    "bank",
+  );
+  const target = categories.find(
+    (c) => c.name === "文房具" && c.year === 2025,
+  )!;
+  const previous = categories.find((c) => c.name === "家賃" && c.selectable)!;
+  approveCategory(
+    s,
+    s.transactions[1].transaction_id,
+    previous.id,
+    false,
+    null,
+    "",
+    "personal",
+  );
+  approveCategory(
+    s,
+    s.transactions[0].transaction_id,
+    target.id,
+    true,
+    null,
+    "確認済み",
+    "business",
+    true,
+  );
+  assert.deepEqual(
+    s.transactions.slice(0, 2).map((t) => t.category_id),
+    [target.id, target.id],
+  );
+  assert.equal(s.transactions[1].business_use, "personal");
+  assert.equal(s.transactions[1].purpose_note, "");
+  assert.equal(s.transactions[3].category_id, target.id);
+  assert.notEqual(s.transactions[2].category_id, target.id);
+  assert.notEqual(s.transactions[4].category_id, target.id);
+  importCsv(
+    s,
+    csv(["2026-10-10,Amazon,600,購入,five"]),
+    "rakuten_card",
+    "card",
+  );
+  assert.equal(s.transactions[5].category_id, target.id);
+  assert.equal(s.transactions[5].classification_source, "rule");
+  assert.equal(s.audit.at(-2)?.detail.updated_existing, 2);
+});
 test("Amazon merchant class does not confirm purpose", () => {
   const s = emptyState();
   importCsv(s, csv(["2026-10-05,Amazon,100,購入,one"]), "rakuten_card", "card");
   assert.equal(s.transactions[0].merchant_category, "Amazon");
-  assert.equal(s.transactions[0].category_id, null);
+  assert.equal(s.transactions[0].category_id, otherCategory(s)?.id);
 });
 test("subtotal IDs cannot be assigned", () => {
   const s = emptyState();
@@ -342,6 +465,118 @@ test("PayPay/card amount-only candidate makes aggregate provisional", () => {
   resolveMatch(s, s.reconciliations[0].id, true, "領収書の決済番号を確認");
   assert.equal(summary(s, "2026-10").purchase, 30000);
 });
+test("same date and price creates a review candidate without changing totals", () => {
+  const s = emptyState();
+  const first = make({ merchant_original: "A店", merchant_normalized: "A店" });
+  const second = make({
+    transaction_id: randomUUID(),
+    source_service: "smbc_card",
+    merchant_original: "B店",
+    merchant_normalized: "B店",
+  });
+  s.transactions = [first, second];
+  reconcile(s);
+  assert.equal(s.reconciliations.length, 1);
+  assert.equal(s.reconciliations[0].kind, "same_day_duplicate");
+  assert.equal(s.reconciliations[0].status, "candidate");
+  assert.equal(summary(s, "2026-10").purchase, 60000);
+  assert.equal(summary(s, "2026-10").final, false);
+  assert.throws(() =>
+    resolveMatch(s, s.reconciliations[0].id, true, "領収書を確認"),
+  );
+  resolveMatch(
+    s,
+    s.reconciliations[0].id,
+    true,
+    "領収書を確認",
+    first.transaction_id,
+  );
+  assert.equal(summary(s, "2026-10").purchase, 30000);
+  assert.equal(second.excluded, true);
+  reconcile(s);
+  assert.equal(s.reconciliations.length, 1);
+});
+test("similar payee across sources is reviewed even with a different amount", () => {
+  const s = emptyState();
+  const first = make({ amount: 12000, merchant_original: "株式会社ABC柏院" });
+  const second = make({
+    transaction_id: randomUUID(),
+    source_service: "smbc_card",
+    amount: 12500,
+    merchant_original: "ABC柏院店",
+    transaction_date: first.transaction_date,
+  });
+  s.transactions = [first, second];
+  reconcile(s);
+  assert.equal(s.reconciliations[0]?.kind, "same_day_duplicate");
+  assert.match(s.reconciliations[0].reason, /金額差/);
+  resolveMatch(s, s.reconciliations[0].id, false, "別の購入と確認");
+  reconcile(s);
+  assert.equal(s.reconciliations.length, 1);
+  assert.equal(summary(s, "2026-10").purchase, 24500);
+});
+test("same-day review remains possible after a card bill was reconciled", () => {
+  const s = emptyState();
+  const first = make({
+    card_id: "card-main",
+    billing_month: "2026-10",
+    scheduled_debit_date: "2026-11-27",
+    statement_amount: 60000,
+  });
+  const second = make({
+    transaction_id: randomUUID(),
+    merchant_original: "別の店",
+    card_id: "card-main",
+    billing_month: "2026-10",
+    scheduled_debit_date: "2026-11-27",
+    statement_amount: 60000,
+  });
+  const debit = make({
+    transaction_id: randomUUID(),
+    source_service: "chiba_bank",
+    transaction_date: "2026-11-27",
+    amount: 60000,
+    transaction_type: "card_settlement",
+    card_id: "card-main",
+    billing_month: "2026-10",
+    statement_amount: 60000,
+  });
+  s.transactions = [first, second, debit];
+  reconcile(s);
+  assert.equal(
+    s.reconciliations.find((r) => r.kind === "card_settlement")?.status,
+    "confirmed",
+  );
+  const candidate = s.reconciliations.find(
+    (r) => r.kind === "same_day_duplicate",
+  );
+  assert.equal(candidate?.status, "candidate");
+  resolveMatch(s, candidate!.id, true, "同じ購入と確認", first.transaction_id);
+  assert.equal(summary(s, "2026-10").purchase, 30000);
+  assert.equal(
+    s.reconciliations.find((r) => r.kind === "card_settlement")?.status,
+    "confirmed",
+  );
+});
+test("different dates and opposite flows are not mistaken for same-day duplicates", () => {
+  const s = emptyState();
+  s.transactions = [
+    make(),
+    make({
+      transaction_id: randomUUID(),
+      source_service: "smbc_card",
+      transaction_date: "2026-10-06",
+    }),
+    make({
+      transaction_id: randomUUID(),
+      source_service: "chiba_bank",
+      direction: "in",
+      transaction_type: "refund",
+    }),
+  ];
+  reconcile(s);
+  assert.equal(s.reconciliations.length, 0);
+});
 test("refund reduces month in which refund occurs", () => {
   const s = emptyState();
   s.transactions = [
@@ -509,7 +744,16 @@ test("Sheets report totals equal ledger and preserve category IDs", () => {
     monthly.rows.filter((r) =>
       categories.some((c) => c.selectable && c.id === r[0]),
     ).length,
-    298,
+    [...currentCategoryChoices(categories).children.values()].flat().length,
+  );
+  assert.ok(
+    output
+      .find((r) => r.title === "分類マスター")!
+      .rows.some(
+        (r) =>
+          r[0] ===
+          categories.find((c) => c.name === "全労災" && c.year === 2024)?.id,
+      ),
   );
 });
 test("spreadsheet formula injection neutralized", () => {
@@ -615,6 +859,132 @@ test("Google Sheets existing unmanaged sheet never overwritten", async () => {
     await assert.rejects(() => syncGoogle(who, 2026), /管理外/);
     assert.equal(mutations, 0);
     assert.ok((await load(who)).sync.error);
+  } finally {
+    globalThis.fetch = original;
+  }
+});
+test("reference sheet link and columns are validated without trusting arbitrary hosts", () => {
+  assert.deepEqual(
+    parseSheetLink(
+      "https://docs.google.com/spreadsheets/d/1234567890AbCd/edit?gid=42",
+    ),
+    { sheet_id: "1234567890AbCd", gid: 42 },
+  );
+  assert.throws(() =>
+    parseSheetLink(
+      "https://example.com/spreadsheets/d/1234567890AbCd/edit?gid=42",
+    ),
+  );
+  assert.deepEqual(
+    suggestReferenceColumns(["日付", "支払先", "領収先", "金額"]),
+    { date_col: 0, name_cols: [1, 2], amount_col: 3 },
+  );
+});
+test("read-only reference rows produce review candidates but never change expense totals", () => {
+  const config = {
+    sheet_id: "1234567890AbCd",
+    gid: 42,
+    header_row: 1,
+    date_col: 0,
+    name_cols: [1, 2],
+    amount_col: 3,
+  };
+  const rows = parseReferenceRows(
+    [
+      ["日付", "支払先", "領収先", "金額"],
+      ["2026/10/05", "株式会社ABC柏院", "", "30,000"],
+      ["合計", "", "", "30,000"],
+    ],
+    config,
+  );
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].amount, 30000);
+  const s = emptyState();
+  s.transactions = [make({ merchant_original: "ABC柏院店" })];
+  replaceReferences(s, rows, config.sheet_id, config.gid);
+  assert.equal(s.reconciliations[0].kind, "external_reference");
+  assert.equal(s.reconciliations[0].status, "candidate");
+  assert.equal(summary(s, "2026-10").purchase, 30000);
+  assert.equal(summary(s, "2026-10").final, false);
+  resolveMatch(s, s.reconciliations[0].id, true, "売上と支出の関係を確認");
+  assert.equal(summary(s, "2026-10").purchase, 30000);
+  replaceReferences(s, rows, config.sheet_id, config.gid);
+  assert.equal(s.reconciliations.length, 1);
+});
+test("disappearing reference rows retire unresolved candidates", () => {
+  const s = emptyState();
+  s.transactions = [make()];
+  const ref = {
+    id: randomUUID(),
+    sheet_id: "1234567890AbCd",
+    gid: 42,
+    row_number: 2,
+    transaction_date: "2026-10-05",
+    name: "Amazon",
+    amount: 30000,
+    active: true,
+  };
+  replaceReferences(s, [ref], ref.sheet_id, ref.gid);
+  assert.equal(s.reconciliations[0].status, "candidate");
+  replaceReferences(s, [], ref.sheet_id, ref.gid);
+  assert.equal(s.reconciliations[0].status, "rejected");
+  assert.equal(summary(s, "2026-10").purchase, 30000);
+});
+test("Google reference preview and scheduled read use GET only", async () => {
+  const who = { id: randomUUID(), client: null, local: true };
+  await putSecret(
+    who,
+    "google_tokens",
+    JSON.stringify({ access_token: "fake", expires: Date.now() + 3600000 }),
+  );
+  const original = globalThis.fetch;
+  const calls: string[] = [];
+  globalThis.fetch = async (input, init) => {
+    const url = String(input);
+    calls.push(`${init?.method || "GET"} ${url}`);
+    if (url.includes("?fields=sheets"))
+      return Response.json({
+        sheets: [
+          { properties: { sheetId: 42, title: "支払いデータ" } },
+          { properties: { sheetId: 43, title: "未収金データ" } },
+        ],
+      });
+    return Response.json({
+      values: [
+        ["日付", "支払先", "金額"],
+        ["2026/10/05", "Amazon", "30,000"],
+      ],
+    });
+  };
+  try {
+    const url =
+      "https://docs.google.com/spreadsheets/d/1234567890AbCd/edit?gid=42";
+    const preview = await previewReferenceSheet(who, url);
+    assert.equal(preview.gid, 42);
+    assert.equal(preview.suggested.date_col, 0);
+    const config = {
+      sheet_id: preview.sheet_id,
+      gid: preview.gid,
+      header_row: preview.header_row,
+      date_col: 0,
+      name_cols: [1],
+      amount_col: 2,
+    };
+    assert.equal((await readReferenceSheet(who, config)).length, 1);
+    const state = emptyState();
+    state.settings.reference_sheet = { ...config, last_sync: null };
+    state.transactions = [make()];
+    await save(who, state);
+    assert.equal((await syncReferenceSheet(who)).count, 1);
+    assert.equal(
+      (await load(who)).reconciliations[0].kind,
+      "external_reference",
+    );
+    assert.ok(calls.every((c) => c.startsWith("GET ")));
+    await assert.rejects(
+      () => readReferenceSheet(who, { ...config, gid: 43 }),
+      /未収金/,
+    );
   } finally {
     globalThis.fetch = original;
   }
@@ -745,4 +1115,366 @@ test("simple Excel ledger scopes year and preserves unclassified, transfers, and
   assert.ok(output.rows.slice(1).every((row) => row[0] === "未分類"));
   assert.ok(output.rows.some((row) => row[3] === 500));
   assert.ok(output.rows.some((row) => row[4] === 200 && row[2] === "'=SUM(1)"));
+});
+
+test("custom category and items can be added, renamed, and moved without changing IDs", () => {
+  const s = emptyState();
+  const rent = addCategory(s, "新しい家賃", null);
+  const other = addCategory(s, "別の費用", null);
+  const item = addCategory(s, "テナント料（柏院）", rent.id);
+  assert.equal(
+    effectiveCategories(s).find((c) => c.id === item.id)?.parent_id,
+    rent.id,
+  );
+  const t = make({ category_id: item.id, parent_category_id: rent.id });
+  s.transactions.push(t);
+  updateCategory(s, item.id, "テナント料（野田院）", other.id);
+  updateCategory(s, rent.id, "家賃", null);
+  assert.equal(
+    effectiveCategories(s).find((c) => c.id === item.id)?.name,
+    "テナント料（野田院）",
+  );
+  assert.equal(
+    effectiveCategories(s).find((c) => c.id === rent.id)?.name,
+    "家賃",
+  );
+  assert.equal(s.transactions[0].parent_category_id, other.id);
+  assert.equal(s.transactions[0].category_id, item.id);
+  assert.ok(
+    reports(s, 2026)
+      .find((r) => r.title === "2026年 月別経費")!
+      .rows.some((r) => r[0] === item.id && r[1] === "  テナント料（野田院）"),
+  );
+  assert.throws(() => updateCategory(s, item.id, "不正", null));
+  assert.throws(() => addCategory(s, "合計", null));
+});
+test("unused categories can be archived without erasing source records", () => {
+  const s = emptyState();
+  const group = addCategory(s, "所得控除・共済", null);
+  const item = addCategory(s, "小規模企業共済掛金", group.id);
+  assert.throws(() => deleteCategory(s, group.id), /先に項目/);
+  deleteCategory(s, item.id);
+  assert.ok(s.custom_categories.some((c) => c.id === item.id));
+  assert.ok(!effectiveCategories(s).some((c) => c.id === item.id));
+  deleteCategory(s, group.id);
+  assert.ok(!effectiveCategories(s).some((c) => c.id === group.id));
+  assert.equal(s.audit.at(-1)?.action, "delete_category");
+  const imported = categories.find(
+    (c) => c.name === "文房具" && c.year === 2025,
+  )!;
+  deleteCategory(s, imported.id);
+  assert.ok(categories.some((c) => c.id === imported.id));
+  assert.ok(!effectiveCategories(s).some((c) => c.id === imported.id));
+});
+test("categories used by transactions or rules and the Other fallback cannot be deleted", () => {
+  const s = emptyState();
+  const group = addCategory(s, "テスト分類", null);
+  const item = addCategory(s, "テスト項目", group.id);
+  importCsv(
+    s,
+    csv(["2026-10-05,テスト店,100,購入,one"]),
+    "rakuten_card",
+    "card",
+  );
+  approveCategory(s, s.transactions[0].transaction_id, item.id, true, null, "");
+  assert.throws(() => deleteCategory(s, item.id), /明細または分類ルール/);
+  s.transactions = [];
+  assert.throws(() => deleteCategory(s, item.id), /明細または分類ルール/);
+  s.rules = [];
+  deleteCategory(s, item.id);
+  assert.throws(() => deleteCategory(s, otherCategory(s)!.id), /その他/);
+});
+test("moving a category changes monthly display order and survives renaming", () => {
+  const s = emptyState();
+  const a = addCategory(s, "一番目", null);
+  const b = addCategory(s, "二番目", null);
+  moveCategory(s, b.id, "up");
+  assert.equal(sortGroups(effectiveCategories(s))[0].id, b.id);
+  updateCategory(s, b.id, "改名後", null);
+  assert.equal(sortGroups(effectiveCategories(s))[0].name, "改名後");
+  const rows = reports(s, 2026).find(
+    (r) => r.title === "2026年 月別経費",
+  )!.rows;
+  assert.ok(
+    rows.findIndex((r) => r[0] === b.id) < rows.findIndex((r) => r[0] === a.id),
+  );
+  assert.throws(() => moveCategory(s, b.id, "up"));
+});
+test("unclassified purchases fall into Other by month and remain pending for human review", () => {
+  const s = emptyState();
+  importCsv(
+    s,
+    csv(["2026-10-05,未知の店A,100,購入,a", "2026-11-05,未知の店B,200,購入,b"]),
+    "rakuten_card",
+    "card",
+  );
+  const other = otherCategory(s)!;
+  assert.equal(
+    s.transactions.filter(
+      (t) =>
+        t.category_id === other.id && t.classification_status === "pending",
+    ).length,
+    2,
+  );
+  assert.equal(summary(s, "2026-10").unclassified, 1);
+  assert.equal(summary(s, "2026-11").unclassified, 1);
+  const report = reports(s, 2026).find((r) => r.title === "2026年 月別経費")!;
+  const row = report.rows.find((r) => r[0] === other.id)!;
+  assert.equal(row[11], 100);
+  assert.equal(row[12], 200);
+  assert.equal(report.rows.at(-1)!.at(-1), 300);
+  const item = addCategory(s, "新規用途", other.parent_id);
+  approveCategory(
+    s,
+    s.transactions[0].transaction_id,
+    item.id,
+    true,
+    null,
+    "確認済み",
+  );
+  importCsv(
+    s,
+    csv(["2026-12-05,未知の店A,300,購入,c"]),
+    "rakuten_card",
+    "card",
+  );
+  assert.equal(s.transactions[2].category_id, item.id);
+  assert.equal(s.transactions[2].classification_status, "confirmed");
+});
+test("renamed historical item retains its ID and approved merchant rule", () => {
+  const s = emptyState();
+  const item = categories.find(
+    (c) => c.name === "家賃" && c.selectable && c.year === 2025,
+  )!;
+  importCsv(s, csv(["2026-10-05,借家,100,購入,a"]), "rakuten_card", "card");
+  approveCategory(s, s.transactions[0].transaction_id, item.id, true, null, "");
+  updateCategory(s, item.id, "家賃（旧契約）", item.parent_id);
+  importCsv(s, csv(["2026-11-05,借家,200,購入,b"]), "rakuten_card", "card");
+  assert.equal(s.transactions[1].category_id, item.id);
+  assert.equal(
+    effectiveCategories(s).find((c) => c.id === item.id)?.name,
+    "家賃（旧契約）",
+  );
+});
+test("restore carries custom categories needed by restored transactions", () => {
+  const backup = emptyState();
+  const group = addCategory(backup, "追加分類", null),
+    item = addCategory(backup, "追加項目", group.id);
+  backup.transactions = [
+    make({ category_id: item.id, parent_category_id: group.id }),
+  ];
+  const live = emptyState();
+  restoreMissing(live, backup);
+  assert.equal(
+    effectiveCategories(live).find((c) => c.id === item.id)?.name,
+    "追加項目",
+  );
+  assert.equal(live.transactions[0].category_id, item.id);
+});
+test("monthly report does not show source year", () => {
+  const monthly = reports(emptyState(), 2026).find(
+    (r) => r.title === "2026年 月別経費",
+  )!;
+  assert.equal(monthly.rows[0][1], "分類");
+  assert.ok(monthly.rows.some((r) => r[1] === "家賃"));
+  assert.ok(!monthly.rows.some((r) => String(r[1]).includes("家賃 (2025)")));
+});
+test("category menus prefer the newest matching year and retain older unique choices", () => {
+  const s = emptyState();
+  const choices = currentCategoryChoices(effectiveCategories(s));
+  const insurance = choices.groups.filter((g) => g.name === "保険");
+  assert.equal(insurance.length, 1);
+  assert.equal(insurance[0].year, 2025);
+  const allInsurance = categories.filter(
+    (c) => c.name === "保険" && !c.selectable,
+  );
+  assert.ok(allInsurance.some((c) => c.year === 2024));
+  const members = choices.children.get(insurance[0].id)!;
+  assert.deepEqual(
+    members.filter((c) => c.name === "全労災").map((c) => c.year),
+    [2025],
+  );
+  assert.ok(
+    choices.groups.some((g) => g.name === "国民健康保険" && g.year === 2024),
+  );
+  assert.equal(
+    choices.groups.filter((g) => g.name === "交通費" && g.year === 2025).length,
+    2,
+  );
+  const custom = addCategory(s, "保険", null);
+  const afterCustom = currentCategoryChoices(effectiveCategories(s));
+  assert.ok(afterCustom.groups.some((g) => g.id === custom.id));
+  assert.ok(!afterCustom.groups.some((g) => g.id === insurance[0].id));
+});
+test("monthly report combines historical duplicate category IDs into the newest row", () => {
+  const s = emptyState();
+  const insurance = categories.filter(
+    (c) => c.name === "保険" && !c.selectable,
+  );
+  const old = categories.find(
+    (c) =>
+      c.name === "全労災" &&
+      c.year === 2024 &&
+      c.parent_id === insurance.find((p) => p.year === 2024)?.id,
+  )!;
+  const newest = categories.find(
+    (c) =>
+      c.name === "全労災" &&
+      c.year === 2025 &&
+      c.parent_id === insurance.find((p) => p.year === 2025)?.id,
+  )!;
+  importCsv(
+    s,
+    csv(["2026-10-05,共済A,1000,購入,old", "2026-10-06,共済B,2000,購入,new"]),
+    "rakuten_card",
+    "card",
+  );
+  approveCategory(s, s.transactions[0].transaction_id, old.id, false, null, "");
+  approveCategory(
+    s,
+    s.transactions[1].transaction_id,
+    newest.id,
+    false,
+    null,
+    "",
+  );
+  const monthly = reports(s, 2026).find((r) => r.title === "2026年 月別経費")!;
+  const rows = monthly.rows.filter((r) => String(r[1]).trim() === "全労災");
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0][0], newest.id);
+  assert.equal(rows[0][11], 3000);
+  assert.equal(monthly.rows.at(-1)![11], 3000);
+  assert.equal(summary(s, "2026-10").purchase, 3000);
+});
+test("wholesaler spelling variants share the newest monthly row without losing amounts", () => {
+  const s = emptyState();
+  const old = categories.find(
+    (c) => c.name === "問屋(アクティ)" && c.year === 2024,
+  )!;
+  const newest = categories.find(
+    (c) => c.name === "問屋　アクティ" && c.year === 2025,
+  )!;
+  const oldIwabuchi = categories.find(
+    (c) => c.name === "問屋(岩渕)" && c.year === 2024,
+  )!;
+  const newestIwabuchi = categories.find(
+    (c) => c.name === "問屋　岩渕薬品" && c.year === 2025,
+  )!;
+  const choices = currentCategoryChoices(categories);
+  assert.equal(choices.canonicalIdById.get(old.id), newest.id);
+  assert.equal(choices.canonicalIdById.get(oldIwabuchi.id), newestIwabuchi.id);
+  assert.ok(
+    choices.children
+      .get(
+        categories.find(
+          (c) => c.name === "問屋" && c.year === 2025 && !c.selectable,
+        )!.id,
+      )
+      ?.some((c) => c.name === "問屋(プラセンタ)"),
+  );
+  importCsv(
+    s,
+    csv(["2026-10-05,問屋A,1000,購入,old", "2026-10-06,問屋B,2000,購入,new"]),
+    "rakuten_card",
+    "card",
+  );
+  approveCategory(s, s.transactions[0].transaction_id, old.id, false, null, "");
+  approveCategory(
+    s,
+    s.transactions[1].transaction_id,
+    newest.id,
+    false,
+    null,
+    "",
+  );
+  const monthly = reports(s, 2026).find((r) => r.title === "2026年 月別経費")!;
+  assert.equal(monthly.rows.filter((r) => r[0] === old.id).length, 0);
+  assert.equal(monthly.rows.find((r) => r[0] === newest.id)?.[11], 3000);
+  assert.equal(monthly.rows.at(-1)?.[11], 3000);
+});
+test("monthly labels omit source-year suffixes while category master retains originals", () => {
+  assert.equal(categoryDisplayName("項目（2025年度）"), "項目");
+  assert.equal(categoryDisplayName("項目 (2024)"), "項目");
+  assert.equal(categoryDisplayName("2025年の契約"), "2025年の契約");
+  const s = emptyState();
+  const group = addCategory(s, "分類（2025年度）", null);
+  const item = addCategory(s, "項目 (2024)", group.id);
+  const monthly = reports(s, 2026).find((r) => r.title === "2026年 月別経費")!;
+  assert.equal(monthly.rows.find((r) => r[0] === group.id)?.[1], "分類");
+  assert.equal(monthly.rows.find((r) => r[0] === item.id)?.[1], "  項目");
+  assert.equal(
+    reports(s, 2026)
+      .find((r) => r.title === "分類マスター")!
+      .rows.find((r) => r[0] === item.id)?.[2],
+    "項目 (2024)",
+  );
+});
+test("monthly report keeps distinct same-year category IDs separate", () => {
+  const s = emptyState();
+  const firstGroup = addCategory(s, "同名分類", null);
+  const secondGroup = addCategory(s, "同名分類", null);
+  const first = addCategory(s, "同名項目", firstGroup.id);
+  const second = addCategory(s, "同名項目", secondGroup.id);
+  importCsv(
+    s,
+    csv(["2026-10-05,店A,100,購入,one", "2026-10-06,店B,200,購入,two"]),
+    "rakuten_card",
+    "card",
+  );
+  approveCategory(
+    s,
+    s.transactions[0].transaction_id,
+    first.id,
+    false,
+    null,
+    "",
+  );
+  approveCategory(
+    s,
+    s.transactions[1].transaction_id,
+    second.id,
+    false,
+    null,
+    "",
+  );
+  const monthly = reports(s, 2026).find((r) => r.title === "2026年 月別経費")!;
+  assert.equal(monthly.rows.find((r) => r[0] === first.id)?.[11], 100);
+  assert.equal(monthly.rows.find((r) => r[0] === second.id)?.[11], 200);
+  assert.equal(monthly.rows.at(-1)![11], 300);
+});
+test("classified unknown bank outflow reaches monthly expense only after purchase confirmation", () => {
+  const s = emptyState();
+  importCsv(
+    s,
+    Buffer.from("日付,内容,出金額,入金額\n2026-10-05,店舗A,700,\n"),
+    "sbi_bank",
+    "bank",
+  );
+  const item = categories.find((c) => c.name === "文房具" && c.year === 2025)!;
+  approveCategory(s, s.transactions[0].transaction_id, item.id, true, null, "");
+  assert.equal(summary(s, "2026-10").purchase, 0);
+  resolveTransaction(
+    s,
+    s.transactions[0].transaction_id,
+    "purchase",
+    "店舗で購入した明細を確認",
+  );
+  assert.equal(summary(s, "2026-10").purchase, 700);
+  const monthly = reports(s, 2026).find((r) => r.title === "2026年 月別経費")!;
+  assert.equal(monthly.rows.find((r) => r[0] === item.id)![11], 700);
+});
+
+test("renaming Other keeps the stable fallback for new unknown merchants", () => {
+  const s = emptyState();
+  const other = otherCategory(s)!;
+  updateCategory(s, other.id, "その他（要確認）", other.parent_id);
+  importCsv(
+    s,
+    csv(["2026-10-05,初めての店,150,購入,first"]),
+    "rakuten_card",
+    "card",
+  );
+  assert.equal(s.transactions[0].category_id, other.id);
+  assert.equal(s.transactions[0].classification_status, "pending");
+  assert.equal(summary(s, "2026-10").final, false);
 });

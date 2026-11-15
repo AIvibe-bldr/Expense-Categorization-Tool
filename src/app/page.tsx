@@ -24,7 +24,7 @@ export default function App() {
   const [data, setData] = useState<Payload | null>(null);
   const [source, setSource] = useState<Service>("smbc_card");
   const [file, setFile] = useState<File | null>(null);
-  const [encoding, setEncoding] = useState("utf-8");
+  const [encoding, setEncoding] = useState("auto");
   const [account, setAccount] = useState("main");
   const [mapping, setMapping] = useState("{}");
   const [feeMode, setFeeMode] = useState("");
@@ -80,11 +80,13 @@ export default function App() {
   const transactions = (data?.state.transactions ?? []).filter((t) =>
     t.transaction_date.startsWith(`${year}-`),
   );
-  const pending = transactions.filter((t) => !t.category_id).length;
+  const pending = transactions.filter(
+    (t) => t.classification_status === "pending",
+  ).length;
   const rows = transactions
     .filter(
       (t) =>
-        (!pendingOnly || !t.category_id) &&
+        (!pendingOnly || t.classification_status === "pending") &&
         `${t.merchant_original} ${t.transaction_date}`
           .toLowerCase()
           .includes(search.toLowerCase()),
@@ -194,6 +196,7 @@ export default function App() {
                       value={encoding}
                       onChange={(e) => setEncoding(e.target.value)}
                     >
+                      <option value="auto">自動判定</option>
                       <option value="utf-8">UTF-8</option>
                       <option value="shift_jis">Shift_JIS / CP932</option>
                     </select>

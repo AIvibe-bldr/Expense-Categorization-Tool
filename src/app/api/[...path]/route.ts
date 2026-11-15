@@ -5,7 +5,11 @@ import ExcelJS from "exceljs";
 import { identity, checkOrigin } from "@/lib/auth";
 import { load, save, getSecret } from "@/lib/store";
 import {
-  categories,
+  effectiveCategories,
+  addCategory,
+  updateCategory,
+  deleteCategory,
+  moveCategory,
   summary,
   importCsv,
   approveCategory,
@@ -13,6 +17,7 @@ import {
   resolveMatch,
   resolveTransaction,
   reconcile,
+  replaceReferences,
   restoreMissing,
 } from "@/lib/engine";
 import { MAX_FILE_SIZE, fields, normalize } from "@/lib/csv";
@@ -23,8 +28,11 @@ import {
   callback,
   syncGoogle,
   oauthReady,
+  previewReferenceSheet,
+  readReferenceSheet,
 } from "@/lib/google";
 import { reports, simpleReport } from "@/lib/reports";
+import { parseSheetLink } from "@/lib/reference";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const monthSchema = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/);
@@ -89,7 +97,7 @@ async function handler(
             ...s,
             transactions: s.transactions.map(({ raw_encrypted, ...t }) => t),
           },
-          categories,
+          categories: effectiveCategories(s),
           summary: summary(s, month),
           local: who.local,
           google: {
@@ -187,8 +195,8 @@ async function handler(
         .partialRecord(z.enum(fields), z.string().max(150))
         .parse(JSON.parse(String(form.get("mapping") || "{}")));
       const encoding = z
-        .enum(["utf-8", "shift_jis"])
-        .parse(form.get("encoding") || "utf-8");
+        .enum(["auto", "utf-8", "shift_jis"])
+        .parse(form.get("encoding") || "auto");
       const feeMode = z
         .enum(["included", "additional"])
         .optional()
@@ -220,6 +228,8 @@ async function handler(
             id: z.uuid(),
             category_id: z.uuid(),
             remember: z.boolean(),
+            apply_existing: z.boolean().default(false),
+            bank_decision: z.enum(["purchase", "undetermined"]).optional(),
             merchant_category: z.string().max(100).nullable(),
             purpose_note: z.string().max(1000),
             business_use: z
@@ -227,6 +237,22 @@ async function handler(
               .default("unknown"),
           })
           .parse(body);
+        if (b.bank_decision === "purchase") {
+          const target = s.transactions.find((t) => t.transaction_id === b.id);
+          if (
+            !target ||
+            !target.source_service.endsWith("bank") ||
+            target.direction !== "out" ||
+            target.transaction_type !== "unknown"
+          )
+            throw Error("未判定の銀行出金だけを購入支出として確認できます");
+          resolveTransaction(
+            s,
+            b.id,
+            "purchase",
+            "用途分類の確認時に購入支出として確定",
+          );
+        }
         approveCategory(
           s,
           b.id,
@@ -235,7 +261,29 @@ async function handler(
           b.merchant_category,
           b.purpose_note,
           b.business_use,
+          b.apply_existing,
         );
+      } else if (path === "categories") {
+        const b = z
+          .object({
+            id: z.uuid().optional(),
+            name: z.string().trim().min(1).max(100),
+            parent_id: z.uuid().nullable(),
+          })
+          .parse(body);
+        if (b.id) updateCategory(s, b.id, b.name, b.parent_id);
+        else result = addCategory(s, b.name, b.parent_id);
+      } else if (path === "categories/delete") {
+        const b = z.object({ id: z.uuid() }).parse(body);
+        deleteCategory(s, b.id);
+      } else if (path === "categories/reorder") {
+        const b = z
+          .object({
+            id: z.uuid(),
+            direction: z.enum(["up", "down"]),
+          })
+          .parse(body);
+        moveCategory(s, b.id, b.direction);
       } else if (path === "rules") {
         const b = z
           .object({
@@ -253,7 +301,9 @@ async function handler(
         } else {
           if (
             !b.merchant ||
-            !categories.some((c) => c.id === b.category_id && c.selectable)
+            !effectiveCategories(s).some(
+              (c) => c.id === b.category_id && c.selectable,
+            )
           )
             throw Error("利用先と分類を指定してください");
           const id = b.id || randomUUID(),
@@ -277,9 +327,10 @@ async function handler(
             id: z.uuid(),
             confirmed: z.boolean(),
             reason: z.string().min(3).max(1000),
+            keep_id: z.uuid().optional(),
           })
           .parse(body);
-        resolveMatch(s, b.id, b.confirmed, b.reason);
+        resolveMatch(s, b.id, b.confirmed, b.reason, b.keep_id);
       } else if (path === "type") {
         const b = z
           .object({
@@ -371,7 +422,58 @@ async function handler(
         audit(s, "settings", "google");
       } else if (path === "google/connect")
         return NextResponse.json({ url: await authorizationUrl(who) });
-      else if (path === "google/sync") {
+      else if (path === "reference/preview") {
+        const b = z
+          .object({
+            url: z.string().url().max(500),
+            gid: z.number().int().min(0).optional(),
+            header_row: z.number().int().min(1).max(20).optional(),
+          })
+          .parse(body);
+        return NextResponse.json(
+          await previewReferenceSheet(who, b.url, b.gid, b.header_row),
+        );
+      } else if (path === "reference/sync") {
+        const b = z
+          .object({
+            url: z.string().url().max(500),
+            gid: z.number().int().min(0),
+            header_row: z.number().int().min(1).max(20),
+            date_col: z.number().int().min(0).max(25),
+            name_cols: z.array(z.number().int().min(0).max(25)).min(1).max(2),
+            amount_col: z.number().int().min(0).max(25).nullable(),
+          })
+          .parse(body);
+        const parsed = parseSheetLink(b.url);
+        if (parsed.sheet_id === s.settings.spreadsheet_id)
+          throw Error(
+            "支出出力先とは別の売上スプレッドシートを指定してください",
+          );
+        const config = {
+          sheet_id: parsed.sheet_id,
+          gid: b.gid,
+          header_row: b.header_row,
+          date_col: b.date_col,
+          name_cols: b.name_cols,
+          amount_col: b.amount_col,
+        };
+        const records = await readReferenceSheet(who, config);
+        if (!records.length)
+          throw Error(
+            "日付と名前のある参照行を認識できませんでした。列を確認してください",
+          );
+        replaceReferences(s, records, parsed.sheet_id, b.gid);
+        s.settings.reference_sheet = {
+          ...config,
+          last_sync: new Date().toISOString(),
+        };
+        result = {
+          count: records.length,
+          candidates: s.reconciliations.filter(
+            (r) => r.kind === "external_reference" && r.status === "candidate",
+          ).length,
+        };
+      } else if (path === "google/sync") {
         const b = z
           .object({ year: z.number().int().min(2000).max(2100).optional() })
           .parse(body);
