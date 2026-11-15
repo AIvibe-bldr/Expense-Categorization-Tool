@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { sortGroups } from "./category-order";
+import { sortGroups, currentCategoryChoices } from "./category-order";
 export { sortGroups } from "./category-order";
 import sourceCategories from "../../data/categories.json";
 import { normalize, parseCsv, type CsvEncoding, type Mapping } from "./csv";
@@ -23,38 +23,51 @@ export function effectiveCategories(s: State): Category[] {
       ...(s.category_edits?.[category.id] || {}),
     }));
 }
-export function deleteCategory(s: State, id: string) {
+export function deleteCategory(s: State, id: string, replacementId?: string) {
   const all = effectiveCategories(s);
   const current = all.find((c) => c.id === id);
   if (!current) throw Error("削除する分類・項目が見つかりません");
   const fallback = otherCategory(s);
   if (id === fallback?.id || id === fallback?.parent_id)
     throw Error("未分類の振分け先になる「その他」は削除できません");
-  if (all.some((c) => c.parent_id === id))
+  const replacement = replacementId ? all.find(c => c.id === replacementId && c.id !== id && c.selectable === current.selectable) : undefined;
+  if (replacementId && !replacement) throw Error("有効な移動先を選択してください");
+  const children = all.filter(c => c.parent_id === id);
+  if (children.length && !replacement)
     throw Error("この分類には項目があります。先に項目を移動または削除してください");
-  if (
-    s.transactions.some((t) => t.category_id === id || t.parent_category_id === id) ||
-    s.rules.some((r) => r.category_id === id)
-  ) throw Error("明細または分類ルールが参照しています。分類先を変更してから削除してください");
+  const referenced = s.transactions.some(t => t.category_id === id || t.parent_category_id === id) || s.rules.some(r => r.category_id === id);
+  if (referenced && !replacement)
+    throw Error("明細または分類ルールが参照しています。分類先を変更してから削除してください");
+  if (replacement) {
+    for (const child of children) updateCategory(s, child.id, child.name, replacement.id);
+    for (const t of s.transactions) {
+      if (current.selectable && t.category_id === id) {
+        t.category_id = replacement.id;
+        t.parent_category_id = replacement.parent_id;
+      } else if (!current.selectable && t.parent_category_id === id) t.parent_category_id = replacement.id;
+    }
+    for (const rule of s.rules) if (rule.category_id === id) rule.category_id = replacement.id;
+  }
   (s.archived_category_ids ||= []).push(id);
   for (const t of s.transactions)
     t.suggested_category_ids = t.suggested_category_ids.filter((candidate) => candidate !== id);
-  audit(s, "delete_category", id, { name: current.name, parent_id: current.parent_id });
+  audit(s, "delete_category", id, { name: current.name, parent_id: current.parent_id, replacement_id: replacementId || null });
 }
-export function moveCategory(s: State, id: string, direction: "up" | "down") {
-  const groups = sortGroups(effectiveCategories(s));
-  const from = groups.findIndex((c) => c.id === id);
-  const to = from + (direction === "up" ? -1 : 1);
-  if (from < 0 || to < 0 || to >= groups.length)
-    throw Error("移動先の分類がありません");
-  [groups[from], groups[to]] = [groups[to], groups[from]];
-  for (const [index, group] of groups.entries())
-    (s.category_edits ||= {})[group.id] = {
-      ...s.category_edits?.[group.id],
-      name: group.name,
-      parent_id: null,
-      display_order: index,
-    };
+export function moveCategory(s: State, id: string, direction: "up" | "down", relativeId?: string) {
+  const all = effectiveCategories(s);
+  const current = all.find(c => c.id === id);
+  if (!current) throw Error("移動する分類・項目が見つかりません");
+  const choices = currentCategoryChoices(all);
+  const peers = current.selectable
+    ? [...(choices.children.get(choices.displayGroupByItemId.get(id) || current.parent_id || "") || [])]
+    : sortGroups(all);
+  const from = peers.findIndex(c => c.id === id);
+  const to = relativeId ? peers.findIndex(c => c.id === relativeId) : from + (direction === "up" ? -1 : 1);
+  if (to < 0 || to >= peers.length || to === from || (direction === "up" ? to >= from : to <= from)) throw Error("移動先の分類・項目がありません");
+  const [moved] = peers.splice(from, 1);
+  peers.splice(to, 0, moved);
+  for (const [index, peer] of peers.entries())
+    (s.category_edits ||= {})[peer.id] = { ...s.category_edits?.[peer.id], name: peer.name, parent_id: peer.parent_id, display_order: index };
   audit(s, "move_category", id, { direction, from, to });
 }
 export function addCategory(s: State, name: string, parentId: string | null) {
@@ -74,6 +87,13 @@ export function addCategory(s: State, name: string, parentId: string | null) {
     selectable: !!parentId,
     color: { type: "rgb", value: "FFE8F1DF", tint: 0, pattern: "solid" },
   };
+  if (parentId) {
+    const choices = currentCategoryChoices(all);
+    const peers = choices.children.get(parentId) || all.filter(c => c.parent_id === parentId);
+    for (const [index, peer] of peers.entries())
+      (s.category_edits ||= {})[peer.id] = { ...s.category_edits?.[peer.id], name: peer.name, parent_id: peer.parent_id, display_order: index };
+    category.display_order = peers.length;
+  }
   (s.custom_categories ||= []).push(category);
   audit(s, "add_category", category.id, {
     parent_id: parentId,

@@ -300,16 +300,19 @@ async function handler(
         if (b.id) updateCategory(s, b.id, b.name, b.parent_id);
         else result = addCategory(s, b.name, b.parent_id);
       } else if (path === "categories/delete") {
-        const b = z.object({ id: z.uuid() }).parse(body);
-        deleteCategory(s, b.id);
+        const b = z
+          .object({ id: z.uuid(), replacement_id: z.uuid().optional() })
+          .parse(body);
+        deleteCategory(s, b.id, b.replacement_id);
       } else if (path === "categories/reorder") {
         const b = z
           .object({
             id: z.uuid(),
             direction: z.enum(["up", "down"]),
+            relative_id: z.uuid().optional(),
           })
           .parse(body);
-        moveCategory(s, b.id, b.direction);
+        moveCategory(s, b.id, b.direction, b.relative_id);
       } else if (path === "rules") {
         const b = z
           .object({
@@ -517,7 +520,7 @@ async function handler(
       } else return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
     }
     await save(who, s);
-    if (path === "classify") {
+    if (path === "classify" || path.startsWith("categories")) {
       return NextResponse.json({
         ok: true,
         state: {

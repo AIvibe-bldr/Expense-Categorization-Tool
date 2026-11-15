@@ -2,7 +2,16 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { parseCsv } from "../src/lib/csv";
-import { categories, approveCategory, classify } from "../src/lib/engine";
+import {
+  categories,
+  approveCategory,
+  classify,
+  addCategory,
+  updateCategory,
+  deleteCategory,
+  moveCategory,
+  effectiveCategories,
+} from "../src/lib/engine";
 import { personalReports } from "../src/lib/spreadsheet";
 import { emptyState, type Transaction } from "../src/lib/types";
 function tx(overrides: Partial<Transaction> = {}) {
@@ -191,4 +200,59 @@ test("personal merchant assignment changes all years and transaction types and r
       .every((t) => t.category_id === replacement.id),
   );
   assert.equal(state.rules.length, 1);
+});
+
+test("sheet editing preserves totals and redirects used item and group references on deletion", () => {
+  const s = emptyState();
+  const group = addCategory(s, "編集用分類", null);
+  const destination = addCategory(s, "移動先分類", null);
+  const first = addCategory(s, "編集項目1", group.id);
+  const second = addCategory(s, "編集項目2", group.id);
+  s.transactions = [
+    tx({ category_id: first.id, parent_category_id: group.id, amount: 1234 }),
+  ];
+  approveCategory(
+    s,
+    s.transactions[0].transaction_id,
+    first.id,
+    true,
+    null,
+    "",
+    "personal",
+    true,
+    true,
+  );
+  moveCategory(s, second.id, "up", first.id);
+  let report = personalReports(s.transactions, effectiveCategories(s), 2026)[0];
+  assert.ok(
+    report.rows.findIndex((r) => String(r[0]).trim() === "編集項目2") <
+      report.rows.findIndex((r) => String(r[0]).trim() === "編集項目1"),
+  );
+  updateCategory(s, first.id, "変更後項目", group.id);
+  deleteCategory(s, group.id, destination.id);
+  assert.equal(
+    effectiveCategories(s).find((c) => c.id === first.id)?.parent_id,
+    destination.id,
+  );
+  assert.equal(s.transactions[0].parent_category_id, destination.id);
+  deleteCategory(s, first.id, second.id);
+  assert.equal(s.transactions[0].category_id, second.id);
+  assert.equal(s.rules[0].category_id, second.id);
+  report = personalReports(s.transactions, effectiveCategories(s), 2026)[0];
+  assert.equal(report.rows.at(-1)?.[13], 1234);
+  assert.equal(
+    report.rows.find((r) => String(r[0]).trim() === "編集項目2")?.[13],
+    1234,
+  );
+  assert.ok(
+    !effectiveCategories(s).some((c) => c.id === first.id || c.id === group.id),
+  );
+});
+test("invalid replacement leaves category, rules and transactions unchanged", () => {
+  const s = emptyState();
+  const group = addCategory(s, "分類検証", null);
+  const child = addCategory(s, "項目検証", group.id);
+  const before = JSON.stringify(s);
+  assert.throws(() => deleteCategory(s, group.id, child.id));
+  assert.equal(JSON.stringify(s), before);
 });

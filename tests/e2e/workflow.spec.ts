@@ -250,10 +250,192 @@ test("pending Other can be confirmed and a stale state read cannot undo sheet up
     .getByRole("region", { name: "Excel出力プレビュー" })
     .locator('[data-updated="true"]');
   await expect(updated).toHaveCount(1);
-  await expect(updated.locator("td").first()).toHaveText("その他");
+  await expect(updated.locator(".category-name")).toHaveText("その他");
   await expect(updated.locator("td").nth(8)).toHaveText("789");
   await page.unroute("**/api/state");
   await page.reload();
   await page.getByLabel("対象年").fill("2026");
   await expect(category).not.toHaveValue("");
+});
+
+test("edit categories and items inside the sheet and preserve records through moves and deletion", async ({
+  page,
+  request,
+}) => {
+  await page.goto("/");
+  await page.getByLabel("対象年").fill("2026");
+  const dialog = page.getByRole("dialog");
+  const preview = page.getByRole("region", { name: "Excel出力プレビュー" });
+  async function saveEditor() {
+    await dialog.getByRole("button", { name: "保存", exact: true }).click();
+    await expect(dialog).not.toBeVisible();
+  }
+  async function addGroup(name: string) {
+    await page
+      .getByRole("button", { name: "＋ 分類を追加", exact: true })
+      .click();
+    await dialog.getByLabel("名前", { exact: true }).fill(name);
+    await saveEditor();
+  }
+  await addGroup("シート編集分類");
+  await preview
+    .getByRole("button", {
+      name: "分類「シート編集分類」の名前を変更",
+      exact: true,
+    })
+    .click();
+  await dialog.getByLabel("名前", { exact: true }).fill("シート分類変更後");
+  await saveEditor();
+  await preview
+    .getByRole("button", {
+      name: "分類「シート分類変更後」に項目を追加",
+      exact: true,
+    })
+    .click();
+  await dialog.getByLabel("名前", { exact: true }).fill("シート項目1");
+  await saveEditor();
+  await preview
+    .getByRole("button", {
+      name: "分類「シート分類変更後」に項目を追加",
+      exact: true,
+    })
+    .click();
+  await dialog.getByLabel("名前", { exact: true }).fill("シート項目2");
+  await saveEditor();
+  await preview
+    .getByRole("button", { name: "項目「シート項目2」を上へ移動", exact: true })
+    .click();
+  await expect(page.getByRole("status")).toHaveText("シートを更新しました。");
+  await expect
+    .poll(async () =>
+      (
+        await preview
+          .locator('[data-row-kind="item"] .category-name')
+          .allTextContents()
+      ).slice(0, 2),
+    )
+    .toEqual(["シート項目2", "シート項目1"]);
+  await preview
+    .getByRole("button", {
+      name: "項目「シート項目1」の名前を変更",
+      exact: true,
+    })
+    .click();
+  await dialog.getByLabel("名前", { exact: true }).fill("シート項目変更後");
+  await saveEditor();
+  const imported = await request.post("/api/imports", {
+    headers: { Origin: "http://127.0.0.1:3100" },
+    multipart: {
+      source: "rakuten_card",
+      account: "sheet-editor",
+      file: {
+        name: "synthetic.csv",
+        mimeType: "text/csv",
+        buffer: Buffer.from(
+          "利用日,利用先,利用金額,取引種別,利用明細ID\n2026-06-20,シート編集の検証店,1234,購入,sheet-editor",
+        ),
+      },
+    },
+  });
+  expect(imported.ok()).toBe(true);
+  await page.reload();
+  await page.getByLabel("対象年").fill("2026");
+  await page
+    .getByRole("combobox", { name: "シート編集の検証店 2026-06-20の項目" })
+    .selectOption({ label: "シート項目変更後" });
+  await expect(page.getByRole("status")).toHaveText("振り分けを保存しました。");
+  await addGroup("シート移動先");
+  await preview
+    .getByRole("button", {
+      name: "項目「シート項目変更後」を別の分類へ移動",
+      exact: true,
+    })
+    .click();
+  await dialog
+    .getByLabel("所属する分類")
+    .selectOption({ label: "シート移動先" });
+  await saveEditor();
+  let state = await (await request.get("/api/state")).json();
+  const destination = state.categories.find(
+    (c: { name: string }) => c.name === "シート移動先",
+  );
+  expect(
+    state.state.transactions.find(
+      (t: { merchant_original: string }) =>
+        t.merchant_original === "シート編集の検証店",
+    ).parent_category_id,
+  ).toBe(destination.id);
+  await preview
+    .getByRole("button", {
+      name: "項目「シート項目変更後」を削除",
+      exact: true,
+    })
+    .click();
+  await dialog
+    .getByLabel("削除後の移動先")
+    .selectOption({ label: "シート分類変更後 › シート項目2" });
+  await dialog.getByRole("button", { name: "削除する", exact: true }).click();
+  await expect(dialog).not.toBeVisible();
+  await expect(
+    preview.getByRole("button", {
+      name: "項目「シート項目変更後」の名前を変更",
+      exact: true,
+    }),
+  ).toHaveCount(0);
+  await preview
+    .getByRole("button", {
+      name: "分類「シート分類変更後」を削除",
+      exact: true,
+    })
+    .click();
+  await dialog
+    .getByLabel("削除後の移動先")
+    .selectOption({ label: "シート移動先" });
+  await dialog.getByRole("button", { name: "削除する", exact: true }).click();
+  await expect(dialog).not.toBeVisible();
+  await page.reload();
+  await page.getByLabel("対象年").fill("2026");
+  state = await (await request.get("/api/state")).json();
+  const remaining = state.categories.find(
+    (c: { name: string }) => c.name === "シート項目2",
+  );
+  expect(remaining.parent_id).toBe(destination.id);
+  const tx = state.state.transactions.find(
+    (t: { merchant_original: string }) =>
+      t.merchant_original === "シート編集の検証店",
+  );
+  expect(tx.category_id).toBe(remaining.id);
+  expect(tx.amount).toBe(1234);
+  expect(
+    state.state.rules.find(
+      (r: { merchant_normalized: string }) =>
+        r.merchant_normalized === tx.merchant_normalized,
+    ).category_id,
+  ).toBe(remaining.id);
+  const response = await request.get("/api/export?year=2026&format=simple");
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(
+    (await response.body()) as unknown as Parameters<
+      typeof workbook.xlsx.load
+    >[0],
+  );
+  const row = workbook.worksheets[0]
+    .getRows(2, workbook.worksheets[0].rowCount - 1)!
+    .find((r) => r.getCell(1).text.trim() === "シート項目2")!;
+  expect(row.getCell(7).value).toBe(1234);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await preview
+    .getByRole("button", {
+      name: "項目「シート項目2」の名前を変更",
+      exact: true,
+    })
+    .click();
+  await expect(dialog).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await dialog.getByRole("button", { name: "キャンセル", exact: true }).click();
+  await expect(dialog).not.toBeVisible();
 });

@@ -1,6 +1,6 @@
 "use client";
 import { categoryDisplayName } from "@/lib/category-order";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Fragment } from "react";
 import { personalReports, personalCategoryChoices } from "@/lib/spreadsheet";
 import { createBrowserClient } from "@supabase/ssr";
 import {
@@ -10,6 +10,7 @@ import {
   type Transaction,
   type Category,
 } from "@/lib/types";
+type EditorMode = "rename" | "add-group" | "add-item" | "move" | "delete";
 type Tx = Omit<Transaction, "raw_encrypted">;
 type Payload = {
   state: { transactions: Tx[] };
@@ -42,6 +43,19 @@ export default function App() {
   const [error, setError] = useState("");
   const [lastCategoryId, setLastCategoryId] = useState("");
   const previewRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<HTMLDialogElement>(null);
+  const [editor, setEditor] = useState<{
+    mode: EditorMode;
+    id?: string;
+    parentId?: string;
+  } | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editParent, setEditParent] = useState("");
+  const [replacement, setReplacement] = useState("");
+  useEffect(() => {
+    if (editor) editorRef.current?.showModal();
+    else editorRef.current?.close();
+  }, [editor]);
   async function refresh() {
     const r = await fetch("/api/state", { cache: "no-store" });
     if (r.status === 401) {
@@ -78,7 +92,11 @@ export default function App() {
       const result = await r.json();
       if (!r.ok) throw Error(result.error);
       persisted = true;
-      if (path === "classify" && result.state && result.categories) {
+      if (
+        (path === "classify" || path.startsWith("categories")) &&
+        result.state &&
+        result.categories
+      ) {
         setData((current) =>
           current
             ? { ...current, state: result.state, categories: result.categories }
@@ -90,8 +108,11 @@ export default function App() {
       setNotice(
         path === "imports"
           ? `${result.count}件を取り込みました（重複${result.duplicates}件をスキップ）。項目を選んで振り分けてください。`
-          : "振り分けを保存しました。",
+          : path.startsWith("categories")
+            ? "シートを更新しました。"
+            : "振り分けを保存しました。",
       );
+      return true;
     } catch (e) {
       if (optimistic && !persisted) setData(previous);
       setError(
@@ -99,6 +120,7 @@ export default function App() {
           ? "保存済みですが、最新情報を取得できませんでした。再読み込みしてください。"
           : (e as Error).message,
       );
+      return false;
     } finally {
       setBusy(false);
     }
@@ -145,6 +167,84 @@ export default function App() {
         100;
     }
   }, [data, highlightedCategory, previewSheet]);
+  function openEditor(mode: EditorMode, id?: string, parentId?: string) {
+    const category = categories.find((c) => c.id === id);
+    setEditName(category?.name || "");
+    setEditParent(parentId || category?.parent_id || "");
+    setReplacement("");
+    setError("");
+    setEditor({ mode, id, parentId });
+  }
+  const editedCategory = categories.find((c) => c.id === editor?.id);
+  function categoryCell(id: string) {
+    const category = categories.find((c) => c.id === id);
+    if (!category) return null;
+    const kind = category.selectable ? "項目" : "分類";
+    const name = categoryDisplayName(category.name);
+    const peers = category.selectable
+      ? choices.children.get(
+          choices.displayGroupByItemId.get(id) || category.parent_id || "",
+        ) || []
+      : choices.groups;
+    const index = peers.findIndex((c) => c.id === id);
+    return (
+      <div className="sheet-category-cell">
+        <span className="category-name">{name}</span>
+        <span className="sheet-row-actions">
+          <button
+            type="button"
+            className="sheet-icon"
+            disabled={busy}
+            aria-label={`${kind}「${name}」の名前を変更`}
+            onClick={() => openEditor("rename", id)}
+          >
+            🖋
+          </button>
+          {(["up", "down"] as const).map((direction) => {
+            const neighbor = peers[index + (direction === "up" ? -1 : 1)];
+            return (
+              <button
+                key={direction}
+                type="button"
+                className="sheet-icon"
+                disabled={busy || !neighbor}
+                aria-label={`${kind}「${name}」を${direction === "up" ? "上" : "下"}へ移動`}
+                onClick={() =>
+                  void save("categories/reorder", {
+                    id,
+                    direction,
+                    relative_id: neighbor?.id,
+                  })
+                }
+              >
+                {direction === "up" ? "↑" : "↓"}
+              </button>
+            );
+          })}
+          {category.selectable && (
+            <button
+              type="button"
+              className="sheet-icon"
+              disabled={busy}
+              aria-label={`項目「${name}」を別の分類へ移動`}
+              onClick={() => openEditor("move", id)}
+            >
+              移動
+            </button>
+          )}
+          <button
+            type="button"
+            className="sheet-icon"
+            disabled={busy}
+            aria-label={`${kind}「${name}」を削除`}
+            onClick={() => openEditor("delete", id)}
+          >
+            削除
+          </button>
+        </span>
+      </div>
+    );
+  }
   return (
     <main className="simple-main">
       <header>
@@ -366,6 +466,16 @@ export default function App() {
             <p className="muted">
               検索・未分類フィルターは年間表と出力には影響しません。項目を選ぶと年間表の該当行を強調表示します。
             </p>
+            {previewSheet === 0 && (
+              <button
+                type="button"
+                className="secondary"
+                disabled={busy}
+                onClick={() => openEditor("add-group")}
+              >
+                ＋ 分類を追加
+              </button>
+            )}
             <div
               className="table-scroll spreadsheet-preview"
               ref={previewRef}
@@ -400,42 +510,81 @@ export default function App() {
                       previewSheet === 0 ? previewRows.length : previewLimit,
                     )
                     .map((row, i) => (
-                      <tr
-                        key={i}
-                        data-updated={
-                          spreadsheet.categoryIds?.[i + 1] ===
-                            highlightedCategory && !!highlightedCategory
-                        }
-                        className={
-                          spreadsheet.categoryIds?.[i + 1] ===
-                            highlightedCategory && highlightedCategory
-                            ? "updated-row"
-                            : undefined
-                        }
-                        style={
-                          spreadsheet.colors?.[i + 1]
-                            ? {
-                                backgroundColor:
-                                  "#" + spreadsheet.colors[i + 1],
-                                fontWeight: 600,
+                      <Fragment key={i}>
+                        <tr
+                          data-category-id={
+                            spreadsheet.editableRows?.[i + 1]?.id
+                          }
+                          data-row-kind={
+                            spreadsheet.editableRows?.[i + 1]?.kind
+                          }
+                          data-updated={
+                            spreadsheet.categoryIds?.[i + 1] ===
+                              highlightedCategory && !!highlightedCategory
+                          }
+                          className={
+                            spreadsheet.categoryIds?.[i + 1] ===
+                              highlightedCategory && highlightedCategory
+                              ? "updated-row"
+                              : undefined
+                          }
+                          style={
+                            spreadsheet.colors?.[i + 1]
+                              ? {
+                                  backgroundColor:
+                                    "#" + spreadsheet.colors[i + 1],
+                                  fontWeight: 600,
+                                }
+                              : undefined
+                          }
+                        >
+                          <th scope="row">{i + 2}</th>
+                          {row.map((cell, j) => (
+                            <td
+                              key={j}
+                              aria-label={
+                                j === 0 ? String(cell).trim() : undefined
                               }
-                            : undefined
-                        }
-                      >
-                        <th scope="row">{i + 2}</th>
-                        {row.map((cell, j) => (
-                          <td
-                            key={j}
-                            className={
-                              typeof cell === "number" ? "money" : undefined
-                            }
-                          >
-                            {typeof cell === "number"
-                              ? cell.toLocaleString("ja-JP")
-                              : cell}
-                          </td>
-                        ))}
-                      </tr>
+                              className={
+                                typeof cell === "number" ? "money" : undefined
+                              }
+                            >
+                              {j === 0 &&
+                              spreadsheet.editableRows?.[i + 1] &&
+                              spreadsheet.editableRows[i + 1].kind !==
+                                "subtotal"
+                                ? categoryCell(
+                                    spreadsheet.editableRows[i + 1].id,
+                                  )
+                                : typeof cell === "number"
+                                  ? cell.toLocaleString("ja-JP")
+                                  : cell}
+                            </td>
+                          ))}
+                        </tr>
+                        {spreadsheet.editableRows?.[i + 1]?.kind ===
+                          "subtotal" && (
+                          <tr className="sheet-add-item">
+                            <td colSpan={spreadsheet.rows[0].length + 1}>
+                              <button
+                                type="button"
+                                className="link"
+                                disabled={busy}
+                                aria-label={`分類「${categories.find((c) => c.id === spreadsheet.editableRows![i + 1].id)?.name}」に項目を追加`}
+                                onClick={() =>
+                                  openEditor(
+                                    "add-item",
+                                    undefined,
+                                    spreadsheet.editableRows![i + 1].id,
+                                  )
+                                }
+                              >
+                                ＋ 項目を追加
+                              </button>
+                            </td>
+                          </tr>
+                        )}
+                      </Fragment>
                     ))}
                 </tbody>
               </table>
@@ -626,6 +775,131 @@ export default function App() {
           </section>
         </>
       )}
+      <dialog
+        ref={editorRef}
+        className="sheet-editor"
+        onCancel={(event) => {
+          if (busy) event.preventDefault();
+          else setEditor(null);
+        }}
+      >
+        {editor && (
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const path =
+                editor.mode === "delete" ? "categories/delete" : "categories";
+              const body =
+                editor.mode === "delete"
+                  ? {
+                      id: editor.id,
+                      ...(replacement ? { replacement_id: replacement } : {}),
+                    }
+                  : {
+                      id: editor.id,
+                      name: editName,
+                      parent_id:
+                        editor.mode === "add-group" ||
+                        (editedCategory && !editedCategory.selectable)
+                          ? null
+                          : editParent,
+                    };
+              if (await save(path, body)) setEditor(null);
+            }}
+          >
+            <h2>
+              {editor.mode === "delete"
+                ? "分類・項目の削除"
+                : editor.mode === "move"
+                  ? "項目の移動"
+                  : editor.mode.startsWith("add")
+                    ? "分類・項目の追加"
+                    : "分類・項目の名前を変更"}
+            </h2>
+            {error && (
+              <p role="alert" className="notice error">
+                {error}
+              </p>
+            )}
+            {editor.mode === "delete" ? (
+              <>
+                <p>「{editedCategory?.name}」を削除します。</p>
+                <p>
+                  使用中の項目は明細と分類ルールを移動します。分類に項目がある場合は、項目を別の分類へ移してから削除します。
+                </p>
+                <label>
+                  削除後の移動先
+                  <select
+                    value={replacement}
+                    onChange={(e) => setReplacement(e.target.value)}
+                  >
+                    <option value="">未使用・空の場合は移動先なしで削除</option>
+                    {(editedCategory?.selectable
+                      ? [...choices.children.values()].flat()
+                      : choices.groups
+                    )
+                      .filter((c) => c.id !== editor.id)
+                      .map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.selectable
+                            ? `${categories.find((p) => p.id === c.parent_id)?.name} › `
+                            : ""}
+                          {c.name}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+              </>
+            ) : (
+              <>
+                <label>
+                  名前
+                  <input
+                    required
+                    maxLength={100}
+                    autoFocus
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                  />
+                </label>
+                {(editor.mode === "add-item" || editedCategory?.selectable) && (
+                  <label>
+                    所属する分類
+                    <select
+                      required
+                      value={editParent}
+                      onChange={(e) => setEditParent(e.target.value)}
+                    >
+                      {choices.groups.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
+              </>
+            )}
+            <div className="actions">
+              <button type="submit" disabled={busy}>
+                {busy
+                  ? "保存中…"
+                  : editor.mode === "delete"
+                    ? "削除する"
+                    : "保存"}
+              </button>
+              <button
+                type="button"
+                className="secondary"
+                disabled={busy}
+                onClick={() => setEditor(null)}
+              >
+                キャンセル
+              </button>
+            </div>
+          </form>
+        )}
+      </dialog>
     </main>
   );
 }

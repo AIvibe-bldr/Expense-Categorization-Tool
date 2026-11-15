@@ -1134,3 +1134,66 @@ footer span {
   background: #fff2b8;
   font-weight: 700;
 }
+
+.sheet-category-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: space-between;
+}
+.sheet-row-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+button.sheet-icon {
+  background: transparent;
+  color: var(--green);
+  padding: 3px 6px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  font-size: 12px;
+}
+.sheet-add-item td {
+  background: #f6faf5;
+}
+.sheet-editor {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 26px;
+  width: min(520px, calc(100vw - 28px));
+  max-height: 85vh;
+  overflow: auto;
+  color: var(--ink);
+}
+.sheet-editor::backdrop {
+  background: #20383177;
+}
+.sheet-editor label {
+  margin-bottom: 16px;
+}
+.sheet-editor .actions {
+  margin-top: 22px;
+}
+
+.sheet-category-cell {
+  flex-wrap: wrap;
+  max-width: 420px;
+}
+.sheet-category-cell .category-name {
+  white-space: normal;
+  max-width: 240px;
+}
+button.sheet-icon {
+  min-height: 32px;
+  min-width: 32px;
+}
+@media (max-width: 650px) {
+  .spreadsheet-preview tbody td:first-of-type {
+    position: static;
+  }
+  button.sheet-icon {
+    min-height: 40px;
+    min-width: 36px;
+  }
+}

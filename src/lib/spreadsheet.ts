@@ -63,6 +63,10 @@ export type SpreadsheetReport = {
   rows: (string | number)[][];
   colors?: Record<number, string>;
   categoryIds?: Record<number, string>;
+  editableRows?: Record<
+    number,
+    { id: string; kind: "group" | "item" | "subtotal" }
+  >;
 };
 
 /** Personal use of funds, independent of business/tax eligibility. */
@@ -152,6 +156,7 @@ export function personalReports(
     ],
     colors: {},
     categoryIds: {},
+    editableRows: {},
   };
   const append = (name: string, amounts: number[]) =>
     annual.rows.push([
@@ -162,16 +167,22 @@ export function personalReports(
   const displayedIds = new Set<string>();
   for (const group of groups) {
     annual.colors![annual.rows.length] = colorHex(group.color);
+    annual.editableRows![annual.rows.length] = { id: group.id, kind: "group" };
     annual.rows.push([safe(categoryDisplayName(group.name))]);
     const subtotal = Array<number>(12).fill(0);
     for (const item of children.get(group.id) || []) {
       displayedIds.add(item.id);
       const amounts = values.get(item.id) || Array<number>(12).fill(0);
       annual.categoryIds![annual.rows.length] = item.id;
+      annual.editableRows![annual.rows.length] = { id: item.id, kind: "item" };
       append(`　${categoryDisplayName(item.name)}`, amounts);
       amounts.forEach((n, i) => (subtotal[i] += n));
     }
     annual.colors![annual.rows.length] = colorHex(group.color);
+    annual.editableRows![annual.rows.length] = {
+      id: group.id,
+      kind: "subtotal",
+    };
     append(`${categoryDisplayName(group.name)} 合計`, subtotal);
   }
   const unknown = Array<number>(12).fill(0);

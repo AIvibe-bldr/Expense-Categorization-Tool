@@ -49,7 +49,7 @@ export function currentCategoryChoices(all: Category[]) {
     const displayGroup = children.has(parent.id) ? parent : preferredGroup.get(key(parent.name));
     if (displayGroup) children.get(displayGroup.id)!.push(item);
   }
-  for (const items of children.values()) items.sort((a, b) => b.year - a.year || a.order - b.order);
+  for (const items of children.values()) items.sort((a, b) => (a.display_order ?? Number.MAX_SAFE_INTEGER) - (b.display_order ?? Number.MAX_SAFE_INTEGER) || b.year - a.year || a.order - b.order);
   const canonicalByKey = new Map<string, string>();
   const displayGroupByItemId = new Map<string, string>();
   for (const [groupId, items] of children)
