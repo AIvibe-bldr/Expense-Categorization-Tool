@@ -1068,3 +1068,41 @@ footer span {
     display: block;
   }
 }
+
+.spreadsheet-preview {
+  max-height: 520px;
+  margin: 20px 0;
+  border: 1px solid var(--line);
+}
+.spreadsheet-preview table {
+  min-width: 1250px;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.spreadsheet-preview caption {
+  text-align: left;
+  padding: 12px;
+  font-weight: 600;
+  background: var(--mint);
+}
+.spreadsheet-preview th,
+.spreadsheet-preview td {
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+.spreadsheet-preview thead th {
+  background: var(--mint);
+}
+.spreadsheet-preview .sheet-columns th,
+.spreadsheet-preview tbody th {
+  background: #f0f2ef;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 400;
+}
+.simple-main section > .export-panel {
+  margin-bottom: 16px;
+}

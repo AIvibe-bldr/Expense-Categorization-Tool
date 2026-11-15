@@ -137,6 +137,20 @@ async function handler(
           sheet.views = [{ state: "frozen", ySplit: 1 }];
           sheet.getColumn(1).width = 38;
           sheet.getColumn(2).width = 35;
+          if (req.nextUrl.searchParams.get("format") === "simple") {
+            [52, 15, 32, 16, 16, 24, 22, 36].forEach((width, index) => {
+              sheet.getColumn(index + 1).width = width;
+            });
+            sheet.autoFilter = "A1:H1";
+            sheet.getRow(1).font = { bold: true };
+            sheet.getRow(1).fill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: "FFE6F1E9" },
+            };
+            sheet.getColumn(4).numFmt = "#,##0";
+            sheet.getColumn(5).numFmt = "#,##0";
+          }
           for (const [row, color] of Object.entries(report.colors || {}))
             sheet.getRow(+row + 1).fill = {
               type: "pattern",

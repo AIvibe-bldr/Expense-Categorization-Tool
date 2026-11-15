@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { spreadsheetReport } from "@/lib/spreadsheet";
 import { createBrowserClient } from "@supabase/ssr";
 import {
   services,
@@ -33,6 +34,7 @@ export default function App() {
   const [search, setSearch] = useState("");
   const [pendingOnly, setPendingOnly] = useState(false);
   const [limit, setLimit] = useState(100);
+  const [previewLimit, setPreviewLimit] = useState(100);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
@@ -95,6 +97,12 @@ export default function App() {
   const categoryYears = [...new Set(categories.map((c) => c.year))].sort(
     (a, b) => b - a,
   );
+  const spreadsheet = spreadsheetReport(
+    data?.state.transactions ?? [],
+    categories,
+    Number(year),
+  );
+  const previewRows = spreadsheet.rows.slice(1);
   return (
     <main className="simple-main">
       <header>
@@ -268,6 +276,7 @@ export default function App() {
                   onChange={(e) => {
                     setYear(e.target.value);
                     setLimit(100);
+                    setPreviewLimit(100);
                   }}
                 />
               </label>
@@ -386,27 +395,101 @@ export default function App() {
               </button>
             )}
           </section>
-          <section className="panel export-panel">
-            <div>
-              <h2>3. Excelをダウンロード</h2>
-              <p>
-                {year}
-                年の項目別明細を出力します。Excel上でも項目を変更できます。
-              </p>
-              <small>
-                未分類も出力します。入金・振替などを含むすべての明細を確認できます。
-              </small>
+          <section className="panel" aria-labelledby="excel-preview-title">
+            <div className="export-panel">
+              <div>
+                <h2 id="excel-preview-title">3. 振り分け結果を確認・出力</h2>
+                <p>
+                  {year}
+                  年の振り分け結果です。下の表と同じ内容をExcelに出力します。
+                </p>
+                <small>
+                  未分類も出力します。入金・振替などを含むすべての明細を確認できます。
+                </small>
+              </div>
+              <button
+                disabled={
+                  busy || !transactions.length || !/^20\d{2}$|^2100$/.test(year)
+                }
+                onClick={() => {
+                  location.href = `/api/export?year=${year}&format=simple`;
+                }}
+              >
+                Excelをダウンロード
+              </button>
             </div>
-            <button
-              disabled={
-                busy || !transactions.length || !/^20\d{2}$|^2100$/.test(year)
-              }
-              onClick={() => {
-                location.href = `/api/export?year=${year}&format=simple`;
-              }}
+            <p className="muted">
+              Google
+              スプレッドシートで確認する場合は、ダウンロードしたExcelを「ファイル
+              → インポート → アップロード」で開いてください。
+            </p>
+            <p className="muted">
+              対象年の全{previewRows.length}
+              件を項目順に表示します。上の検索・未分類フィルターは出力には影響しません。
+            </p>
+            <div
+              className="table-scroll spreadsheet-preview"
+              tabIndex={0}
+              role="region"
+              aria-label="Excel出力プレビュー"
             >
-              Excelをダウンロード
-            </button>
+              <table>
+                <caption>{spreadsheet.title}</caption>
+                <thead>
+                  <tr className="sheet-columns">
+                    <th aria-label="行番号"></th>
+                    {spreadsheet.rows[0].map((_, i) => (
+                      <th key={i} scope="col">
+                        {String.fromCharCode(65 + i)}
+                      </th>
+                    ))}
+                  </tr>
+                  <tr>
+                    <th scope="row">1</th>
+                    {spreadsheet.rows[0].map((cell, i) => (
+                      <th key={i} scope="col">
+                        {cell}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {previewRows.slice(0, previewLimit).map((row, i) => (
+                    <tr key={i}>
+                      <th scope="row">{i + 2}</th>
+                      {row.map((cell, j) => (
+                        <td
+                          key={j}
+                          className={
+                            typeof cell === "number" ? "money" : undefined
+                          }
+                        >
+                          {typeof cell === "number"
+                            ? cell.toLocaleString("ja-JP")
+                            : cell}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {!previewRows.length && (
+              <p className="empty">
+                対象年の明細を取り込むと、ここにExcelの振り分け結果が表示されます。
+              </p>
+            )}
+            {previewRows.length > previewLimit && (
+              <button
+                className="secondary"
+                onClick={() => setPreviewLimit(previewLimit + 100)}
+              >
+                プレビューの次の100件を表示
+              </button>
+            )}
+            <small>
+              画面で項目を変更すると、保存後にこの表も更新されます。Excel・スプレッドシートでの編集はこのツールには反映されません。
+            </small>
           </section>
         </>
       )}
